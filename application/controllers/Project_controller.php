@@ -205,6 +205,10 @@ class Project_controller extends CI_Controller {
 		$data['unconfirm_withdraw'] =  $this->User_model->select_unconfirm_withdraw();
 		$this->load->view('report_test',$data);
 	}
+	public function test_get_data_repost(){
+		$result = $this->User_model->select_repost_test();
+		echo json_encode($result);
+	}
 
 	////////////////////////////////////////////////////////////
 	//////////////////////  FORM    //////////////////////////

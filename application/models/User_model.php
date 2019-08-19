@@ -759,8 +759,11 @@ class User_model extends CI_Model {
 	    }
 	}
 	public function select_repost_test(){
-		$sql = "SELECT FROM account AS a INNER JOIN AS b ON a.member_id = ";
-		return $this->db->query($sql)->result();
+		$this->db->select("*");
+		$this->db->from("account");
+		$query = $this->db->get();
+		return $query->result();
+
 	}
 
 	////////////////////////////////////////////////////////////
