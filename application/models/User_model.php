@@ -649,8 +649,8 @@ class User_model extends CI_Model {
 		$this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);
 		$this->db->where('end_day',"1");
-	    $this->db->where('record_date >=',date('Y-04-01'));
-	    $this->db->where('record_date <',date('Y-10-01'));
+	  $this->db->where('record_date >=',date('Y-04-01'));
+	  $this->db->where('record_date <',date('Y-10-01'));
 		$this->db->join('staff', 'staff_id = staff_record_id','inner');
 		$this->db->order_by('record_date ASC, record_time ASC');
 		$query=$this->db->get();
@@ -763,7 +763,13 @@ class User_model extends CI_Model {
 		$this->db->from("account");
 		$query = $this->db->get();
 		return $query->result();
-
+	}
+	public function select_open_account_between_date($start_date,$stop_date){
+		$this->db->from('account');
+		$this->db->where('account_open_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"');
+		$this->db->join('member', 'member.member_id = account.member_id','inner');
+		$query=$this->db->get();
+		return $query;
 	}
 
 	////////////////////////////////////////////////////////////

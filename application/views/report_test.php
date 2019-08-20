@@ -13,7 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/js/bootstrap.min.js"></script>
   <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <style type="text/css">
     html,body {
       background:
@@ -39,60 +39,68 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   </script>
   <script type="text/javascript">
     $(document).ready(function(){
-      var label = [];
-      var values = [];
-
-
-
-        $.ajax({
-          url:"<?php echo base_url('Project_controller/test_get_data_repost/'); ?>",
-          method:"POST",
-          success:function(data){
-            var obj = JSON.parse(data);
-            $.each(obj,function(i,item){
-              label.push(item.account_name);
-              values.push(item.passbook_line);
-            });
-          }
-        });
-
-      var ctx = document.getElementById('goodCanvas1').getContext('2d');
-      var myChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-              labels: label /*['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange']*/,
-              datasets: [{
-                  label: '# of Votes',
-                  data: values /*[12, 19, 3, 5, 14, 3]*/,
-                  backgroundColor: [
-                      'rgba(255, 99, 132, 0.2)',
-                      'rgba(54, 162, 235, 0.2)',
-                      'rgba(255, 206, 86, 0.2)',
-                      'rgba(75, 192, 192, 0.2)',
-                      'rgba(153, 102, 255, 0.2)',
-                      'rgba(255, 159, 64, 0.2)'
-                  ],
-                  borderColor: [
-                      'rgba(255, 99, 132, 1)',
-                      'rgba(54, 162, 235, 1)',
-                      'rgba(255, 206, 86, 1)',
-                      'rgba(75, 192, 192, 1)',
-                      'rgba(153, 102, 255, 1)',
-                      'rgba(255, 159, 64, 1)'
-                  ],
-                  borderWidth: 1
-              }]
-          },
-          options: {
-              scales: {
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero: true
-                      }
-                  }]
-              }
-          }
+      $("#display_report").click(function(){
+        if($("#start_date").val() == "" && $("#stop_date").val() == ""){
+          alert("กรุณากรอกวันที่ให้ครบ");
+        }
+        else if($("#start_date").val() == ""){
+          alert("กรุณากรอกวันที่ให้ครบ");
+        }
+        else if($("#stop_date").val() == ""){
+          alert("กรุณากรอกวันที่ให้ครบ");
+        }
+        else{
+          $.ajax({
+            type: "POST",
+            url: "<?php echo site_url();?>/Project_controller/fetch_report_open_account",
+            method:"POST",
+            data:{
+              start_date:$("#start_date").val(),
+              stop_date:$("#stop_date").val()
+            },
+            success:function(response){
+              if(response == false){alert("ไม่พบรายการ");}
+              else{$('#result_table').html(response);}
+            },
+            error: function( error ){alert( error );}
+          });
+          //console.log(start_date+" "+stop_date);
+        }
       });
+      /*google.charts.load('current', {packages: ['corechart', 'bar']});
+      google.charts.setOnLoadCallback(drawBasic);
+      function drawBasic() {
+      var jsonData = $.ajax({
+          url: "echo base_url('Project_controller/test_get_data_repost/') ?>",
+          dataType: "json",
+          async:false
+      }).responseText;
+      var data = new google.visualization.DataTable(jsonData);
+      var options = {
+        title: 'Motivation Level Throughout the Day',
+        focusTarget: 'category',
+        width: 800,
+        height: 400,
+        hAxis:{
+          title: 'Time of Day',
+          viewWindow:{
+            min:[7,30,0],
+            max:[17,30,0]
+          },
+          textStyle:{
+            fontSize:14,
+            color: '#053061',
+            bold:true,
+            italic:false
+          },
+        }
+      };
+      var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+      var formatter = new google.visualization.NumberFormat({suffix: ' บาท', negativeColor: 'red', negativeParens: true});
+      formatter.format(data, 1); // Apply formatter to second column
+      chart.draw(data, options);
+    }*/
+
     });
   </script>
 </head>
@@ -104,7 +112,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <h5 class="text-right" style="margin-top: 5px;background-color: rgb(181, 216, 232);"><?php echo "<B>ยินดีต้อนรับคุณ </B>".$this->session->userdata('sname'); ?>&nbsp</h5>
       </div>
       <div class="col-md-2" align="center" >
-        <h4><a style="color: black" href="<?php  echo base_url("Project_controller/index_staff/"); ?>"><B>หน้าแรก</B></a></h4>
+        <h4><a style="color: black" href="<?php  echo base_url("Project_controller/index_manager/"); ?>"><B>หน้าแรก</B></a></h4>
         <img style="border-radius: 50%;" src="<?php  echo $this->session->userdata('spic'); ?>" width="165px" height="180px">
         <h5><?php echo $this->session->userdata('sname');  ?></h5>
         <h5><?php echo "<B>ตำแหน่ง </B>".$this->session->userdata('slevel');  ?></h5>
@@ -116,19 +124,29 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             <div class="row text-center">
               <div class="col-md-12">
                 <div  class="row">
-                  <div class="col-md-12 ">
-                    <h4 class="text-center"><B>ข้อมูลบัญชี</B></h4>
-                  </div>
-                <div class="col-md-12 text-center">
+                  <div class="col-md-12 text-center">
+                    <h4 class="text-center"><B>รายงานเปิดบัญชี</B></h4>
                     <div class="row">
-                      <div class="col-md-4">
-
-                          <canvas id="goodCanvas1" width="400" height="400" aria-label="Hello ARIA World" role="img"></canvas>
-
-
-                    
+                      <div class="col-2">
+                        <label>ค้นหาวันที่</label>
                       </div>
-                    </div>
+                      <div class="col-3">
+                        <input autofocus type="date" class="form-control" id="start_date" name="start_date" required>
+                      </div>
+                      <div class="col-2">
+                        <label>ถึงวันที่</label>
+                      </div>
+                      <div class="col-3">
+                        <input type="date" class="form-control" id="stop_date" name="stop_date" required>
+                      </div>
+                      <div class="col-1">
+                        <button type="submit" class="btn btn-outline-success" id="display_report">แสดงรายงาน</button>
+                      </div>
+                    </div><hr>
+                    <!--<div id="chart_div"></div>-->
+                  </div>
+                  <div class="col-md-12 text-center">
+                    <div id="result_table"></div>
                   </div>
                 </div>
               </div>

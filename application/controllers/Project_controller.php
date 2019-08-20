@@ -206,9 +206,30 @@ class Project_controller extends CI_Controller {
 		$this->load->view('report_test',$data);
 	}
 	public function test_get_data_repost(){
+		//$result = $this->User_model->select_repost_test();
+		//echo json_encode($result);
+		$respon->cols[] = array(
+			"label" => "ชื่อบัญชี",
+			"type" => "string"
+		);
+		$respon->cols[] = array(
+			"label" => "ยอดเงินคงเหลือ",
+			"type" => "number"
+		);
 		$result = $this->User_model->select_repost_test();
-		echo json_encode($result);
+		foreach ($result as $row) {
+			$respon->rows[]['c'] = array(
+				array(
+					"v" =>$row->account_name
+				),
+				array(
+					"v" =>$row->account_balance
+				)
+			);
+		}
+		echo json_encode($respon);
 	}
+
 
 	////////////////////////////////////////////////////////////
 	//////////////////////  FORM    //////////////////////////
@@ -1915,6 +1936,55 @@ class Project_controller extends CI_Controller {
                 echo json_encode($arr_result);
             }
         }
+	}
+	public function fetch_report_open_account(){
+		function DateThai($strDate)
+			{
+					$strYear = date("Y",strtotime($strDate))+543;
+					$strMonth= date("n",strtotime($strDate));
+					$strDay= date("j",strtotime($strDate));
+					$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+					$strMonthThai=$strMonthCut[$strMonth];
+					return "$strDay $strMonthThai $strYear";
+			}
+			date_default_timezone_set('Asia/Bangkok');
+		$output='';
+		$data['result'] = $this->User_model->select_open_account_between_date($this->input->post('start_date'),$this->input->post('stop_date'));
+		$output.='
+			<table class="table table-striped table-hover table-sm" id="search_table">
+								<thead class="thead-light table-bordered">
+										<tr>
+											<th scope="col">ลำดับ</th>
+												<th scope="col">หมายเลขบัญชี</th>
+												<th scope="col">ชื่อบัญชี</th>
+												<th scope="col">ชื่อ - นามสกุล</th>
+												<th scope="col">วัน-เดือน-ปี ที่เปิด</th>
+										</tr>
+								</thead>
+							<tbody class="table-bordered" style="background-color: #EFFEFD">
+		';
+		if($data['result']->num_rows() >0){
+			$i=1;
+			$result=$data['result']->result();
+			foreach ($result as $row) {
+				$output.='
+					<tr>
+							<th width="2%" scope="row">'.$i.'</th>
+							<td width="20%">'.$row->account_id.'</td>
+							<td align="left"  width="25%">'.$row->account_name.'</td>
+							<td align="left" width="25%">'.$row->member_title." ".$row->member_name.'</td>
+							<td width="20%">'.DateThai($row->account_open_date).'</td>
+					</tr>';
+				$i++;
+			}
+		}
+		else{
+			$output.='<tr><th scope="col" colspan="5">ไม่พบข้อมูล</th></tr>';
+		}
+		$output.='
+			</tbody><tfoot></tfoot>
+						</table>';
+		echo $output;
 	}
 
 	////////////////////////////////////////////////////////////

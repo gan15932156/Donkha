@@ -116,8 +116,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       </div>
       <div class="col-md-10">
         <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:460px;">
-          <div class="col-md-12 text-center" >
-              <a href="<?php  echo base_url()."Project_controller/test_report/"; ?>">Test Report</a>
+          <div class="col-md-12 text-center" ><br>
+            <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/test_report/"; ?>">รายงานเปิดบัญชี</a>
+            <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/passbook_display/"; ?>">พิมพ์สมุดคู่ฝาก</a>
+            <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/passbook_display/"; ?>">พิมพ์สมุดคู่ฝาก</a>
+            <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/passbook_display/"; ?>">พิมพ์สมุดคู่ฝาก</a>
+            <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/passbook_display/"; ?>">พิมพ์สมุดคู่ฝาก</a>
+            <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/passbook_display/"; ?>">พิมพ์สมุดคู่ฝาก</a>
           </div>
         </div>
       </div>
