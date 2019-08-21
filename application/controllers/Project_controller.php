@@ -1954,7 +1954,7 @@ class Project_controller extends CI_Controller {
 		<style type="text/css">
 
 			</style>
-			<table class="fixed_header table table-striped table-hover table-sm" id="search_table">
+			<table class="table table-striped table-hover table-sm" id="job-table">
 								<thead class="thead-light table-bordered">
 										<tr>
 												<th width="2%" scope="col">ลำดับ</th>

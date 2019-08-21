@@ -31,68 +31,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       opacity: ;
       filter: alpha(opacity=40); /* For IE8 and earlier */
     }
-/*    .fixed_header{
-        width: 100%;
-        table-layout: fixed;
-        border-collapse: collapse;
+    .table-responsive{
+      height:90%;
+      overflow:scroll;
     }
-    .fixed_header tbody{
-      margin-right:50px;
-      display:block;
-      width: 100%;
-      overflow: auto;
-      height:300px;
+    thead tr:nth-child(1) th{
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    .fixed_header thead tr {display: block;}
-    #count{width:50px;}
-    #ac_code{width: 210px;}
-    #ac_name{width:254px;}
-    #ac_ac_nae{width:254px;}
-    #date_open{width:189px;}*/
-
-    .table-fixed tbody {
-    height: 300px;
-    overflow-y: auto;
-    width: 100%;
-    }
-    .table-fixed thead,
-    .table-fixed tbody,
-    .table-fixed tr,
-    .table-fixed td,
-    .table-fixed th {
-    display: block;
-    }
-    .table-fixed tr:after {
-    content: "";
-    display: block;
-    visibility: hidden;
-    clear: both;
-    }
-    .table-fixed tbody td,
-    .table-fixed thead > tr > th {
-    float: left;
-    }
-    .table > thead > tr > th,
-.table > thead > tr > td {
-font-size: .9em;
-font-weight: 400;
-border-bottom: 0;
-letter-spacing: 1px;
-
-
-
-}
-
-
-
-
-  /*  #count{width:7%}
-    #ac_code{width:29%}
-    #ac_name{width:2%}*/
-
-
-  </style>
-  <script type="text/javascript">
+  }
+</style>
+<script type="text/javascript">
     function logout(){
       location.replace("<?php  echo base_url()."Project_controller/logout"; ?>");
     }
@@ -120,7 +70,7 @@ letter-spacing: 1px;
             },
             success:function(response){
               if(response == false){alert("ไม่พบรายการ");}
-              else{$('#result_table').html(response);}
+              else{$('.table-responsive').html(response);}
             },
             error: function( error ){alert( error );}
           });
@@ -206,101 +156,7 @@ letter-spacing: 1px;
                     <!--<div id="chart_div"></div>-->
                   </div>
                   <div class="col-md-12 text-center">
-                    <div id="result_table"></div>
-                    <div class="">
-                      <table class="table table-fixed  table-striped table-hover table-sm">
-                      <thead class="thead-light table-bordered">
-                      <tr>
-                        <th width="2%" scope="col">ลำดับ</th>
-                        <th width="20%" scope="col">หมายเลขบัญชี</th>
-                        <th width="25%" scope="col">ชื่อบัญชี</th>
-                        <th width="25%" scope="col">ชื่อ - นามสกุล</th>
-                        <th width="20%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
-                      </tr>
-                      </thead>
-                      <tbody class="table-bordered" style="background-color: #EFFEFD">
-                      <tr>
-                      <td width="2%">1</td>
-                      <td width="20%"> George Washington</td>
-                      <td width="25%">two</td>
-                      <td width="25%">1789-1797</td>
-                      <td width="20%">1789-1797</td>
-                      </tr>
-                      <tr>
-                      <td width="2%">1</td>
-                      <td width="20%"> George Washington</td>
-                      <td width="25%">two</td>
-                      <td width="25%">1789-1797</td>
-                      <td width="20%">1789-1797</td>
-                      </tr>
-                      <tr>
-                      <td width="2%">1</td>
-                      <td width="20%"> George Washington</td>
-                      <td width="25%">two</td>
-                      <td width="25%">1789-1797</td>
-                      <td width="20%">1789-1797</td>
-                      </tr>
-                      <tr>
-                      <td width="2%">1</td>
-                      <td width="20%"> George Washington</td>
-                      <td width="25%">two</td>
-                      <td width="25%">1789-1797</td>
-                      <td width="20%">1789-1797</td>
-                      </tr>
-                      <tr>
-                      <td width="2%">1</td>
-                      <td width="20%"> George Washington</td>
-                      <td width="25%">two</td>
-                      <td width="25%">1789-1797</td>
-                      <td width="20%">1789-1797</td>
-                      </tr>
-                      <tr>
-                      <td width="2%">1</td>
-                      <td width="20%"> George Washington</td>
-                      <td width="25%">two</td>
-                      <td width="25%">1789-1797</td>
-                      <td width="20%">1789-1797</td>
-                      </tr>
-                      <tr>
-                      <td width="2%">1</td>
-                      <td width="20%"> George Washington</td>
-                      <td width="25%">two</td>
-                      <td width="25%">1789-1797</td>
-                      <td width="20%">1789-1797</td>
-                      </tr>
-                      <tr>
-                      <td width="2%">1</td>
-                      <td width="20%"> George Washington</td>
-                      <td width="25%">two</td>
-                      <td width="25%">1789-1797</td>
-                      <td width="20%">1789-1797</td>
-                      </tr>
-                      <tr>
-                      <td width="2%">1</td>
-                      <td width="20%"> George Washington</td>
-                      <td width="25%">two</td>
-                      <td width="25%">1789-1797</td>
-                      <td width="20%">1789-1797</td>
-                      </tr>
-                      <tr>
-                      <td width="2%">1</td>
-                      <td width="20%"> George Washington</td>
-                      <td width="25%">two</td>
-                      <td width="25%">1789-1797</td>
-                      <td width="20%">1789-1797</td>
-                      </tr>
-                      <tr>
-                      <td width="2%">1</td>
-                      <td width="20%"> George Washington</td>
-                      <td width="25%">two</td>
-                      <td width="25%">1789-1797</td>
-                      <td width="20%">1789-1797</td>
-                      </tr>
-
-
-                      </tbody>
-                      </table>
-                    </div>
+                    <div class="table-responsive"></div>
                   </div>
                 </div>
               </div>
