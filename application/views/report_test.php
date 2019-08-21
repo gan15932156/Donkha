@@ -27,10 +27,70 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     .container-fluid{
       background-color: rgba(199, 223, 255,.9);
       width:90%;
-      height: 100%;
+      height:100%;
       opacity: ;
       filter: alpha(opacity=40); /* For IE8 and earlier */
     }
+/*    .fixed_header{
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+    .fixed_header tbody{
+      margin-right:50px;
+      display:block;
+      width: 100%;
+      overflow: auto;
+      height:300px;
+    }
+    .fixed_header thead tr {display: block;}
+    #count{width:50px;}
+    #ac_code{width: 210px;}
+    #ac_name{width:254px;}
+    #ac_ac_nae{width:254px;}
+    #date_open{width:189px;}*/
+
+    .table-fixed tbody {
+    height: 300px;
+    overflow-y: auto;
+    width: 100%;
+    }
+    .table-fixed thead,
+    .table-fixed tbody,
+    .table-fixed tr,
+    .table-fixed td,
+    .table-fixed th {
+    display: block;
+    }
+    .table-fixed tr:after {
+    content: "";
+    display: block;
+    visibility: hidden;
+    clear: both;
+    }
+    .table-fixed tbody td,
+    .table-fixed thead > tr > th {
+    float: left;
+    }
+    .table > thead > tr > th,
+.table > thead > tr > td {
+font-size: .9em;
+font-weight: 400;
+border-bottom: 0;
+letter-spacing: 1px;
+
+
+
+}
+
+
+
+
+  /*  #count{width:7%}
+    #ac_code{width:29%}
+    #ac_name{width:2%}*/
+
+
   </style>
   <script type="text/javascript">
     function logout(){
@@ -119,7 +179,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <button onclick="logout()" type="submit" class="btn btn-outline-danger" id="submit">ออกจากระบบ</button>
       </div>
       <div class="col-md-10">
-        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:460px;">
+        <div class="row main_div" style="margin-right:1px ;background-color: #EFFEFD;height:460px;">
           <div class="col-md-12 text-center" >
             <div class="row text-center">
               <div class="col-md-12">
@@ -134,7 +194,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <input autofocus type="date" class="form-control" id="start_date" name="start_date" required>
                       </div>
                       <div class="col-2">
-                        <label>ถึงวันที่</label>
+                        <label >ถึงวันที่</label>
                       </div>
                       <div class="col-3">
                         <input type="date" class="form-control" id="stop_date" name="stop_date" required>
@@ -147,6 +207,100 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                   </div>
                   <div class="col-md-12 text-center">
                     <div id="result_table"></div>
+                    <div class="">
+                      <table class="table table-fixed  table-striped table-hover table-sm">
+                      <thead class="thead-light table-bordered">
+                      <tr>
+                        <th width="2%" scope="col">ลำดับ</th>
+                        <th width="20%" scope="col">หมายเลขบัญชี</th>
+                        <th width="25%" scope="col">ชื่อบัญชี</th>
+                        <th width="25%" scope="col">ชื่อ - นามสกุล</th>
+                        <th width="20%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
+                      </tr>
+                      </thead>
+                      <tbody class="table-bordered" style="background-color: #EFFEFD">
+                      <tr>
+                      <td width="2%">1</td>
+                      <td width="20%"> George Washington</td>
+                      <td width="25%">two</td>
+                      <td width="25%">1789-1797</td>
+                      <td width="20%">1789-1797</td>
+                      </tr>
+                      <tr>
+                      <td width="2%">1</td>
+                      <td width="20%"> George Washington</td>
+                      <td width="25%">two</td>
+                      <td width="25%">1789-1797</td>
+                      <td width="20%">1789-1797</td>
+                      </tr>
+                      <tr>
+                      <td width="2%">1</td>
+                      <td width="20%"> George Washington</td>
+                      <td width="25%">two</td>
+                      <td width="25%">1789-1797</td>
+                      <td width="20%">1789-1797</td>
+                      </tr>
+                      <tr>
+                      <td width="2%">1</td>
+                      <td width="20%"> George Washington</td>
+                      <td width="25%">two</td>
+                      <td width="25%">1789-1797</td>
+                      <td width="20%">1789-1797</td>
+                      </tr>
+                      <tr>
+                      <td width="2%">1</td>
+                      <td width="20%"> George Washington</td>
+                      <td width="25%">two</td>
+                      <td width="25%">1789-1797</td>
+                      <td width="20%">1789-1797</td>
+                      </tr>
+                      <tr>
+                      <td width="2%">1</td>
+                      <td width="20%"> George Washington</td>
+                      <td width="25%">two</td>
+                      <td width="25%">1789-1797</td>
+                      <td width="20%">1789-1797</td>
+                      </tr>
+                      <tr>
+                      <td width="2%">1</td>
+                      <td width="20%"> George Washington</td>
+                      <td width="25%">two</td>
+                      <td width="25%">1789-1797</td>
+                      <td width="20%">1789-1797</td>
+                      </tr>
+                      <tr>
+                      <td width="2%">1</td>
+                      <td width="20%"> George Washington</td>
+                      <td width="25%">two</td>
+                      <td width="25%">1789-1797</td>
+                      <td width="20%">1789-1797</td>
+                      </tr>
+                      <tr>
+                      <td width="2%">1</td>
+                      <td width="20%"> George Washington</td>
+                      <td width="25%">two</td>
+                      <td width="25%">1789-1797</td>
+                      <td width="20%">1789-1797</td>
+                      </tr>
+                      <tr>
+                      <td width="2%">1</td>
+                      <td width="20%"> George Washington</td>
+                      <td width="25%">two</td>
+                      <td width="25%">1789-1797</td>
+                      <td width="20%">1789-1797</td>
+                      </tr>
+                      <tr>
+                      <td width="2%">1</td>
+                      <td width="20%"> George Washington</td>
+                      <td width="25%">two</td>
+                      <td width="25%">1789-1797</td>
+                      <td width="20%">1789-1797</td>
+                      </tr>
+
+
+                      </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>

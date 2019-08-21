@@ -1951,14 +1951,17 @@ class Project_controller extends CI_Controller {
 		$output='';
 		$data['result'] = $this->User_model->select_open_account_between_date($this->input->post('start_date'),$this->input->post('stop_date'));
 		$output.='
-			<table class="table table-striped table-hover table-sm" id="search_table">
+		<style type="text/css">
+
+			</style>
+			<table class="fixed_header table table-striped table-hover table-sm" id="search_table">
 								<thead class="thead-light table-bordered">
 										<tr>
-											<th scope="col">ลำดับ</th>
-												<th scope="col">หมายเลขบัญชี</th>
-												<th scope="col">ชื่อบัญชี</th>
-												<th scope="col">ชื่อ - นามสกุล</th>
-												<th scope="col">วัน-เดือน-ปี ที่เปิด</th>
+												<th width="2%" scope="col">ลำดับ</th>
+												<th width="20%" scope="col">หมายเลขบัญชี</th>
+												<th width="25%" scope="col">ชื่อบัญชี</th>
+												<th width="25%" scope="col">ชื่อ - นามสกุล</th>
+												<th width="20%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
 										</tr>
 								</thead>
 							<tbody class="table-bordered" style="background-color: #EFFEFD">
@@ -1969,17 +1972,19 @@ class Project_controller extends CI_Controller {
 			foreach ($result as $row) {
 				$output.='
 					<tr>
-							<th width="2%" scope="row">'.$i.'</th>
-							<td width="20%">'.$row->account_id.'</td>
-							<td align="left"  width="25%">'.$row->account_name.'</td>
-							<td align="left" width="25%">'.$row->member_title." ".$row->member_name.'</td>
-							<td width="20%">'.DateThai($row->account_open_date).'</td>
+							<th id="count"  scope="row">'.$i.'</th>
+							<td id="ac_code">'.$row->account_id.'</td>
+							<td id="ac_name" align="left"  >'.$row->account_name.'</td>
+							<td id="ac_ac_nae" align="left" >'.$row->member_title." ".$row->member_name.'</td>
+							<td id="date_open" >'.DateThai($row->account_open_date).'</td>
 					</tr>';
 				$i++;
 			}
 		}
 		else{
-			$output.='<tr><th scope="col" colspan="5">ไม่พบข้อมูล</th></tr>';
+			$output.='
+			<tr width="100%"><th scope="col" >ไม่พบข้อมูล</th></tr>
+			';
 		}
 		$output.='
 			</tbody><tfoot></tfoot>
