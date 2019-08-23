@@ -9,6 +9,7 @@ class Project_controller extends CI_Controller {
 		$this->load->model('User_model');
 		$this->load->library('pagination');
 		$this->load->library('Pdf');
+		$this->perPage = 6;
     }
 
 	////////////////////////////////////////////////////////////
@@ -154,7 +155,7 @@ class Project_controller extends CI_Controller {
 		$this->load->view('manage_member_staff',$data);
 	}
 	public function manage_account(){
-		$config['base_url'] = site_url('Project_controller/manage_account');
+		/*$config['base_url'] = site_url('Project_controller/manage_account');
         $config['total_rows'] = $this->User_model->record_count_account();
         $config['per_page'] = "5";
         $config["uri_segment"] = 3;
@@ -181,8 +182,9 @@ class Project_controller extends CI_Controller {
         $this->pagination->initialize($config);
         $data['page'] = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
         $data['account'] = $this->User_model->select_account_between($config["per_page"], $data['page']);
-        $data['pagination'] = $this->pagination->create_links();
-		$this->load->view('manage_account',$data);
+        $data['pagination'] = $this->pagination->create_links();*/
+		$this->load->view('manage_account');
+		
 	}
 	public function noti_dep(){
 		$data['unconfirm_deposit'] =  $this->User_model->select_unconfirm_deposit();
@@ -2750,6 +2752,28 @@ EOD;
 		$pdf->Output('example_001.pdf', 'I');
 		ob_end_clean();
 	}
-
+	public function find_with_page(){
+		$order_index = $this->input->get('order[0][column]');
+        $param['page_size'] = $this->input->get('length');
+        $param['start'] = $this->input->get('start');
+        $param['draw'] = $this->input->get('draw');
+        $param['keyword'] = trim($this->input->get('search[value]'));
+        $param['column'] = $this->input->get("columns[{$order_index}][data]");
+        $param['dir'] = $this->input->get('order[0][dir]');
+ 
+        $results = $this->User_model->find_with_page($param);
+ 
+        $data['draw'] = $param['draw'];
+        $data['recordsTotal'] = $results['count'];
+        $data['recordsFiltered'] = $results['count_condition'];
+        $data['data'] = $results['data'];
+        $data['error'] = $results['error_message'];
+ 
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+	}
+	public function testtt(){
+		$staff_id=$this->uri->segment(3);
+		echo $staff_id;
+	}
 
 }

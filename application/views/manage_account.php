@@ -11,7 +11,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/js/jquery.min.js"></script>
   <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/js/popper.min.js"></script>
   <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/datatable/datatables.js"></script>
   <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/datatable/datatables.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style type="text/css">
     html,body {
@@ -64,7 +66,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   .dropdown div a:hover{
     background-color:#D6EAF8;
   }
-  .result_search{
+  /*.result_search{
       height:380px;
       overflow:auto;
     }
@@ -72,7 +74,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       position: sticky;
       top: 0;
       z-index: 10;
-    }
+    }*/
   </style>
   <script type="text/javascript">
     function logout(){
@@ -81,23 +83,55 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   </script>
   <script type="text/javascript">
     $(document).ready(function(){
-      function search_data(data){
-        $.ajax({
-          url:"<?php echo base_url("index.php/Project_controller/search_data_account"); ?>",
-          method:"POST",
-          data:{data:data},
-          success:function(data){
-            $('#result_search').html(data);
+      var table = $('#data_table').DataTable({
+        pageLength: 5,
+        serverSide: true,
+        processing: true,
+        "language": {
+            "search":"ค้นหา:",
+            "zeroRecords": "ไม่พบข้อมูล",
+            "info": "แสดงหน้า _PAGE_ จาก _PAGES_",
+            "infoEmpty": "ไม่พบข้อมูล",
+            "infoFiltered": "(กรองจาก _MAX_ รายการทั้งหมด)",
+            "paginate": {
+              "first":      "หน้าแรก",
+              "last":       "หน้าสุดท้าย",
+              "next":       "ถัดไป",
+              "previous":   "ก่อนหน้า"
+            },
+        },   
+        "lengthChange": false,
+        ajax: {
+          url:'<?php echo base_url("index.php/Project_controller/find_with_page"); ?>'
+        },
+        'columns':[
+        {
+          data:'account_id'
+        },
+        {
+          data:'account_name'
+        },
+        {
+          data:'account_status',
+          render: function (data,type,row){
+            var active = '<span class="text-success">ใช้งาน</span>';
+            var inactive = '<span class="text-danger">ยกเลิก</span>';
+            var status = (data==1) ? active : inactive;
+            return status;
           }
-        })
-      }
-      $("#search").keyup(function(){
-        if($(this).val() == ""){
-          location.replace("<?php  echo base_url()."Project_controller/manage_account"; ?>");
-        }else{
-          search_data($(this).val());
-          $( "#data_table" ).remove();
+        },
+        {
+          data:'account_id',
+          render: function(data, type, row){
+            var divv = ' <div class="dropdown">';
+                divv+='<button style="font-size:16px;"><i class="fa fa-cog" aria-hidden="true"></i></button><div>';   
+                divv+='<a style="color:black;" href="<?php  echo site_url('Project_controller/account_detail/');?>'+row['account_id']+'"><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียดบัญชี</a>';
+                divv+='<a style="color:black;" href="<?php  echo site_url('Project_controller/account_update_form/');?>'+row['account_id']+'" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a>';
+                divv+='</div></div>';                                     
+            return divv;
+          }
         }
+        ]
       });
     });
   </script>
@@ -117,34 +151,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <button onclick="logout()" type="submit" class="btn btn-outline-danger" id="submit">ออกจากระบบ</button>
       </div>
       <div class="col-md-10">
-        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:500px;">
+        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:300px;">
           <div class="col-md-12 text-center" >
             <div class="row text-center">
               <div class="col-md-12">
                 <div  class="row">
                   <div class="col-md-12 ">
                     <h4 class="text-center"><B>ข้อมูลบัญชี</B></h4>
-                  </div>
-                  <div class="col-md-12 topnav" align="center" >
-                    <div class="row">
-                      <div class="col-4"></div>
-                      <div class="col-4">
-                        <div class="search-container">
-                          <input type="text" name="search" id="search" placeholder="ใส่คำค้น" style="border-radius: 10%; ">
-                          <button type="submit"><i class="fa fa-search"></i></button>
-                        </div>
-                      </div>
-                    <div align="right" class="col-4">
-                      <a class="link btn btn-outline-primary btn-sm" href="<?php  echo base_url('Project_controller/account_insert_form/'); ?>">เปิดบัญชี</a>
-                    </div>
-                  </div>
-                </div>
+                  </div>             
                 <div class="col-md-12 text-center">
                   <div id="result_search"></div>
-                    <table class="table table-striped table-hover table-sm" id="data_table" >
+                    <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
                       <thead class="thead-light table-bordered">
                         <tr>
-                          <th width="5%" scope="col">ลำดับ</th>
                           <th width="25%" scope="col">หมายเลขบัญชี</th>
                           <th width="30%" scope="col">ชื่อบัญชี</th>
                           <th width="30%" scope="col">สถานะ</th>
@@ -152,54 +171,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </tr>
                       </thead>
                       <tbody class="table-bordered" style="background-color: #EFFEFD">
-                        <?php $i=1;
-                          function DateThai($strDate)
-                          {
-                            $strYear = date("Y",strtotime($strDate))+543;
-                            $strMonth= date("n",strtotime($strDate));
-                            $strDay= date("j",strtotime($strDate));
-                            $strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-                            $strMonthThai=$strMonthCut[$strMonth];
-                            return "$strDay $strMonthThai $strYear";
-                          }
-                          date_default_timezone_set('Asia/Bangkok');
-                          $regis_date = date('Y-m-d');
-                          $thai_date=DateThai($regis_date);
-
-                          foreach($account->result() as $row){ ?>
-                          <tr>
-                            <th scope="row"><?php echo $i; ?></th>
-                            <td><?php echo $row->account_id; ?></td>
-                            <td><?php echo $row->account_name; ?></td>
-                            <td>
-                              <?php
-                                if($row->account_status =='1'){
-                                  echo "<p class='text-success'>เปิดใช้งาน</p>";
-                                }
-                                else{
-                                  echo "<p class='text-danger'>ปิดใช้งาน</p>";
-                                }
-                              ?>
-                            </td>
-                            <td>
-                            <div class="dropdown">
-                              <button style="font-size:16px;"><i class="fa fa-cog" aria-hidden="true"></i></button>
-                              <div>
-                                <a style="color:black;" href="<?php  echo base_url('Project_controller/account_detail/'.$row->account_id); ?>" ><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียดบัญชี</a>
-                                <a style="color:black;" href="<?php  echo base_url('Project_controller/account_update_form/'.$row->account_id); ?>" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a>
-                              </div>
-                            </div>
-                            </td>
-                          </tr>
-                        <?php $i++; }  ?>
                       </tbody>
-                      <tfoot>
-                        <tr>
-                          <th class="text-center" colspan="10"><div style="font-size: 2em;" class="col-md-12 text-center"><?php echo $pagination;?></div></th>
-                        </tr>
-                      </tfoot>
-                    </table>
-                    
+                    </table>                    
                   </div>
                 </div>
               </div>

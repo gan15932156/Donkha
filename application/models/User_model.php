@@ -771,6 +771,32 @@ class User_model extends CI_Model {
 		$query=$this->db->get();
 		return $query;
 	}
+	public function find_with_page($param){
+		$keyword = $param['keyword'];
+		$this->db->select('*');
+ 
+		$condition = "1=1";
+		if(!empty($keyword)){
+			$condition .= " and (account_id like '%{$keyword}%' or account_name like '%{$keyword}%')";
+		}
+ 
+		$this->db->where($condition);
+		$this->db->limit($param['page_size'], $param['start']);
+		$this->db->order_by($param['column'], $param['dir']);
+ 
+		$query = $this->db->get('account');
+		$data = [];
+		if($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$data[] = $row;
+			}
+		}
+ 
+		$count_condition = $this->db->from('account')->where($condition)->count_all_results();
+		$count = $this->db->from('account')->count_all_results();
+		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
+		return $result;
+	}
 
 	////////////////////////////////////////////////////////////
 	/////////////////////  UPDATE    //////////////////////////
