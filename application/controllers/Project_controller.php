@@ -1983,7 +1983,7 @@ class Project_controller extends CI_Controller {
 		}
 		else{
 			$output.='
-			<tr width="100%"><th scope="col" >ไม่พบข้อมูล</th></tr>
+			<tr><th colspan="10" scope="col">ไม่พบข้อมูล</th></tr>
 			';
 		}
 		$output.='

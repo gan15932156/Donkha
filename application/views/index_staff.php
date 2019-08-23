@@ -14,20 +14,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
   <style type="text/css">
-    html,body {
+     html,body {
       background:
       url("<?php  echo base_url()."picture/school.jpg"; ?>") no-repeat center center fixed;
       -webkit-background-size: cover;
       -moz-background-size: cover;
       -o-background-size: cover;
       background-size: cover;
-      height: 88%;
+      height: 91%;
     }
     .container-fluid{
       background-color: rgba(199, 223, 255,.9);
-      width:90%;
-      padding-bottom: 1%;
-      opacity: ;
+      width:97%;
+      height:100%;
       filter: alpha(opacity=40); /* For IE8 and earlier */
     }
     .notification {
@@ -101,7 +100,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   </script>
 </head>
 <body>
-  <h1 class="text-center"><img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="100px" height="120px">ธนาคารโรงเรียนดอนคาวิทยา</h1>
+  <h1 class="text-center"><img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="5%" height="22%">ธนาคารโรงเรียนดอนคาวิทยา</h1>
   <div class="container-fluid h-100" >
     <div class="row">
       <div class="col-md-12">
@@ -115,7 +114,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <button onclick="logout()" type="submit" class="btn btn-outline-danger" id="submit">ออกจากระบบ</button>
       </div>
       <div class="col-md-10">
-        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:460px;">
+        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:500px;">
           <div class="col-md-12 text-center" >
             <div class="row text-center">
               <div class="col-md-12"><br>

@@ -21,13 +21,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       -moz-background-size: cover;
       -o-background-size: cover;
       background-size: cover;
-      height: 88%;
+      height: 91%;
     }
     .container-fluid{
       background-color: rgba(199, 223, 255,.9);
-      width:90%;
-      height: 100%;
-      opacity: ;
+      width:97%;
+      height:100%;
       filter: alpha(opacity=40); /* For IE8 and earlier */
     }
   </style>
@@ -77,7 +76,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   </script>
 </head>
 <body>
-  <h1 class="text-center"><img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="100px" height="120px">ธนาคารโรงเรียนดอนคาวิทยา</h1>
+  <h1 class="text-center"><img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="5%" height="22%">ธนาคารโรงเรียนดอนคาวิทยา</h1>
   <div class="container-fluid" >
     <div class="row">
       <div class="col-md-12">
@@ -91,7 +90,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <button onclick="logout()" type="submit" class="btn btn-outline-danger" id="submit">ออกจากระบบ</button>
       </div>
       <div class="col-md-10">
-        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:460px;">
+        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:500px;">
           <div class="col-md-12 text-center" >
             <div class="row text-center">
               <div class="col-md-12">

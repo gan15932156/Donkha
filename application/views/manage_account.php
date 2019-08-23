@@ -21,15 +21,49 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       -moz-background-size: cover;
       -o-background-size: cover;
       background-size: cover;
-      height: 88%;
+      height: 91%;
     }
     .container-fluid{
       background-color: rgba(199, 223, 255,.9);
-      width:90%;
-      height: 100%;
-      opacity: ;
+      width:97%;
+      height:100%;
       filter: alpha(opacity=40); /* For IE8 and earlier */
     }
+    .dropdown{
+      display:inline-block;
+      position:relative;
+    }
+  .dropdown button{
+    transition:.3s;
+    cursor:pointer;
+  }
+  .dropdown div{
+    background-color:#fff;
+    box-shadow:0 4px 8px rgba(0,0,0,0.2);
+    z-index:1;
+    visibility:hidden;
+    position:absolute;
+    min-width:100%;
+    opacity:0;
+    transition:.3s;
+  }
+  .dropdown:hover div{
+    visibility:visible;
+    opacity:1;
+  }
+  .dropdown div a{
+    font-size:12px;
+    float:left;
+    display:block;
+    text-decoration:none;
+    padding:8px;
+    color:#000;
+    transition:.1s;
+    white-space:nowrap;
+  }
+  .dropdown div a:hover{
+    background-color:#D6EAF8;
+  }
   </style>
   <script type="text/javascript">
     function logout(){
@@ -60,7 +94,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   </script>
 </head>
 <body>
-  <h1 class="text-center"><img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="100px" height="120px">ธนาคารโรงเรียนดอนคาวิทยา</h1>
+  <h1 class="text-center"><img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="5%" height="22%">ธนาคารโรงเรียนดอนคาวิทยา</h1>
   <div class="container-fluid" >
     <div class="row">
       <div class="col-md-12">
@@ -74,7 +108,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <button onclick="logout()" type="submit" class="btn btn-outline-danger" id="submit">ออกจากระบบ</button>
       </div>
       <div class="col-md-10">
-        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:460px;">
+        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:500px;">
           <div class="col-md-12 text-center" >
             <div class="row text-center">
               <div class="col-md-12">
@@ -139,13 +173,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                               ?>
                             </td>
                             <td>
-                              <div class="dropdown">
-                                <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown"><i class="fa fa-cog" aria-hidden="true"></i></button>
-                                <ul style="background-color:#E8ECEF;font-size: 14px;"  class="dropdown-menu">
-                                  <li><a style="color:black;" href="<?php  echo base_url('Project_controller/account_detail/'.$row->account_id); ?>" ><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียดบัญชี</a></li>
-                                  <li><a style="color:black;" href="<?php  echo base_url('Project_controller/account_update_form/'.$row->account_id); ?>" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a></li>
-                                </ul>
+                            <div class="dropdown">
+                              <button style="font-size:16px;"><i class="fa fa-cog" aria-hidden="true"></i></button>
+                              <div>
+                              <a style="color:black;" href="<?php  echo base_url('Project_controller/account_detail/'.$row->account_id); ?>" ><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียดบัญชี</a>
+                              <a style="color:black;" href="<?php  echo base_url('Project_controller/account_update_form/'.$row->account_id); ?>" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a>
                               </div>
+                            </div>
                             </td>
                           </tr>
                         <?php $i++; }  ?>
