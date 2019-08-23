@@ -1415,7 +1415,8 @@ class Project_controller extends CI_Controller {
 		}
 		$data['result'] = $this->User_model->select_search_account_data($keyword);
 		$output.='
-			<table class="table table-striped table-hover table-sm" id="search_table">
+		<div class="result_search">
+			<table class="table table-striped table-hover table-sm" id="data_table">
                 <thead class="thead-light table-bordered">
                     <tr>
                           <th width="5%" scope="col">ลำดับ</th>
@@ -1444,13 +1445,13 @@ class Project_controller extends CI_Controller {
                         <td>'.$row->account_name.'</td>
                         <td>'.$status.'</td>
                         <td>
-                            <div class="dropdown">
-                                <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown"><i class="fa fa-cog" aria-hidden="true"></i></button>
-                                <ul style="background-color:#E8ECEF;"  class="dropdown-menu">
-                                  <li><a style="color:black;" href="'.base_url("Project_controller/account_detail/".$row->account_id).'" ><i class="fa fa-address-book" aria-hidden="true"></i> ดูรายละเอียด</a></li>
-                                  <li><a style="color:black;" href="'.base_url("Project_controller/member_update_form_staff/".$row->member_id).'" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a></li>
-                                </ul>
+										<div class="dropdown">
+                              <button style="font-size:16px;"><i class="fa fa-cog" aria-hidden="true"></i></button>
+                              <div>
+                                <a style="color:black;" href="'.base_url("Project_controller/account_detail/".$row->account_id).'" ><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียดบัญชี</a>
+                                <a style="color:black;" href="'.base_url("Project_controller/member_update_form_staff/".$row->member_id).'" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a>
                               </div>
+                            </div>
                         </td>
                     </tr>';
                 $i++;
@@ -1466,7 +1467,8 @@ class Project_controller extends CI_Controller {
 		    </tbody>
                 <tfoot>
                 </tfoot>
-            </table>';
+				</table>
+				</div>';
 		echo $output;
 	}
 	public function search_data_member_staff(){

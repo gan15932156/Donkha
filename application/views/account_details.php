@@ -19,22 +19,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <script src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
   
   <style type="text/css">
-    html,body { 
-      background: 
-      url("<?php  echo base_url()."picture/school.jpg"; ?>") no-repeat center center fixed; 
+    html,body {
+      background:
+      url("<?php  echo base_url()."picture/school.jpg"; ?>") no-repeat center center fixed;
       -webkit-background-size: cover;
       -moz-background-size: cover;
       -o-background-size: cover;
       background-size: cover;
-      height: 100%;         
-    } 
+      height: 91%;
+    }
     .container-fluid{
       background-color: rgba(199, 223, 255,.9);
-      width:90%;
-      padding-bottom: 1%;
-      opacity: ;
+      width:97%;
+      height:100%;
       filter: alpha(opacity=40); /* For IE8 and earlier */
-    }                      
+    }      
+    .schooller{
+      height:250px;
+      overflow:auto;
+    }
+    thead tr:nth-child(1) th{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    } 
   </style>
   <script type="text/javascript">
     
@@ -78,7 +86,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   </script>
 </head>
 <body>
-  <h1 class="text-center"><img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="100px" height="120px">ธนาคารโรงเรียนดอนคาวิทยา</h1>
+  <h1 class="text-center"><img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="5%" height="22%">ธนาคารโรงเรียนดอนคาวิทยา</h1>
   <div class="container-fluid" >
     <div class="row">
       <div class="col-md-12">
@@ -140,11 +148,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                   <?php  }  ?>          
                   </div>
                 </div>
-                <div class="form-group col-12">
+                <div class="form-group col-12 schooller">
                   <div id="result_table"></div>
                   <table class="table table-striped table-hover table-sm" id="data_table">
-                    <thead  class="thead-light table-bordered">
-                      <tr>
+                    <thead   class="thead-light table-bordered">
+                      <tr >
                         <th width="5%" scope="col">ลำดับ</th>
                         <th width="30%" scope="col">วันที่</th>
                         <th width="10%" scope="col">รายการ</th>

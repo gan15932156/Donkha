@@ -64,6 +64,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   .dropdown div a:hover{
     background-color:#D6EAF8;
   }
+  .result_search{
+      height:380px;
+      overflow:auto;
+    }
+    .result_search thead tr:nth-child(1) th{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
   </style>
   <script type="text/javascript">
     function logout(){
@@ -176,8 +185,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <div class="dropdown">
                               <button style="font-size:16px;"><i class="fa fa-cog" aria-hidden="true"></i></button>
                               <div>
-                              <a style="color:black;" href="<?php  echo base_url('Project_controller/account_detail/'.$row->account_id); ?>" ><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียดบัญชี</a>
-                              <a style="color:black;" href="<?php  echo base_url('Project_controller/account_update_form/'.$row->account_id); ?>" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a>
+                                <a style="color:black;" href="<?php  echo base_url('Project_controller/account_detail/'.$row->account_id); ?>" ><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียดบัญชี</a>
+                                <a style="color:black;" href="<?php  echo base_url('Project_controller/account_update_form/'.$row->account_id); ?>" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a>
                               </div>
                             </div>
                             </td>
@@ -190,6 +199,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </tr>
                       </tfoot>
                     </table>
+                    
                   </div>
                 </div>
               </div>
