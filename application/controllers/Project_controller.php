@@ -2420,23 +2420,19 @@ EOD;
 	}
 	public function cal_inerest_close_account(){
 		date_default_timezone_set('Asia/Bangkok');
-		#-----------------------ดอกเบี้ย---------------------#
-		$result_int = 0.0; # ผลคำนวณดอกเบี้ยแต่ละครั้ง
-		$result_all_int = 0.0; # ผลรวมการคำนวณดอกเบี้ยทั้งหมด
-		static $interest_rate = 0.4; # อัตราดอกเบี้ย
-		static $year = 365; # จำนวนวันของปี
-		static $per_100 = 100; # ร้อยละ
-		#--------------------------------------------------#
 		foreach($this->User_model->select_account_with_parameter($this->input->post('account_id'))->result() as $row) {
-				if($row->interest_update == substr($row->interest_update,0,4)."-04-01"){ # คำนวณ phase 1 แล้ว
-					$this->cal_interest_close_account_between_date($this->input->post('account_id'),substr($row->interest_update,0,4)."-04-01",date('Y-m-d'),$this->input->post('staff_id'));
-				}
-				elseif($row->interest_update == substr($row->interest_update,0,4)."-10-01"){ # คำนวณ phase 2 แล้ว
-					$this->cal_interest_close_account_between_date($this->input->post('account_id'),substr($row->interest_update,0,4)."-10-01",/*date('Y-m-d')*/ "2019-12-20",$this->input->post('staff_id'));
-				}
-				else{
-					echo json_encode(array("interest"=>"คำนวณผิดพลาด"));
-				}
+			if($row->interest_update == "0000-00-00"){ # ไม่เคยคำนวณ
+				$this->cal_interest_close_account_between_date($this->input->post('account_id'),"0000-00-00",date('Y-m-d'),$this->input->post('staff_id'));
+			}
+			elseif($row->interest_update == substr($row->interest_update,0,4)."-04-01"){ # คำนวณ phase 1 แล้ว
+				$this->cal_interest_close_account_between_date($this->input->post('account_id'),substr($row->interest_update,0,4)."-04-01",date('Y-m-d'),$this->input->post('staff_id'));
+			}
+			elseif($row->interest_update == substr($row->interest_update,0,4)."-10-01"){ # คำนวณ phase 2 แล้ว
+				$this->cal_interest_close_account_between_date($this->input->post('account_id'),substr($row->interest_update,0,4)."-10-01",date('Y-m-d') /*"2019-12-20"*/,$this->input->post('staff_id'));
+			}
+			else{
+				echo json_encode(array("interest"=>"คำนวณผิดพลาด"));
+			}
 		}
 
 	}
@@ -2444,22 +2440,22 @@ EOD;
 		date_default_timezone_set('Asia/Bangkok');
  		$data["account"] = $this->User_model->select_all_account_never_cal();
  		foreach ($data["account"]->result() as $row) {
- 			if($row->interest_update == "0000-00-00" && date('Y-m-d') == date('Y-04-01') && $row->account_open_date < date('Y-04-01')){
+ 			if($row->interest_update == "0000-00-00" && date('Y-m-d')/*"2019-04-01"*/ == date('Y-04-01') && $row->account_open_date < date('Y-04-01')){
  				$this->cal_interest_phase1($row->account_id);
  			}
- 			elseif($row->interest_update == "0000-00-00" && date('Y-m-d') == date('Y-10-01') && $row->account_open_date >= date('Y-04-01') && $row->account_open_date < date('Y-10-01')) {
+ 			elseif($row->interest_update == "0000-00-00" && date('Y-m-d')/*"2019-10-01"*/ == date('Y-10-01') && $row->account_open_date >= date('Y-04-01') && $row->account_open_date < date('Y-10-01')) {
  				$this->cal_interest_phase2($row->account_id);
  			}
- 			elseif($row->interest_update == "0000-00-00" && date('Y-m-d') == date('Y-04-01') && $row->account_open_date > date('Y-10-01',strtotime('-1 year')) && $row->account_open_date < date('Y-04-01')) {
+ 			elseif($row->interest_update == "0000-00-00" && date('Y-m-d') /*"2019-04-01"*/ == date('Y-04-01') && $row->account_open_date > date('Y-10-01',strtotime('-1 year')) && $row->account_open_date < date('Y-04-01')) {
  				$this->cal_interest_phase1($row->account_id);
  			}
- 			elseif($row->interest_update == date('Y-04-01') && date('Y-m-d') == date('Y-10-01')){
+ 			elseif($row->interest_update == date('Y-04-01') && date('Y-m-d') /*"2019-10-01"*/ == date('Y-10-01')){
  				$this->cal_interest_phase2($row->account_id);
  			}
- 			elseif($row->interest_update == substr($row->interest_update,0,4)."-10-01" && date('Y-m-d') == date('Y-04-01')){
+ 			elseif($row->interest_update == substr($row->interest_update,0,4)."-10-01" && date('Y-m-d') /*"2019-04-01"*/ == date('Y-04-01')){
  				$this->cal_interest_phase1($row->account_id);
  			}
- 			elseif($row->interest_update == substr($row->interest_update,0,4)."-04-01" && date('Y-m-d') == date('Y-10-01')){
+ 			elseif($row->interest_update == substr($row->interest_update,0,4)."-04-01" && date('Y-m-d') /*"2019-10-01"*/ == date('Y-10-01')){
  				$this->cal_interest_phase2($row->account_id);
  			}
  		}
@@ -2489,7 +2485,7 @@ EOD;
 		foreach ($this->User_model->select_account_with_parameter($account_id)->result() as $row123) {$account_balance = $row123->account_balance;}
 
 		$data['account_detail'] = $this->User_model->select_account_detail_end_day_close_account($account_id,$start_date,$stop_date);
-		if($data['account_detail'] == null){}
+		if($data['account_detail'] == null){echo json_encode(array("interest"=>"คำนวณผิดพลาด"));}
 		else{
 			foreach ($data['account_detail']->result() as $row) {
 				$result = $this->check_last_day_close_account($account_id,$row->account_detail_id,$start_date,$stop_date,$row->record_date);
@@ -2506,6 +2502,7 @@ EOD;
 				$result_int = (floatval($row->account_detail_balance)*$interest_rate*intval($date_diff))/($per_100*$year);
 				$result_all_int+=$result_int;
 				$total_balance = floatval($account_balance) + $result_all_int;
+				//echo "total_สะสม:".$result_all_int."<br>";
 				//echo "interest="."(".$row->account_detail_balance."*".$interest_rate."*".$date_diff.")/(".$per_100."*".$year.")=".$result_int."<br>";
 			}
 			echo json_encode(array("interest"=>round($result_all_int,2)));
@@ -2575,7 +2572,7 @@ EOD;
 				$result_all_int+=$result_int;
 				$total_balance = floatval($account_balance) + $result_all_int;
 				//echo "interest="."(".$row->account_detail_balance."*".$interest_rate."*".$date_diff.")/(".$per_100."*".$year.")<br>";
-			}
+			}//echo "total:".$result_all_int."<br>";
 			$data_account_detail=array(
 				'trans_id'=>'0',
 				'account_id'=>$account_id,
@@ -2635,6 +2632,7 @@ EOD;
 				$total_balance = floatval($account_balance) + $result_all_int;
 				//echo "interest="."(".$row->account_detail_balance."*".$interest_rate."*".$date_diff.")/(".$per_100."*".$year.")<br>";
 			}
+			//echo "total:".$result_all_int."<br>";
 			$data_account_detail=array(
 				'trans_id'=>'0',
 				'account_id'=>$account_id,

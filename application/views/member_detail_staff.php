@@ -14,22 +14,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style type="text/css">
-    html,body { 
-      background: 
-      url("<?php  echo base_url()."picture/school.jpg"; ?>") no-repeat center center fixed; 
+        html,body {
+      background:
+      url("<?php  echo base_url()."picture/school.jpg"; ?>") no-repeat center center fixed;
       -webkit-background-size: cover;
       -moz-background-size: cover;
       -o-background-size: cover;
       background-size: cover;
-      height: 91%;         
-    } 
+      height: 91%;
+    }
     .container-fluid{
       background-color: rgba(199, 223, 255,.9);
-      width:90%;
-      height: 100%;
-      opacity: ;
+      width:97%;
+      height:100%;
       filter: alpha(opacity=40); /* For IE8 and earlier */
-    }                        
+    }            
   </style>
   <script type="text/javascript">
     function logout(){
@@ -38,7 +37,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   </script>
 </head>
 <body>
-  <h1 class="text-center"><img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="100px" height="120px">ธนาคารโรงเรียนดอนคาวิทยา</h1>
+  <h1 class="text-center"><img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="5%" height="22%">ธนาคารโรงเรียนดอนคาวิทยา</h1>
   <div class="container-fluid" >
     <div class="row">
       <div class="col-md-12">
