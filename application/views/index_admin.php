@@ -52,7 +52,46 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     .notification:hover .badge {
       color: #28A745;
       background-color: #ffffff;
-    }                         
+    } 
+  .dropdown{
+    display:inline-block;
+    position:relative;
+  }
+
+  .dropdown button{
+    transition:.3s;
+    cursor:pointer;
+  }
+
+
+  .dropdown div{
+    background-color:#fff;
+    box-shadow:0 4px 8px rgba(0,0,0,0.2);
+    z-index:1;
+    visibility:hidden;
+    position:absolute;
+    min-width:100%;
+    opacity:0;
+    transition:.3s;
+  }
+
+  .dropdown:hover div{
+    visibility:visible;
+    opacity:1;
+  }
+
+  .dropdown div a{
+    display:block;
+    text-decoration:none;
+    padding:8px;
+    color:#000;
+    transition:.1s;
+    white-space:nowrap;
+  }
+
+  .dropdown div a:hover{
+    background-color:#D6EAF8;
+  }                        
   </style>
   <script type="text/javascript">
     function logout(){
@@ -79,8 +118,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
           <div class="col-md-12 text-center" >
             <div class="row text-center">
               <div class="col-md-12"><br>
-                <a style="font-size: 30px;" href="<?php  echo base_url()."Project_controller/manage_staff/"; ?>" class="btn btn-outline-primary">ข้อมูลพนักงาน</a>
-                <a style="font-size: 30px;" href="<?php  echo base_url()."Project_controller/manage_member/"; ?>" class="btn btn-outline-primary">ข้อมูลสมาชิก</a> 
+                  <div class="dropdown">
+                    <button style="font-size:40px;" class="btn btn-primary">พนักงาน</button>
+                    <div>
+                      <a  href="<?php  echo base_url()."Project_controller/manage_staff/"; ?>" >ข้อมูลพนักงาน</a>
+                      <a  href="<?php  echo base_url()."Project_controller/staff_insert_form/"; ?>" >เพิ่มพนักงาน</a>
+                    </div>
+                  </div>
+                  <div class="dropdown">
+                    <button style="font-size:40px;" class="btn btn-primary">สมาชิก</button>
+                    <div>
+                      <a  href="<?php  echo base_url()."Project_controller/manage_member/"; ?>" >ข้อมูลสมาชิก</a>
+                      <a  href="<?php  echo base_url()."Project_controller/member_insert_form/"; ?>" >เพิ่มสมาชิก</a>
+                    </div>
+                  </div> 
               </div>                   
             </div>        
           </div>                                   

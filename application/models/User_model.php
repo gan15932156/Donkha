@@ -771,7 +771,7 @@ class User_model extends CI_Model {
 		$query=$this->db->get();
 		return $query;
 	}
-	public function find_with_page($param){
+	public function fetch_account_datatable($param){
 		$keyword = $param['keyword'];
 		$this->db->select('*');
  
@@ -794,6 +794,68 @@ class User_model extends CI_Model {
  
 		$count_condition = $this->db->from('account')->where($condition)->count_all_results();
 		$count = $this->db->from('account')->count_all_results();
+		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
+		return $result;
+	}
+	public function fetch_member_datatable($param){
+		$keyword = $param['keyword'];
+		$this->db->select('*');
+ 
+		$condition = "1=1";
+		if(!empty($keyword)){
+			$condition .= " and (
+				member_name like '%{$keyword}%' or 
+				std_code like '%{$keyword}%' or
+				member_id_card like '%{$keyword}%' or
+				)";
+		}
+ 
+		$this->db->where($condition);
+		$this->db->limit($param['page_size'], $param['start']);
+		$this->db->order_by($param['column'], $param['dir']);
+ 
+		$query = $this->db->get('member');
+		$data = [];
+		if($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$data[] = $row;
+			}
+		}
+ 
+		$count_condition = $this->db->from('member')->where($condition)->count_all_results();
+		$count = $this->db->from('member')->count_all_results();
+		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
+		return $result;
+	}
+	public function fetch_staff_datatable($param){
+		$keyword = $param['keyword'];
+		$this->db->join('level', 'staff.level_id = level.level_id','inner');
+		$this->db->select('*');
+		
+		$condition = "1=1";
+		if(!empty($keyword)){
+			$condition .= " and (
+				staff_name like '%{$keyword}%' or 
+				level_id like '%{$keyword}%' or
+				staff_status like '%{$keyword}%' or
+				)";
+		}
+		
+		$this->db->where($condition);
+		$this->db->limit($param['page_size'], $param['start']);
+		$this->db->order_by($param['column'], $param['dir']);
+		
+ 
+		$query = $this->db->get('staff');
+		$data = [];
+		if($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$data[] = $row;
+			}
+		}
+ 
+		$count_condition = $this->db->from('staff')->where($condition)->count_all_results();
+		$count = $this->db->from('staff')->count_all_results();
 		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
 		return $result;
 	}

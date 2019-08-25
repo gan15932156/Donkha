@@ -11,7 +11,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/js/jquery.min.js"></script>
   <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/js/popper.min.js"></script>
   <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/datatable/datatables.js"></script>
   <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/datatable/datatables.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style type="text/css">
     html,body {
@@ -28,7 +30,42 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       width:97%;
       height:100%;
       filter: alpha(opacity=40); /* For IE8 and earlier */
-    }         
+    }    
+    .dropdown{
+      display:inline-block;
+      position:relative;
+    }
+    .dropdown button{
+      transition:.3s;
+      cursor:pointer;
+    }
+    .dropdown div{
+      background-color:#fff;
+      box-shadow:0 4px 8px rgba(0,0,0,0.2);
+      z-index:1;
+      visibility:hidden;
+      position:absolute;
+      min-width:100%;
+      opacity:0;
+      transition:.3s;
+    }
+    .dropdown:hover div{
+      visibility:visible;
+      opacity:1;
+    }
+    .dropdown div a{
+      font-size:12px;
+      float:left;
+      display:block;
+      text-decoration:none;
+      padding:8px;
+      color:#000;
+      transition:.1s;
+      white-space:nowrap;
+    }
+    .dropdown div a:hover{
+      background-color:#D6EAF8;
+    }                      
   </style>
   <script type="text/javascript">
     function logout(){
@@ -37,24 +74,60 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   </script>
   <script type="text/javascript">
     $(document).ready(function(){
-      function search_data(data){
-        $.ajax({
-          url:"<?php echo base_url("index.php/Project_controller/search_data_staff"); ?>",
-          method:"POST",
-          data:{data:data},
-          success:function(data){
-            $('#result_search').html(data);
+      var table = $('#data_table').DataTable({
+        pageLength: 6,
+        serverSide: true,
+        processing: true,
+        "language": {
+            "search":"ค้นหา:",
+            "zeroRecords": "ไม่พบข้อมูล",
+            "info": "แสดงหน้า _PAGE_ จาก _PAGES_",
+            "infoEmpty": "ไม่พบข้อมูล",
+            "infoFiltered": "(กรองจาก _MAX_ รายการทั้งหมด)",
+            "paginate": {
+              "first":      "หน้าแรก",
+              "last":       "หน้าสุดท้าย",
+              "next":       "ถัดไป",
+              "previous":   "ก่อนหน้า"
+            },
+        },   
+        "lengthChange": false,
+        ajax: {
+          url:'<?php echo base_url("index.php/Project_controller/fetch_staff_datatable"); ?>'
+        },
+        'columns':[
+        {
+          data:'staff_name'
+        },
+        {
+          data:'level_name'
+        },
+        {
+          data:'staff_status',
+          render: function (data,type,row){
+            var active = '<span class="text-success">ใช้งาน</span>';
+            var inactive = '<span class="text-danger">ยกเลิก</span>';
+            var status = (data==1) ? active : inactive;
+            return status;
           }
-        })
-      }
-      $("#search").keyup(function(){
-        if($(this).val() == ""){
-          location.replace("<?php  echo base_url()."Project_controller/manage_staff"; ?>");
-        }else{
-          search_data($(this).val());
-          $( "#data_table" ).remove(); 
+        },
+        {
+          data:'level_name',
+          render: function(data, type, row){
+            var divv = ' <div class="dropdown">';
+                divv+='<button style="font-size:16px;"><i class="fa fa-cog" aria-hidden="true"></i></button><div>';   
+                divv+='<a style="color:black;" href="<?php  echo site_url('Project_controller/staff_detail/');?>'+row['staff_id']+'"><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียด</a>';
+                divv+='<a style="color:black;" href="<?php  echo site_url('Project_controller/staff_update_form/');?>'+row['staff_id']+'" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a>';
+                divv+='<a style="color:black;" id="onclickchangestatus" href="<?php  echo site_url('Project_controller/staff_change_status/');?>'+row['staff_id']+'" ><i class="fa fa-times" aria-hidden="true"></i> เปลี่ยนสถานะ</a>';
+                divv+='</div></div>';                                     
+            return divv;
+          }
         }
+        ]
       });
+      $('#data_table tbody ').on('click', '#onclickchangestatus', function () {
+        return confirm('ต้องการเปลี่ยนสถานะการใช้งานหรือไม่');
+    } );  
     });
   </script>       
 </head>
@@ -81,68 +154,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                   <div class="col-md-12 ">
                     <h4 class="text-center"><B>ข้อมูลพนักงาน</B></h4>
                   </div>
-                  <div class="col-md-12 topnav" align="center" >
-                    <div class="row">
-                      <div class="col-4"></div>
-                      <div class="col-4">
-                        <div class="search-container">
-                          <input type="text" name="search" id="search" placeholder="ใส่คำค้น" style="border-radius: 10%; ">
-                          <button type="submit"><i class="fa fa-search"></i></button>                     
-                        </div>                        
-                      </div>
-                    <div align="right" class="col-4"> 
-                      <a class="link btn btn-outline-primary btn-sm" href="<?php  echo base_url('Project_controller/staff_insert_form/'); ?>">เพิ่มพนักงาน</a>
-                    </div>    
-                  </div>                      
-                </div>
                 <div class="col-md-12 text-center">
                   <div id="result_search"></div>
                   <table class="table table-striped table-hover table-sm " id="data_table">
                     <thead class="thead-light table-bordered">
                       <tr>
-                        <th width="5%" scope="col">ลำดับ</th>
-                        <th width="15%" scope="col">รหัสนักเรียน</th>
                         <th width="25%" scope="col">ชื่อ-นามสกุล</th>
                         <th width="15%" scope="col">ตำแหน่ง</th>
                         <th width="20%" scope="col">สถานะ</th>
                         <th width="15%" scope="col">การกระทำ</th>
                       </tr>
                       </thead>
-                      <tbody class="table-bordered" style="background-color: #EFFEFD">
-                        <?php $i=1;  foreach($staff->result() as $row){ ?>
-                        <tr>
-                          <th scope="row"><?=$i; ?></th>
-                          <td><?=$row->stu_code; ?></td>
-                          <td><?=$row->staff_name; ?></td>
-                          <td><?=$row->level_name; ?></td>
-                          <td><?php
-                            if($row->staff_status =='1'){
-                              echo "<p class='text-success'>เปิดใช้งาน</p>";
-                            }
-                            else{
-                              echo "<p class='text-danger'>ปิดใช้งาน</p>";
-                            }
-                          ?>
-                          </td>
-                        
-                          <td>
-                            <div class="dropdown">
-                              <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown"><i class="fa fa-cog" aria-hidden="true"></i></button>
-                              <ul style="background-color:#E8ECEF;"  class="dropdown-menu">
-                                <li><a style="color:black;" href="<?php  echo base_url('Project_controller/staff_detail/'.$row->staff_id); ?>" ><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียด</a></li>
-                                <li><a style="color:black;" href="<?php  echo base_url('Project_controller/staff_update_form/'.$row->staff_id); ?>" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a></li>
-                                <li><a style="color:black;" onclick="return confirm('ต้องการเปลี่ยนสถานะการใช้งานหรือไม่');" href="<?php  echo base_url('Project_controller/staff_change_status/'.$row->staff_id); ?>" ><i class="fa fa-times" aria-hidden="true"></i> เปลี่ยนสถานะ</a></li>
-                              </ul>
-                            </div>    
-                          </td>
-                        </tr>
-                          <?php $i++; }  ?>
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                          <th class="text-center" colspan="10"><div style="font-size: 2em;" class="col-md-12 text-center"><?php echo $pagination;?></div></th>
-                        </tr>
-                      </tfoot>
+                      <tbody class="table-bordered" style="background-color: #EFFEFD">                 
+                      </tbody> 
                     </table>
                   </div>
                 </div>

@@ -27,7 +27,7 @@ class Project_controller extends CI_Controller {
     	$this->load->view('index_staff',$data);
     }
     public function manage_staff(){
-    	$config['base_url'] = site_url('Project_controller/manage_staff');
+    /*	$config['base_url'] = site_url('Project_controller/manage_staff');
         $config['total_rows'] = $this->User_model->record_count_staff();
         $config['per_page'] = "6";
         $config["uri_segment"] = 3;
@@ -54,8 +54,8 @@ class Project_controller extends CI_Controller {
         $this->pagination->initialize($config);
         $data['page'] = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
         $data['staff'] = $this->User_model->select_staff_between($config["per_page"], $data['page']);
-        $data['pagination'] = $this->pagination->create_links();
-		$this->load->view('manage_staff',$data);
+        $data['pagination'] = $this->pagination->create_links();*/
+		$this->load->view('manage_staff');
 	}
 	public function staff_detail(){
 		$staff_id=$this->uri->segment(3);
@@ -93,7 +93,7 @@ class Project_controller extends CI_Controller {
 		$this->load->view('member_detail_staff',$data);
 	}
 	public function manage_member(){
-		$config['base_url'] = site_url('Project_controller/manage_member');
+	/*	$config['base_url'] = site_url('Project_controller/manage_member');
         $config['total_rows'] = $this->User_model->record_count_member();
         $config['per_page'] = "6";
         $config["uri_segment"] = 3;
@@ -120,11 +120,11 @@ class Project_controller extends CI_Controller {
         $this->pagination->initialize($config);
         $data['page'] = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
         $data['member'] = $this->User_model->select_member_between($config["per_page"], $data['page']);
-        $data['pagination'] = $this->pagination->create_links();
-		$this->load->view('manage_member',$data);
+        $data['pagination'] = $this->pagination->create_links();*/
+		$this->load->view('manage_member');
 	}
 	public function manage_member_staff(){
-		$config['base_url'] = site_url('Project_controller/manage_member_staff');
+		/*$config['base_url'] = site_url('Project_controller/manage_member_staff');
         $config['total_rows'] = $this->User_model->record_count_member();
         $config['per_page'] = "6";
         $config["uri_segment"] = 3;
@@ -151,38 +151,10 @@ class Project_controller extends CI_Controller {
         $this->pagination->initialize($config);
         $data['page'] = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
         $data['member'] = $this->User_model->select_member_between($config["per_page"], $data['page']);
-        $data['pagination'] = $this->pagination->create_links();
-		$this->load->view('manage_member_staff',$data);
+        $data['pagination'] = $this->pagination->create_links();*/
+		$this->load->view('manage_member_staff');
 	}
 	public function manage_account(){
-		/*$config['base_url'] = site_url('Project_controller/manage_account');
-        $config['total_rows'] = $this->User_model->record_count_account();
-        $config['per_page'] = "5";
-        $config["uri_segment"] = 3;
-        $choice = $config["total_rows"] / $config["per_page"];
-        $config["num_links"] = floor($choice);
-        $config['full_tag_open'] = '<ul class="pagination justify-content-center">';
-        $config['full_tag_close'] = '</ul>';
-        $config['first_link'] = false;
-        $config['last_link'] = false;
-        $config['first_tag_open'] = '<li class="page-item">';
-        $config['first_tag_close'] = '</li>';
-        $config['prev_link'] = '&laquo';
-        $config['prev_tag_open'] = '<li class="page-item prev">';
-        $config['prev_tag_close'] = '</li>';
-        $config['next_link'] = '&raquo';
-        $config['next_tag_open'] = '<li class="page-item">';
-        $config['next_tag_close'] = '</li>';
-        $config['last_tag_open'] = '<li class="page-item">';
-        $config['last_tag_close'] = '</li>';
-        $config['cur_tag_open'] = '<li class="page-item active"><a href="#">';
-        $config['cur_tag_close'] = '</a></li>';
-        $config['num_tag_open'] = '<li class="page-item">';
-        $config['num_tag_close'] = '</li>';
-        $this->pagination->initialize($config);
-        $data['page'] = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
-        $data['account'] = $this->User_model->select_account_between($config["per_page"], $data['page']);
-        $data['pagination'] = $this->pagination->create_links();*/
 		$this->load->view('manage_account');
 		
 	}
@@ -2440,22 +2412,22 @@ EOD;
 		date_default_timezone_set('Asia/Bangkok');
  		$data["account"] = $this->User_model->select_all_account_never_cal();
  		foreach ($data["account"]->result() as $row) {
- 			if($row->interest_update == "0000-00-00" && date('Y-m-d')/*"2019-04-01"*/ == date('Y-04-01') && $row->account_open_date < date('Y-04-01')){
+ 			if($row->interest_update == "0000-00-00" && /*date('Y-m-d')*/"2019-04-01" == date('Y-04-01') && $row->account_open_date < date('Y-04-01')){
  				$this->cal_interest_phase1($row->account_id);
  			}
- 			elseif($row->interest_update == "0000-00-00" && date('Y-m-d')/*"2019-10-01"*/ == date('Y-10-01') && $row->account_open_date >= date('Y-04-01') && $row->account_open_date < date('Y-10-01')) {
+ 			elseif($row->interest_update == "0000-00-00" && /*date('Y-m-d')*/"2019-10-01" == date('Y-10-01') && $row->account_open_date >= date('Y-04-01') && $row->account_open_date < date('Y-10-01')) {
  				$this->cal_interest_phase2($row->account_id);
  			}
- 			elseif($row->interest_update == "0000-00-00" && date('Y-m-d') /*"2019-04-01"*/ == date('Y-04-01') && $row->account_open_date > date('Y-10-01',strtotime('-1 year')) && $row->account_open_date < date('Y-04-01')) {
+ 			elseif($row->interest_update == "0000-00-00" && /*date('Y-m-d')*/ "2019-04-01" == date('Y-04-01') && $row->account_open_date > date('Y-10-01',strtotime('-1 year')) && $row->account_open_date < date('Y-04-01')) {
  				$this->cal_interest_phase1($row->account_id);
  			}
- 			elseif($row->interest_update == date('Y-04-01') && date('Y-m-d') /*"2019-10-01"*/ == date('Y-10-01')){
+ 			elseif($row->interest_update == date('Y-04-01') && /*date('Y-m-d')*/ "2019-10-01" == date('Y-10-01')){
  				$this->cal_interest_phase2($row->account_id);
  			}
- 			elseif($row->interest_update == substr($row->interest_update,0,4)."-10-01" && date('Y-m-d') /*"2019-04-01"*/ == date('Y-04-01')){
+ 			elseif($row->interest_update == substr($row->interest_update,0,4)."-10-01" && /*date('Y-m-d')*/ "2019-04-01" == date('Y-04-01')){
  				$this->cal_interest_phase1($row->account_id);
  			}
- 			elseif($row->interest_update == substr($row->interest_update,0,4)."-04-01" && date('Y-m-d') /*"2019-10-01"*/ == date('Y-10-01')){
+ 			elseif($row->interest_update == substr($row->interest_update,0,4)."-04-01" && /*date('Y-m-d')*/ "2019-10-01" == date('Y-10-01')){
  				$this->cal_interest_phase2($row->account_id);
  			}
  		}
@@ -2578,7 +2550,7 @@ EOD;
 				'account_id'=>$account_id,
 				'staff_record_id'=>'1',
 				'action'=>'add_interest',
-				'record_date'=>date('Y-m-d'),
+				'record_date'=>date('Y-04-01'),
 				'record_time'=>date('H:i:s'),
 				'account_detail_balance'=>round($total_balance,2),
 				'trans_money'=>round($result_all_int,2),
@@ -2589,7 +2561,7 @@ EOD;
 			$data_interest_history=array(
 				'account_id'=>$account_id,
 				'interest_money'=>round($result_all_int,2),
-				'interest_date'=>date('Y-m-d')
+				'interest_date'=>date('Y-04-01')
 			);
 			$data_account=array(
 				'interest_update'=>date('Y-04-01'),
@@ -2638,7 +2610,7 @@ EOD;
 				'account_id'=>$account_id,
 				'staff_record_id'=>'1',
 				'action'=>'add_interest',
-				'record_date'=>date('Y-m-d'),
+				'record_date'=>date('Y-10-01'),
 				'record_time'=>date('H:i:s'),
 				'account_detail_balance'=>round($total_balance,2),
 				'trans_money'=>round($result_all_int,2),
@@ -2649,7 +2621,7 @@ EOD;
 			$data_interest_history=array(
 				'account_id'=>$account_id,
 				'interest_money'=>round($result_all_int,2),
-				'interest_date'=>date('Y-m-d')
+				'interest_date'=>date('Y-10-01')
 			);
 			$data_account=array(
 				'interest_update'=>date('Y-10-01'),
@@ -2750,7 +2722,7 @@ EOD;
 		$pdf->Output('example_001.pdf', 'I');
 		ob_end_clean();
 	}
-	public function find_with_page(){
+	public function fetch_account_datatable(){
 		$order_index = $this->input->get('order[0][column]');
         $param['page_size'] = $this->input->get('length');
         $param['start'] = $this->input->get('start');
@@ -2759,7 +2731,45 @@ EOD;
         $param['column'] = $this->input->get("columns[{$order_index}][data]");
         $param['dir'] = $this->input->get('order[0][dir]');
  
-        $results = $this->User_model->find_with_page($param);
+        $results = $this->User_model->fetch_account_datatable($param);
+ 
+        $data['draw'] = $param['draw'];
+        $data['recordsTotal'] = $results['count'];
+        $data['recordsFiltered'] = $results['count_condition'];
+        $data['data'] = $results['data'];
+        $data['error'] = $results['error_message'];
+ 
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+	}
+	public function fetch_member_datatable(){
+		$order_index = $this->input->get('order[0][column]');
+        $param['page_size'] = $this->input->get('length');
+        $param['start'] = $this->input->get('start');
+        $param['draw'] = $this->input->get('draw');
+        $param['keyword'] = trim($this->input->get('search[value]'));
+        $param['column'] = $this->input->get("columns[{$order_index}][data]");
+        $param['dir'] = $this->input->get('order[0][dir]');
+ 
+        $results = $this->User_model->fetch_member_datatable($param);
+ 
+        $data['draw'] = $param['draw'];
+        $data['recordsTotal'] = $results['count'];
+        $data['recordsFiltered'] = $results['count_condition'];
+        $data['data'] = $results['data'];
+        $data['error'] = $results['error_message'];
+ 
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+	}
+	public function fetch_staff_datatable(){
+		$order_index = $this->input->get('order[0][column]');
+        $param['page_size'] = $this->input->get('length');
+        $param['start'] = $this->input->get('start');
+        $param['draw'] = $this->input->get('draw');
+        $param['keyword'] = trim($this->input->get('search[value]'));
+        $param['column'] = $this->input->get("columns[{$order_index}][data]");
+        $param['dir'] = $this->input->get('order[0][dir]');
+ 
+        $results = $this->User_model->fetch_staff_datatable($param);
  
         $data['draw'] = $param['draw'];
         $data['recordsTotal'] = $results['count'];

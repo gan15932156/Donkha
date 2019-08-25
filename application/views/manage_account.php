@@ -102,7 +102,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         },   
         "lengthChange": false,
         ajax: {
-          url:'<?php echo base_url("index.php/Project_controller/find_with_page"); ?>'
+          url:'<?php echo base_url("index.php/Project_controller/fetch_account_datatable"); ?>'
         },
         'columns':[
         {
@@ -164,10 +164,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
                       <thead class="thead-light table-bordered">
                         <tr>
-                          <th width="25%" scope="col">หมายเลขบัญชี</th>
+                          <th width="20%" scope="col">หมายเลขบัญชี</th>
                           <th width="30%" scope="col">ชื่อบัญชี</th>
-                          <th width="30%" scope="col">สถานะ</th>
-                          <th width="10%" scope="col">การกระทำ</th>
+                          <th width="10%" scope="col">สถานะ</th>
+                          <th width="15%" scope="col">การกระทำ</th>
                         </tr>
                       </thead>
                       <tbody class="table-bordered" style="background-color: #EFFEFD">
