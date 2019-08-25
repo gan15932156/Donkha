@@ -84,7 +84,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <script type="text/javascript">
     $(document).ready(function(){
       var table = $('#data_table').DataTable({
-        pageLength: 5,
+        pageLength: 6,
         serverSide: true,
         processing: true,
         "language": {
@@ -151,7 +151,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <button onclick="logout()" type="submit" class="btn btn-outline-danger" id="submit">ออกจากระบบ</button>
       </div>
       <div class="col-md-10">
-        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:300px;">
+        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:500px;">
           <div class="col-md-12 text-center" >
             <div class="row text-center">
               <div class="col-md-12">
