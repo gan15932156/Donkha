@@ -44,6 +44,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         reader.readAsDataURL(input.files[0]);
       }
     }
+    function logout(){
+      location.replace("<?php  echo base_url()."Project_controller/logout"; ?>");
+    }
     function readURL_singa(input) {
       if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -118,6 +121,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
           dataType:'json',
           success: function(response)
           {
+            $('#AMPHUR_ID').empty();
+            $('#DISTRICT_CODE').empty();
             $('#AMPHUR_ID').find('option').not(':first').remove();
             $.each(response,function(index,data)
             {
@@ -134,7 +139,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
           data:{amp_id: amp_id},
           dataType:'json',
           success: function(response)
-          {       
+          { 
+            $('#DISTRICT_CODE').empty();      
             $('#DISTRICT_CODE').find('option').not(':first').remove();
             $.each(response,function(index,data)
             {
