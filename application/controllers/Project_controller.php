@@ -1847,14 +1847,15 @@ class Project_controller extends CI_Controller {
         }
 	}
 	public function fetch_account(){
-        if (isset($_GET['term'])) {
-            $result = $this->User_model->fetch_account_auto_complete($_GET['term']);
-            if (count($result) > 0) {
-            foreach ($result as $row)
-                $arr_result[] = $row->account_id." ".$row->account_name;
-                echo json_encode($arr_result);
-            }
-        }
+      if (isset($_GET['term'])) {
+         $result = $this->User_model->fetch_account_auto_complete($_GET['term']);
+         if (count($result) > 0) {
+				foreach ($result as $row){
+					$arr_result[] = $row->account_id." ".$row->account_name;
+					echo json_encode($arr_result);
+				}
+			}
+      }
 	}
 	public function fetch_report_open_account(){
 		function DateThai($strDate)

@@ -39,9 +39,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       top: 0;
       z-index: 10;
     }
-  }
-</style>
-<script type="text/javascript">
+  </style>
+  <script type="text/javascript">
     function logout(){
       location.replace("<?php  echo base_url()."Project_controller/logout"; ?>");
     }

@@ -751,12 +751,12 @@ class User_model extends CI_Model {
 		$this->db->or_like('account_id',$account);
 		$this->db->order_by('account_name', 'ASC');
 		$query = $this->db->get();
-	    if($query->num_rows() > 0) {
+	   if($query->num_rows() > 0) {
 			return $query->result();
-	    }
-	    else {
-	    	return false;
-	    }
+	   }
+	   else {
+	   	return false;
+	   }
 	}
 	public function select_repost_test(){
 		$this->db->select("*");
@@ -845,7 +845,6 @@ class User_model extends CI_Model {
 		$this->db->limit($param['page_size'], $param['start']);
 		$this->db->order_by($param['column'], $param['dir']);
 		
- 
 		$query = $this->db->get('staff');
 		$data = [];
 		if($query->num_rows() > 0){
