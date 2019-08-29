@@ -54,7 +54,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       opacity:1;
     }
     .dropdown div a{
-      font-size:12px;
+      font-size:16px;
       float:left;
       display:block;
       text-decoration:none;

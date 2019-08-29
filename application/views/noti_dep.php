@@ -32,7 +32,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   </style>
   <script type="text/javascript">
     function saveData(e,account_detail_id,trand_id,money) {
-      if(e.keyCode === 13){
+      if(e.keyCode === 13){ 
         if (confirm('ยืนยันการบันทึก')) {
           e.preventDefault();
           $.ajax({
@@ -118,7 +118,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <td><?php echo $row->trans_id; ?></td>
                             <td><?php echo $row->account_id; ?></td>
                             <td><?php echo $row->account_name; ?></td>
-                            <td title="ดับเบิ้ลคลิกเพื่อแก้ไขและกดปุ่ม Enter เพื่อบันทึก" ondblclick="this.contentEditable=true;" onblur="this.contentEditable=false;" onkeypress="saveData(event,'<?php echo $row->account_detail_id; ?>','<?php echo $row->trans_id; ?>',$(this).html() )"><?php echo number_format($row->trans_money,2); ?></td>
+                            <td id="money" title="ดับเบิ้ลคลิกเพื่อแก้ไขและกดปุ่ม Enter เพื่อบันทึก" ondblclick="this.contentEditable=true;" onblur="this.contentEditable=false;" onkeypress="saveData(event,'<?php echo $row->account_detail_id; ?>','<?php echo $row->trans_id; ?>',$(this).html() )"><?php echo number_format($row->trans_money,2); ?></td>
                             <td>
                               <a onclick="return confirm('ยืนยันรายการหรือไม่');" href="<?php  echo base_url('Project_controller/confirm_deposit/'.$row->account_detail_id); ?>" >ยืนยันรายการ</a>
                             </td><div id="result"></div>

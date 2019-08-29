@@ -35,7 +35,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       filter: alpha(opacity=40); /* For IE8 and earlier */
     }      
     .schooller{
-      height:250px;
+      height:310px;
       overflow:auto;
     }
     thead tr:nth-child(1) th{
@@ -118,8 +118,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </div>                       
                   </div>  
                   </div>
-                  <div class="col-md-12 "><hr>        
-                <h4 class="text-center"><B>รายละเอียดการฝาก - ถอน - โอน</B></h4><br>
+                  <div class="col-md-12 ">  
+                <h4 class="text-center"><B>รายละเอียดการฝาก - ถอน - โอน</B></h4>
                    
                   </div>
                   <div class="col-md-12 text-center">

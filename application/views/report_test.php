@@ -109,7 +109,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       formatter.format(data, 1); // Apply formatter to second column
       chart.draw(data, options);
     }*/
-
     });
   </script>
 </head>
