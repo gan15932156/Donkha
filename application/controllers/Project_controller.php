@@ -16,10 +16,19 @@ class Project_controller extends CI_Controller {
 
  	public function index_admin(){
 		$this->load->view('index_admin');
-  }
-  public function index_manager(){
+  	}
+  	public function index_manager(){
 		$this->load->view('index_manager');
-  }
+	}
+	public function test_page(){
+		$data['not_confirm_dep'] = $this->User_model->count_not_confirm_record_dep();
+    	$data['not_confirm_wd'] = $this->User_model->count_not_confirm_record_wd();
+		$data['test']=$this->User_model->getProvince();
+		$this->load->view('templates/header');
+		$this->load->view('test',$data);
+		$this->load->view('templates/footer');
+
+	}
     public function index_staff(){
     	$data['not_confirm_dep'] = $this->User_model->count_not_confirm_record_dep();
     	$data['not_confirm_wd'] = $this->User_model->count_not_confirm_record_wd();

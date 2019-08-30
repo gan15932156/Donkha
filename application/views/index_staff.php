@@ -114,7 +114,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         <button onclick="logout()" type="submit" class="btn btn-outline-danger" id="submit">ออกจากระบบ</button>
       </div>
       <div class="col-md-10">
-        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:500px;">
+        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:77vh;">
           <div class="col-md-12 text-center" >
             <div class="row text-center">
               <div class="col-md-12"><br>

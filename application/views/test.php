@@ -1,137 +1,61 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
- ?>
- <!DOCTYPE html>
- <html>
- <head>
-     <meta charset="utf-8">
-     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-     <title>ธนาคารโรงเรียนดอนคาวิทยา</title>
-     <meta name="viewport" content="width=device-width, initial-scale=1">
-     <script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/js/jquery.min.js"></script>
-
-     <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/js/popper.min.js"></script>
-
-     <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/js/bootstrap.min.js"></script>
-
-     <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/css/bootstrap.min.css">
-
-      <style type="text/css">
-         
-
-          html,body { 
-               background: 
-                    url("<?php  echo base_url()."picture/school.jpg"; ?>") no-repeat center center fixed; 
-                    -webkit-background-size: cover;
-                    -moz-background-size: cover;
-                    -o-background-size: cover;
-                    background-size: cover;
-                    height: 100%;
-                
-          } 
-
-        .container-fluid{
-          background-color: rgba(199, 223, 255,.9);
-               width:90%;
-               opacity: ;
-               filter: alpha(opacity=40); /* For IE8 and earlier */
-          }
-          
-                  
-      </style>
-     
-      <script type="text/javascript">
-        $(function () {
-          $("#btnSubmit2").click(function () {
-              var Rate = 0.1;
-              var Deposit_Amt = 0;
-              var interestRate = $("#Interest_Rate").val();
-              var depositAmt = replaceAllString($("#Deposit_Amt").val(), ",", "");
-              var y1 = $("#sy1").val();
-              var m1 = $("#sm1").val();
-              var d1 = $("#sd1").val();
-              var y2 = $("#sy2").val();
-              var m2 = $("#sm2").val();
-              var d2 = $("#sd2").val();
-              var Rate = 0;
-              if ((interestRate != "") && !(isNaN(interestRate))) {
-                  Rate = parseFloat(interestRate) / 100;
-              } else {
-                  showAlert($("#Interest_Rate"));
-                  return;
-              }
-              if ((depositAmt != "") && !(isNaN(depositAmt))) {
-                  Deposit_Amt = parseFloat(depositAmt);
-              } else {
-                  showAlert($("#Deposit_Amt"));
-                  return;
-              }
-              if ($("#friendName1").val() == "") {
-                  showAlert($("#friendName1"));
-                  return;
-              }
-              if ($("#friendName2").val() == "") {
-                  showAlert($("#friendName2"));
-                  return;
-              }
-
-              m1 = m1 - 1;
-              m2 = m2 - 1;
-              var start_date = new Date(y1, m1, d1);
-              var end_date = new Date(y2, m2, d2);
-              var dif_date = (end_date.getTime()) - (start_date.getTime());
-              var count_date = (dif_date / (86400000));
-              var tot_date = (Math.round(count_date));
-              var Interest1 = 0;
-              var TempDep = depositAmt;
-              while (tot_date > 180) {
-                  tot_date = tot_date - 180;
-                  TempInterest = (((TempDep * Rate) * 180) / 365);
-                  Interest1 = Interest1 + TempInterest;
-                  TempDep = Deposit_Amt + Interest1;
-              }
-              if (tot_date > 0) {
-                  TempInterest = (((TempDep * Rate) * tot_date) / 365);
-                  Interest1 = Interest1 + TempInterest;
-              }
-              Interest1 = Math.round(Interest1 * 100) / 100;
-              $("#Interest")[0].innerHTML = addCommas(Interest1);
-              if (Interest1 > 20000) {
-                  Tax1 = (Interest1 * 0.15);
-                  Tax1 = (Math.round(Tax1 * 100)) / 100;
-                  Net = Interest1 - Tax1;
-                  Net = (Math.round(Net * 100)) / 100;
-                  $("#Tax")[0].innerHTML = addCommas(Tax1);
-                  $("#Net_Interest")[0].innerHTML = addCommas(Net);
-              } else {
-                  $("#Tax")[0].innerHTML = 0;
-                  $("#Net_Interest")[0].innerHTML = addCommas(Interest1);
-              }
-              return false;
-          });
-        });        
-      </script>
-
- </head>
- <body>
-    <h1 class="text-center" style="margin-top: 1%;"><img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="100px" height="120px">ธนาคารโรงเรียนดอนคาวิทยา</h1>
-
-     <div class="container-fluid h-100" >
-         
-               
-          
-     </div>
-
-     <!--<footer class="page-footer">
-               <div class="footer-copyright py-3 text-center">
-                    <marquee behavior="alternate"><font  color="black">ธนาคารโรงเรียน โรงเรียนดอนคาวิทยา ต.ดอนคา อ.อู่ทอง จ.สุพรรณบุรี 72160 &nbsp;</font></marquee>
-               </div>
-     </footer>-->
-
-     </div>
+<div class="head-container">
+    <h2 class="text-center">
+        <img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="5%" height="100%">ธนาคารโรงเรียนดอนคาวิทยา
+    </h2>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 ">
+            <div class="top-container"><h5 class="text-right" ><?php echo "<B>ยินดีต้อนรับคุณ </B>".$this->session->userdata('sname'); ?>&nbsp</h5></div>
+            <div class="row work-container">
+               <div style="background-color: rgb(181, 216, 232);" class="col-2" align="center">
+                    <h4><a style="color: black" href="<?php  echo base_url("Project_controller/index_staff/"); ?>"><B>หน้าแรก</B></a></h4>
+                    <img style="border-radius: 50%;" src="<?php  echo $this->session->userdata('spic'); ?>" width="165px" height="180px">
+                    <h5><?php echo $this->session->userdata('sname');  ?></h5>
+                    <h5><?php echo "<B>ตำแหน่ง </B>".$this->session->userdata('slevel');  ?></h5>
+                    <button onclick="logout()" type="submit" class="btn btn-outline-danger" id="submit">ออกจากระบบ</button>
+                </div>
+                <div style="background-color: #EFFEFD;" class="col-10">
+                    <div align="center" class="row right-work-container">  
 
 
 
+                        <div class="col-md-12"><br>
+                            <a href="<?php  echo base_url()."Project_controller/noti_dep/"; ?>" class="btn btn-outline-success notification">แจ้งเตือนรายการฝาก<span class="badge "><?php echo $not_confirm_dep; ?></span></a>
+                            <a href="<?php  echo base_url()."Project_controller/noti_wd/"; ?>" class="btn btn-outline-success notification">แจ้งเตือนรายการถอน<span class="badge"><?php echo $not_confirm_wd; ?></span></a>
+                            <a href="<?php  echo base_url()."Project_controller/noti_wd/"; ?>" class="btn btn-outline-success notification">แจ้งเตือนรายการโอน<span class="badge"><?php echo $not_confirm_wd; ?></span></a>
+                        </div>
+                        <div class="col-md-12"><br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="dropdown">
+                                        <button style="font-size:20px;" class="btn btn-primary">บัญชี</button>
+                                        <div>
+                                            <a href="<?php  echo base_url()."Project_controller/manage_account/"; ?>">ข้อมูลบัญชี</a>
+                                            <a href="<?php  echo base_url('Project_controller/account_insert_form/'); ?>">เปิดบัญชี</a>
+                                            <a href="<?php  echo base_url()."Project_controller/close_account/"; ?>">ปิดบัญชี</a>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                      <button style="font-size:20px;" class="btn btn-primary">สมาชิก</button>
+                                      <div>
+                                        <a href="<?php  echo base_url()."Project_controller/manage_member_staff/"; ?>">ข้อมูลสมาชิก</a>
+                                        <a href="<?php  echo base_url('Project_controller/member_insert_form_staff/'); ?>">เพิ่มสมาชิก</a>
+                                      </div>
+                                    </div>
+                                    <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/passbook_display/"; ?>">พิมพ์สมุดคู่ฝาก</a>
+                                    <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/deposit_insert_form/"; ?>">ฝากเงิน</a>
+                                    <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/withdraw_insert_form/"; ?>">ถอนเงิน</a>
+                                    <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/manage_withdraw/"; ?>">โอนเงิน</a>
+                                </div>
+                            </div>
+                        </div>
 
- </body>
- </html>
+
+                        
+                    </div> 
+                </div>  
+            </div>
+        </div>      
+    </div>
+</div>
