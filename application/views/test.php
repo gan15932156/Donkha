@@ -1,61 +1,104 @@
-<div class="head-container">
-    <h2 class="text-center">
-        <img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="5%" height="100%">ธนาคารโรงเรียนดอนคาวิทยา
-    </h2>
+<script type="text/javascript">
+    function logout(){
+      location.replace("<?php  echo base_url()."Project_controller/logout"; ?>");
+    }
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#display_report").click(function(){
+      if($("#start_date").val() == "" && $("#stop_date").val() == ""){
+        alert("กรุณากรอกวันที่ให้ครบ");
+      }
+      else if($("#start_date").val() == ""){
+        alert("กรุณากรอกวันที่ให้ครบ");
+      }
+      else if($("#stop_date").val() == ""){
+        alert("กรุณากรอกวันที่ให้ครบ");
+      }
+      else{
+        $.ajax({
+          type: "POST",
+          url: "<?php echo site_url();?>/Project_controller/fetch_report_open_account",
+          method:"POST",
+          data:{
+            start_date:$("#start_date").val(),
+            stop_date:$("#stop_date").val()
+          },
+          success:function(response){
+            if(response == false){alert("ไม่พบรายการ");}
+            else{$('.table-responsive').html(response);}
+          },
+          error: function( error ){alert( error );}
+        });
+        //console.log(start_date+" "+stop_date);
+      }
+    });
+    /*google.charts.load('current', {packages: ['corechart', 'bar']});
+    google.charts.setOnLoadCallback(drawBasic);
+    function drawBasic() {
+    var jsonData = $.ajax({
+        url: "echo base_url('Project_controller/test_get_data_repost/') ?>",
+        dataType: "json",
+        async:false
+    }).responseText;
+    var data = new google.visualization.DataTable(jsonData);
+    var options = {
+      title: 'Motivation Level Throughout the Day',
+      focusTarget: 'category',
+      width: 800,
+      height: 400,
+      hAxis:{
+        title: 'Time of Day',
+        viewWindow:{
+          min:[7,30,0],
+          max:[17,30,0]
+        },
+        textStyle:{
+          fontSize:14,
+          color: '#053061',
+          bold:true,
+          italic:false
+        },
+      }
+    };
+    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+    var formatter = new google.visualization.NumberFormat({suffix: ' บาท', negativeColor: 'red', negativeParens: true});
+    formatter.format(data, 1); // Apply formatter to second column
+    chart.draw(data, options);
+  }*/
+  });
+</script>
+<div class="col-md-12 text-center" >
+  <div class="row text-center">
+    <div class="col-md-12">
+      <div  class="row">
+        <div class="col-md-12 text-center">
+          <h4 class="text-center"><B>รายงานเปิดบัญชี</B></h4>
+          <div class="row">
+            <div class="col-2">
+              <label>ค้นหาวันที่</label>
+            </div>
+            <div class="col-3">
+              <input autofocus type="date" class="form-control" id="start_date" name="start_date" required>
+            </div>
+            <div class="col-2">
+              <label >ถึงวันที่</label>
+            </div>
+            <div class="col-3">
+              <input type="date" class="form-control" id="stop_date" name="stop_date" required>
+            </div>
+            <div class="col-1">
+              <button type="submit" class="btn btn-outline-success" id="display_report">แสดงรายงาน</button>
+            </div>
+          </div><hr>
+          <!--<div id="chart_div"></div>-->
+        </div>
+        <div class="col-md-12 text-center">
+          <div class="table-responsive"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12 ">
-            <div class="top-container"><h5 class="text-right" ><?php echo "<B>ยินดีต้อนรับคุณ </B>".$this->session->userdata('sname'); ?>&nbsp</h5></div>
-            <div class="row work-container">
-               <div style="background-color: rgb(181, 216, 232);" class="col-2" align="center">
-                    <h4><a style="color: black" href="<?php  echo base_url("Project_controller/index_staff/"); ?>"><B>หน้าแรก</B></a></h4>
-                    <img style="border-radius: 50%;" src="<?php  echo $this->session->userdata('spic'); ?>" width="165px" height="180px">
-                    <h5><?php echo $this->session->userdata('sname');  ?></h5>
-                    <h5><?php echo "<B>ตำแหน่ง </B>".$this->session->userdata('slevel');  ?></h5>
-                    <button onclick="logout()" type="submit" class="btn btn-outline-danger" id="submit">ออกจากระบบ</button>
-                </div>
-                <div style="background-color: #EFFEFD;" class="col-10">
-                    <div align="center" class="row right-work-container">  
-
-
-
-                        <div class="col-md-12"><br>
-                            <a href="<?php  echo base_url()."Project_controller/noti_dep/"; ?>" class="btn btn-outline-success notification">แจ้งเตือนรายการฝาก<span class="badge "><?php echo $not_confirm_dep; ?></span></a>
-                            <a href="<?php  echo base_url()."Project_controller/noti_wd/"; ?>" class="btn btn-outline-success notification">แจ้งเตือนรายการถอน<span class="badge"><?php echo $not_confirm_wd; ?></span></a>
-                            <a href="<?php  echo base_url()."Project_controller/noti_wd/"; ?>" class="btn btn-outline-success notification">แจ้งเตือนรายการโอน<span class="badge"><?php echo $not_confirm_wd; ?></span></a>
-                        </div>
-                        <div class="col-md-12"><br>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="dropdown">
-                                        <button style="font-size:20px;" class="btn btn-primary">บัญชี</button>
-                                        <div>
-                                            <a href="<?php  echo base_url()."Project_controller/manage_account/"; ?>">ข้อมูลบัญชี</a>
-                                            <a href="<?php  echo base_url('Project_controller/account_insert_form/'); ?>">เปิดบัญชี</a>
-                                            <a href="<?php  echo base_url()."Project_controller/close_account/"; ?>">ปิดบัญชี</a>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown">
-                                      <button style="font-size:20px;" class="btn btn-primary">สมาชิก</button>
-                                      <div>
-                                        <a href="<?php  echo base_url()."Project_controller/manage_member_staff/"; ?>">ข้อมูลสมาชิก</a>
-                                        <a href="<?php  echo base_url('Project_controller/member_insert_form_staff/'); ?>">เพิ่มสมาชิก</a>
-                                      </div>
-                                    </div>
-                                    <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/passbook_display/"; ?>">พิมพ์สมุดคู่ฝาก</a>
-                                    <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/deposit_insert_form/"; ?>">ฝากเงิน</a>
-                                    <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/withdraw_insert_form/"; ?>">ถอนเงิน</a>
-                                    <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/manage_withdraw/"; ?>">โอนเงิน</a>
-                                </div>
-                            </div>
-                        </div>
-
 
                         
-                    </div> 
-                </div>  
-            </div>
-        </div>      
-    </div>
-</div>

@@ -13,6 +13,7 @@ html,body {
   width:97%;
   height:87%;
   filter: alpha(opacity=40); /* For IE8 and earlier */
+
 }
 .top-container{
   margin: 0px;
@@ -26,69 +27,4 @@ html,body {
   height: 82vh;
   margin-left: 1px; 
   margin-right: 1px;
-}
-
-
-
-
-
-
-
-
-.notification {
-  margin-right:1%;
-  text-decoration: none;
-  padding: 15px 26px;
-  position: relative;
-  display: inline-block;
-  font-size: 25px;
-}
-.notification .badge {
-  background-color: #28A745;
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  padding: 5px 10px;
-  border-radius: 50%;
-  border: 2px solid;
-  border-color: #28A745;
-  color: white;
-  font-size: 20px;
-}
-.notification:hover .badge {
-  color: #28A745;
-  background-color: #ffffff;
-}
-.dropdown{
-display:inline-block;
-position:relative;
-}
-.dropdown button{
-  transition:.3s;
-  cursor:pointer;
-}
-.dropdown div{
-  background-color:#fff;
-  box-shadow:0 4px 8px rgba(0,0,0,0.2);
-  z-index:1;
-  visibility:hidden;
-  position:absolute;
-  min-width:100%;
-  opacity:0;
-  transition:.3s;
-}
-.dropdown:hover div{
-  visibility:visible;
-  opacity:1;
-}
-.dropdown div a{
-  display:block;
-  text-decoration:none;
-  padding:8px;
-  color:#000;
-  transition:.1s;
-  white-space:nowrap;
-}
-.dropdown div a:hover{
-  background-color:#D6EAF8;
 }

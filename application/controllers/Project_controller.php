@@ -15,10 +15,14 @@ class Project_controller extends CI_Controller {
 	//////////////////////  PAGE    //////////////////////////
 
  	public function index_admin(){
+		$this->load->view('templates/header');
 		$this->load->view('index_admin');
+		$this->load->view('templates/footer');
   	}
   	public function index_manager(){
+		$this->load->view('templates/header');
 		$this->load->view('index_manager');
+		$this->load->view('templates/footer');
 	}
 	public function test_page(){
 		$data['not_confirm_dep'] = $this->User_model->count_not_confirm_record_dep();
@@ -27,13 +31,14 @@ class Project_controller extends CI_Controller {
 		$this->load->view('templates/header');
 		$this->load->view('test',$data);
 		$this->load->view('templates/footer');
-
 	}
-    public function index_staff(){
+   public function index_staff(){
     	$data['not_confirm_dep'] = $this->User_model->count_not_confirm_record_dep();
-    	$data['not_confirm_wd'] = $this->User_model->count_not_confirm_record_wd();
-    	$this->load->view('index_staff',$data);
-    }
+		$data['not_confirm_wd'] = $this->User_model->count_not_confirm_record_wd();
+		$this->load->view('templates/header');
+		$this->load->view('index_staff',$data);
+		$this->load->view('templates/footer');	
+   }
     public function manage_staff(){
     /*	$config['base_url'] = site_url('Project_controller/manage_staff');
         $config['total_rows'] = $this->User_model->record_count_staff();
@@ -161,8 +166,8 @@ class Project_controller extends CI_Controller {
 	//////////////////////  FORM    //////////////////////////
 
 	public function index(){
-		$this->cal_end_day();
-		$this->cal_interest_auto();
+		//$this->cal_end_day();
+		//$this->cal_interest_auto();
 		$this->load->view('index');
     }
     public function staff_insert_form(){
