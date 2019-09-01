@@ -9,12 +9,13 @@
    <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/js/bootstrap.min.js"></script>
    <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/datatable/datatables.js"></script>
    <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/js/jquery-ui.js"></script>
+   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+   <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/css/jquery-ui.css">
    <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/css/bootstrap.min.css">
    <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/datatable/datatables.css">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
    <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/Project_css/project_css.css">
-   <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/Project_css/notification_dropdown.css"> 
-   <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/css/jquery-ui.css">
+   <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/Project_css/notification_dropdown.css">  
    <script type="text/javascript">
       function logout(){
         location.replace("<?php  echo base_url()."Project_controller/logout"; ?>");

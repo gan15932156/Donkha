@@ -1,6 +1,6 @@
 <style type="text/css">     
   .schooller{
-    height:310px;
+    height:55vh;
     overflow:auto;
   }
   thead tr:nth-child(1) th{

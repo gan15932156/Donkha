@@ -131,7 +131,9 @@ class Project_controller extends CI_Controller {
 	}
 	public function noti_dep(){
 		$data['unconfirm_deposit'] =  $this->User_model->select_unconfirm_deposit();
+		$this->load->view('templates/header');
 		$this->load->view('noti_dep',$data);
+		$this->load->view('templates/footer');						
 	}
 	public function account_detail(){
 		$account_id=$this->uri->segment(3);
@@ -142,15 +144,21 @@ class Project_controller extends CI_Controller {
 		$this->load->view('templates/footer');									
 	}
 	public function noti_wd(){
-		$data['unconfirm_withdraw'] =  $this->User_model->select_unconfirm_withdraw();
+		$data['unconfirm_withdraw'] =  $this->User_model->select_unconfirm_withdraw();		
+		$this->load->view('templates/header');
 		$this->load->view('noti_wd',$data);
+		$this->load->view('templates/footer');						
 	}
 	public function passbook_display(){
+		$this->load->view('templates/header');
 		$this->load->view('passbook_display');
+		$this->load->view('templates/footer');					
 	}
 	public function test_report(){
-		$data['unconfirm_withdraw'] =  $this->User_model->select_unconfirm_withdraw();
+		$data['unconfirm_withdraw'] =  $this->User_model->select_unconfirm_withdraw();	
+		$this->load->view('templates/header');
 		$this->load->view('report_test',$data);
+		$this->load->view('templates/footer');				
 	}
 	public function test_get_data_repost(){
 		//$result = $this->User_model->select_repost_test();
@@ -334,10 +342,14 @@ class Project_controller extends CI_Controller {
 		$this->load->view('templates/footer');		
 	}
 	public function deposit_insert_form(){
+		$this->load->view('templates/header');
 		$this->load->view('deposit_insert_form');
+		$this->load->view('templates/footer');				
 	}
 	public function withdraw_insert_form(){
+		$this->load->view('templates/header');
 		$this->load->view('withdraw_insert_form');
+		$this->load->view('templates/footer');				
 	}
 	public function close_account(){
 		$this->load->view('templates/header');
@@ -1720,7 +1732,7 @@ class Project_controller extends CI_Controller {
 		$output='';
 		$data['result'] = $this->User_model->select_account_detail_with_account_id_not_print($this->input->post('account_id'));
 		$output.='
-			<a href="'.base_url("index.php/Project_controller/check_next_passbook_page_account_id")."/".$this->input->post('account_id').'" class="btn btn-warning">พิมพ์</a> <br><br>
+			<a href="'.base_url("index.php/Project_controller/check_next_passbook_page_account_id")."/".$this->input->post('account_id').'" class="btn btn-warning print">พิมพ์</a> <br><br>
 			<table class="table table-striped table-hover table-sm" id="search_table">
                 <thead class="thead-light table-bordered">
                     <tr>
@@ -1913,32 +1925,32 @@ class Project_controller extends CI_Controller {
 	}
 	public function fetch_report_open_account(){
 		function DateThai($strDate)
-			{
-					$strYear = date("Y",strtotime($strDate))+543;
-					$strMonth= date("n",strtotime($strDate));
-					$strDay= date("j",strtotime($strDate));
-					$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-					$strMonthThai=$strMonthCut[$strMonth];
-					return "$strDay $strMonthThai $strYear";
-			}
-			date_default_timezone_set('Asia/Bangkok');
+		{
+			$strYear = date("Y",strtotime($strDate))+543;
+			$strMonth= date("n",strtotime($strDate));
+			$strDay= date("j",strtotime($strDate));
+			$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+			$strMonthThai=$strMonthCut[$strMonth];
+			return "$strDay $strMonthThai $strYear";
+		}
+		date_default_timezone_set('Asia/Bangkok');
 		$output='';
 		$data['result'] = $this->User_model->select_open_account_between_date($this->input->post('start_date'),$this->input->post('stop_date'));
 		$output.='
 		<style type="text/css">
 
 			</style>
-			<table class="table table-striped table-hover table-sm" id="job-table">
-								<thead class="thead-light table-bordered">
-										<tr>
-												<th width="2%" scope="col">ลำดับ</th>
-												<th width="20%" scope="col">หมายเลขบัญชี</th>
-												<th width="25%" scope="col">ชื่อบัญชี</th>
-												<th width="25%" scope="col">ชื่อ - นามสกุล</th>
-												<th width="20%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
-										</tr>
-								</thead>
-							<tbody class="table-bordered" style="background-color: #EFFEFD">
+			<table class="table table-striped table-hover table-sm text-center" id="job-table">
+				<thead class="thead-light table-bordered">
+						<tr>
+								<th width="2%" scope="col">ลำดับ</th>
+								<th width="20%" scope="col">หมายเลขบัญชี</th>
+								<th width="25%" scope="col">ชื่อบัญชี</th>
+								<th width="25%" scope="col">ชื่อ - นามสกุล</th>
+								<th width="20%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
+						</tr>
+				</thead>
+				<tbody class="table-bordered" style="background-color: #EFFEFD">
 		';
 		if($data['result']->num_rows() >0){
 			$i=1;
@@ -1946,11 +1958,11 @@ class Project_controller extends CI_Controller {
 			foreach ($result as $row) {
 				$output.='
 					<tr>
-							<th id="count"  scope="row">'.$i.'</th>
-							<td id="ac_code">'.$row->account_id.'</td>
-							<td id="ac_name" align="left"  >'.$row->account_name.'</td>
-							<td id="ac_ac_nae" align="left" >'.$row->member_title." ".$row->member_name.'</td>
-							<td id="date_open" >'.DateThai($row->account_open_date).'</td>
+						<th id="count"  scope="row">'.$i.'</th>
+						<td id="ac_code">'.$row->account_id.'</td>
+						<td id="ac_name" align="left"  >'.$row->account_name.'</td>
+						<td id="ac_ac_nae" align="left" >'.$row->member_title." ".$row->member_name.'</td>
+						<td id="date_open" >'.DateThai($row->account_open_date).'</td>
 					</tr>';
 				$i++;
 			}
@@ -1962,7 +1974,7 @@ class Project_controller extends CI_Controller {
 		}
 		$output.='
 			</tbody><tfoot></tfoot>
-						</table>';
+		</table>';
 		echo $output;
 	}
 
