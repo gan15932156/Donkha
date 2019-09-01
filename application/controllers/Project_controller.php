@@ -67,13 +67,18 @@ class Project_controller extends CI_Controller {
         $this->pagination->initialize($config);
         $data['page'] = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
         $data['staff'] = $this->User_model->select_staff_between($config["per_page"], $data['page']);
-        $data['pagination'] = $this->pagination->create_links();*/
+		$data['pagination'] = $this->pagination->create_links();*/
+		$this->load->view('templates/header');
 		$this->load->view('manage_staff');
+		$this->load->view('templates/footer');	
 	}
 	public function staff_detail(){
 		$staff_id=$this->uri->segment(3);
 		$data['staff']=$this->User_model->get_everything_staff($staff_id);
+		$this->load->view('templates/header');
 		$this->load->view('staff_detail',$data);
+		$this->load->view('templates/footer');	
+		
 	}
 	public function member_detail(){
 		$member_id=$this->uri->segment(3);
@@ -88,7 +93,9 @@ class Project_controller extends CI_Controller {
 		else{ //นักเรียน
 			$data['member_after']=$this->User_model->get_student_member($member_id);
 		}
+		$this->load->view('templates/header');
 		$this->load->view('member_detail',$data);
+		$this->load->view('templates/footer');		
 	}
 	public function member_detail_staff(){
 		$member_id=$this->uri->segment(3);
@@ -103,17 +110,24 @@ class Project_controller extends CI_Controller {
 		else{ //นักเรียน
 			$data['member_after']=$this->User_model->get_student_member($member_id);
 		}
+		$this->load->view('templates/header');
 		$this->load->view('member_detail_staff',$data);
+		$this->load->view('templates/footer');				
 	}
 	public function manage_member(){
+		$this->load->view('templates/header');
 		$this->load->view('manage_member');
+		$this->load->view('templates/footer');			
 	}
 	public function manage_member_staff(){
+		$this->load->view('templates/header');
 		$this->load->view('manage_member_staff');
+		$this->load->view('templates/footer');					
 	}
 	public function manage_account(){
+		$this->load->view('templates/header');
 		$this->load->view('manage_account');
-		
+		$this->load->view('templates/footer');							
 	}
 	public function noti_dep(){
 		$data['unconfirm_deposit'] =  $this->User_model->select_unconfirm_deposit();
@@ -123,7 +137,9 @@ class Project_controller extends CI_Controller {
 		$account_id=$this->uri->segment(3);
 		$data['account']=$this->User_model->select_account_with_parameter($account_id);
 		$data['account_detail']=$this->User_model->select_account_detail_parameter_account_id($account_id);
+		$this->load->view('templates/header');
 		$this->load->view('account_details',$data);
+		$this->load->view('templates/footer');									
 	}
 	public function noti_wd(){
 		$data['unconfirm_withdraw'] =  $this->User_model->select_unconfirm_withdraw();
@@ -173,8 +189,10 @@ class Project_controller extends CI_Controller {
     public function staff_insert_form(){
     	$data['province']=$this->User_model->getProvince();
     	$data['edu_level']=$this->User_model->getEdu_level();
-    	$data['permiss']=$this->User_model->getPermission();
+		$data['permiss']=$this->User_model->getPermission();
+		$this->load->view('templates/header');
 		$this->load->view('staff_insert_form',$data);
+		$this->load->view('templates/footer');	
 	}
 	public function staff_update_form(){
 		$staff_id=$this->uri->segment(3);
@@ -191,21 +209,27 @@ class Project_controller extends CI_Controller {
     	$data['base_amphures']=$this->User_model->getAllAmp($pro_id);
 		$data['base_districts']=$this->User_model->getAllDist($amp_id);
 		$data['base_zipcode']=$this->User_model->getAllZip($dist_id);
+		$this->load->view('templates/header');
 		$this->load->view('staff_update_form',$data);
+		$this->load->view('templates/footer');		
 	}
 	public function member_insert_form(){
     	$data['province']=$this->User_model->getProvince();
     	$data['edu_level']=$this->User_model->getEdu_level();
     	$data['permiss']=$this->User_model->getPermission();
-    	$data['job']=$this->User_model->getJob();
+		$data['job']=$this->User_model->getJob();
+		$this->load->view('templates/header');
 		$this->load->view('member_insert_form',$data);
+		$this->load->view('templates/footer');			
 	}
 	public function member_insert_form_staff(){
     	$data['province']=$this->User_model->getProvince();
     	$data['edu_level']=$this->User_model->getEdu_level();
     	$data['permiss']=$this->User_model->getPermission();
-    	$data['job']=$this->User_model->getJob();
+    	$data['job']=$this->User_model->getJob();		
+		$this->load->view('templates/header');
 		$this->load->view('member_insert_form_staff',$data);
+		$this->load->view('templates/footer');			
 	}
 
 	public function member_update_form(){
@@ -227,7 +251,9 @@ class Project_controller extends CI_Controller {
 	    	$data['base_amphures']=$this->User_model->getAllAmp($pro_id);
 			$data['base_districts']=$this->User_model->getAllDist($amp_id);
 			$data['base_zipcode']=$this->User_model->getAllZip($dist_id);
+			$this->load->view('templates/header');
 			$this->load->view('member_update_form',$data);
+			$this->load->view('templates/footer');					
 		}
 		else{ //นักเรียน
 			$data['member_after']=$this->User_model->get_student_member($member_id);
@@ -238,7 +264,9 @@ class Project_controller extends CI_Controller {
 	    	$data['base_amphures']=$this->User_model->getAllAmp($pro_id);
 			$data['base_districts']=$this->User_model->getAllDist($amp_id);
 			$data['base_zipcode']=$this->User_model->getAllZip($dist_id);
+			$this->load->view('templates/header');
 			$this->load->view('member_update_form',$data);
+			$this->load->view('templates/footer');					
 		}
 	}
 	public function account_insert_form(){
@@ -248,7 +276,9 @@ class Project_controller extends CI_Controller {
 		$data['person']=$this->User_model->getMember_person();
 		$data['accode']=$this->User_model->auto_generate_account_code();
 		$data['member']=$this->User_model->get_member_noparameter();
+		$this->load->view('templates/header');
 		$this->load->view('account_insert_form',$data);
+		$this->load->view('templates/footer');		
 	}
 	public function member_update_form_staff(){
 		$member_id=$this->uri->segment(3);
@@ -268,8 +298,10 @@ class Project_controller extends CI_Controller {
 	    	$data['base_job']=$this->User_model->getJob();
 	    	$data['base_amphures']=$this->User_model->getAllAmp($pro_id);
 			$data['base_districts']=$this->User_model->getAllDist($amp_id);
-			$data['base_zipcode']=$this->User_model->getAllZip($dist_id);
+			$data['base_zipcode']=$this->User_model->getAllZip($dist_id);			
+			$this->load->view('templates/header');
 			$this->load->view('member_update_form_staff',$data);
+			$this->load->view('templates/footer');				
 		}
 		else{ //นักเรียน
 			$data['member_after']=$this->User_model->get_student_member($member_id);
@@ -279,21 +311,27 @@ class Project_controller extends CI_Controller {
 	    	$data['base_job']=$this->User_model->getJob();
 	    	$data['base_amphures']=$this->User_model->getAllAmp($pro_id);
 			$data['base_districts']=$this->User_model->getAllDist($amp_id);
-			$data['base_zipcode']=$this->User_model->getAllZip($dist_id);
+			$data['base_zipcode']=$this->User_model->getAllZip($dist_id);			
+			$this->load->view('templates/header');
 			$this->load->view('member_update_form_staff',$data);
+			$this->load->view('templates/footer');				
 		}
 	}
 	public function account_insert_form_continue_admin(){
 		$member_id=$this->uri->segment(3);
 		$data['member']=$this->User_model->get_member($member_id);
 		$data['accode']=$this->User_model->auto_generate_account_code();
+		$this->load->view('templates/header');
 		$this->load->view('account_insert_form_continue_admin',$data);
+		$this->load->view('templates/footer');						
 	}
 	public function account_insert_form_continue_staff(){
 		$member_id=$this->uri->segment(3);
 		$data['member']=$this->User_model->get_member($member_id);
-		$data['accode']=$this->User_model->auto_generate_account_code();
+		$data['accode']=$this->User_model->auto_generate_account_code();		
+		$this->load->view('templates/header');
 		$this->load->view('account_insert_form_continue_staff',$data);
+		$this->load->view('templates/footer');		
 	}
 	public function deposit_insert_form(){
 		$this->load->view('deposit_insert_form');
@@ -302,7 +340,9 @@ class Project_controller extends CI_Controller {
 		$this->load->view('withdraw_insert_form');
 	}
 	public function close_account(){
+		$this->load->view('templates/header');
 		$this->load->view('close_account_form');
+		$this->load->view('templates/footer');				
 	}
 	public function account_update_form(){
 		$account_id=$this->uri->segment(3);

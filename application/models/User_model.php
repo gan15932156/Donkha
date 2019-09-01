@@ -806,7 +806,7 @@ class User_model extends CI_Model {
 			$condition .= " and (
 				member_name like '%{$keyword}%' or 
 				std_code like '%{$keyword}%' or
-				member_id_card like '%{$keyword}%' or
+				member_id_card like '%{$keyword}%'
 				)";
 		}
  
@@ -836,8 +836,8 @@ class User_model extends CI_Model {
 		if(!empty($keyword)){
 			$condition .= " and (
 				staff_name like '%{$keyword}%' or 
-				level_id like '%{$keyword}%' or
-				staff_status like '%{$keyword}%' or
+				staff.level_id like '%{$keyword}%' or
+				staff_status like '%{$keyword}%'
 				)";
 		}
 		

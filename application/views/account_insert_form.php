@@ -1,111 +1,57 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-?>
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>ธนาคารโรงเรียนดอนคาวิทยา</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/js/jquery.min.js"></script>
-  <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/js/popper.min.js"></script>
-  <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/css/bootstrap.min.css">
-  <script type="text/javascript" src="<?php  echo base_url(); ?>bootstrap000/js/jquery-ui.js"></script>
-  <link rel="stylesheet" type="text/css" href="<?php  echo base_url(); ?>bootstrap000/css/jquery-ui.css">
-  <style type="text/css">
-    html,body {
-      background:
-      url("<?php  echo base_url()."picture/school.jpg"; ?>") no-repeat center center fixed;
-      -webkit-background-size: cover;
-      -moz-background-size: cover;
-      -o-background-size: cover;
-      background-size: cover;
-      height: 91%;
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    function search_data(member_name){
+      $.ajax({
+        type: "POST",
+        url: "<?php echo site_url();?>/Project_controller/searchMember",
+        method:"POST",
+        data:{member_name:member_name},
+        dataType: "JSON",
+        success:function(response){
+          if(response == false){
+            alert("ไม่พบสมาชิก");
+            $("#member_name").val("");
+          }
+          else
+          {           
+            $.each(response,function(index,data)
+            {
+              $('#name').val(data['member_name']);
+              if(data['std_code'] == '0'){
+                $('#std_code').val('ไม่มี');
+              }
+              else{
+                $('#std_code').val(data['std_code']);
+              }
+              $("#show_image_pic").attr("src",data['member_pic']);
+              var b_thai_date = data['member_birth_date'];
+              var thday = new Array ("อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัส","ศุกร์","เสาร์");
+              var thmonth = new Array ("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+              var thai_b_day = b_thai_date.substring(8,10);
+              var thai_b_month = parseInt(b_thai_date.substring(5, 7));
+              var thai_b_year = parseInt(b_thai_date.substring(0, 4));
+              var real_thai_year = thai_b_year+543;
+              $('#b_date').val(thai_b_day+" "+thmonth[thai_b_month]+" "+real_thai_year);
+              $('#tel').val(data['phone_number']);
+              $('#member_id').val(data['member_id']);
+              $('#ac_name').val(data['member_name']);              
+            });
+          }      
+        },
+        error: function( error ){alert( error );}
+      });
     }
-    .container-fluid{
-      background-color: rgba(199, 223, 255,.9);
-      width:97%;
-      height:100%;
-      filter: alpha(opacity=40); /* For IE8 and earlier */
-    }                 
-  </style>
-  <script type="text/javascript">
-    function logout(){
-      location.replace("<?php  echo base_url()."Project_controller/logout"; ?>");
-    }
-  </script>
-  <script type="text/javascript">
-    $(document).ready(function(){
-      function search_data(member_name){
-        $.ajax({
-          type: "POST",
-          url: "<?php echo site_url();?>/Project_controller/searchMember",
-          method:"POST",
-          data:{member_name:member_name},
-          dataType: "JSON",
-          success:function(response){
-            if(response == false){
-              alert("ไม่พบสมาชิก");
-              $("#member_name").val("");
-            }
-            else
-            {           
-              $.each(response,function(index,data)
-              {
-                $('#name').val(data['member_name']);
-                if(data['std_code'] == '0'){
-                  $('#std_code').val('ไม่มี');
-                }
-                else{
-                  $('#std_code').val(data['std_code']);
-                }
-                $("#show_image_pic").attr("src",data['member_pic']);
-                var b_thai_date = data['member_birth_date'];
-                var thday = new Array ("อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัส","ศุกร์","เสาร์");
-                var thmonth = new Array ("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-                var thai_b_day = b_thai_date.substring(8,10);
-                var thai_b_month = parseInt(b_thai_date.substring(5, 7));
-                var thai_b_year = parseInt(b_thai_date.substring(0, 4));
-                var real_thai_year = thai_b_year+543;
-                $('#b_date').val(thai_b_day+" "+thmonth[thai_b_month]+" "+real_thai_year);
-                $('#tel').val(data['phone_number']);
-                $('#member_id').val(data['member_id']);
-                $('#ac_name').val(data['member_name']);              
-              });
-            }      
-          },
-          error: function( error ){alert( error );}
-        });
-      }
-      $("#search_member").click(function(){
-        if($("#member_name").val() == ''){alert('กรุณากรอกคำค้นหา');}
-        else{search_data($("#member_name").val());}     
-      }); 
-      $("#member_name").autocomplete({
-        source: "<?php echo base_url('Project_controller/fetch_member'); ?>",
-      });    
-    });
-  </script>
-</head>
-<body>
-  <h1 class="text-center"><img src="<?php  echo base_url()."picture/donkha.png"; ?>" width="5%" height="22%">ธนาคารโรงเรียนดอนคาวิทยา</h1>
-  <div class="container-fluid" >
-    <div class="row">
-      <div class="col-md-12">
-        <h5 class="text-right" style="margin-top: 5px;background-color: rgb(181, 216, 232);"><?php echo "<B>ยินดีต้อนรับคุณ </B>".$this->session->userdata('sname'); ?>&nbsp</h5>
-      </div>
-      <div class="col-md-2" align="center" >
-        <h4><a style="color: black" href="<?php  echo base_url("Project_controller/index_staff/"); ?>"><B>หน้าแรก</B></a></h4>
-        <img style="border-radius: 50%;" src="<?php  echo $this->session->userdata('spic'); ?>" width="165px" height="180px">
-        <h5><?php echo $this->session->userdata('sname');  ?></h5>
-        <h5><?php echo "<B>ตำแหน่ง </B>".$this->session->userdata('slevel');  ?></h5>
-        <button onclick="logout()" type="submit" class="btn btn-outline-danger" id="submit">ออกจากระบบ</button>
-      </div>          
-      <div class="col-md-10">
-        <div class="row" style="margin-right:1px ;background-color: #EFFEFD;height:500px;">
-          <div class="col-md-12 text-center" >
+    $("#search_member").click(function(){
+      if($("#member_name").val() == ''){alert('กรุณากรอกคำค้นหา');}
+      else{search_data($("#member_name").val());}     
+    }); 
+    $("#member_name").autocomplete({
+      source: "<?php echo base_url('Project_controller/fetch_member'); ?>",
+    });    
+  });
+</script>
+<div class="col-md-12 text-center" >
             <div class="row text-center">
               <div class="col-md-12">
                 <div  class="row">
@@ -232,10 +178,3 @@ defined('BASEPATH') OR exit('No direct script access allowed');
               </div>                   
             </div>        
           </div>                                   
-        </div>
-      </div>                     
-    </div>
-  </div>  
-</body>
-</html>
-
