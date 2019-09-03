@@ -2793,5 +2793,5 @@ EOD;
 		$staff_id=$this->uri->segment(3);
 		echo $staff_id;
 	}
-
+	
 }
