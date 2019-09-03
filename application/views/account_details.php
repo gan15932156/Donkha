@@ -1,7 +1,11 @@
 <style type="text/css">     
   .schooller{
-    height:55vh;
+    height:52vh;
+    
     overflow:auto;
+  }
+  table{
+    width:20px;
   }
   thead tr:nth-child(1) th{
     position: sticky;
@@ -49,7 +53,7 @@
     });
   });
 </script>
-<div class="col-md-12 text-center" >
+<div class="col-md-12 text-center">
   <div class="row text-center">
     <div class="col-md-12">
       <div  class="row">

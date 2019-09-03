@@ -1,7 +1,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
     var table = $('#data_table').DataTable({
-      pageLength: 6,
+      pageLength: 8,
       serverSide: true,
       processing: true,
       "language": {
