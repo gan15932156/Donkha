@@ -771,6 +771,11 @@ class User_model extends CI_Model {
 		$query=$this->db->get();
 		return $query;
 	}
+	public function count_account_opendate_between($start,$end){
+		$this->db->from('account');
+		$this->db->where('account_open_date BETWEEN "'. $start. '" and "'. $end.'"');
+		return $this->db->count_all_results();
+	}
 	public function fetch_account_datatable($param){
 		$keyword = $param['keyword'];
 		$this->db->select('*');

@@ -184,6 +184,11 @@ class Project_controller extends CI_Controller {
 		}
 		echo json_encode($respon);
 	}
+	public function manager_member_report(){
+		$this->load->view('templates/header');
+		$this->load->view('manager_member_report');
+		$this->load->view('templates/footer');					
+	}
 
 
 	////////////////////////////////////////////////////////////
@@ -1937,9 +1942,7 @@ class Project_controller extends CI_Controller {
 		$output='';
 		$data['result'] = $this->User_model->select_open_account_between_date($this->input->post('start_date'),$this->input->post('stop_date'));
 		$output.='
-		<style type="text/css">
-
-			</style>
+			
 			<table class="table table-striped table-hover table-sm text-center" id="job-table">
 				<thead class="thead-light table-bordered">
 						<tr>
@@ -1972,9 +1975,12 @@ class Project_controller extends CI_Controller {
 			<tr><th colspan="10" scope="col">ไม่พบข้อมูล</th></tr>
 			';
 		}
+		$link =base_url("index.php/Project_controller/print_report_account_betwwen_date")."/".$this->input->post('start_date')."/".$this->input->post('stop_date');
 		$output.='
 			</tbody><tfoot></tfoot>
-		</table>';
+		</table>
+		<a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a> 
+		 ';
 		echo $output;
 	}
 
@@ -2214,6 +2220,82 @@ EOD;
             		';
 			}
 		}
+	}
+	public function print_report_account_betwwen_date(){
+		//echo $this->uri->segment(3)." ".$this->uri->segment(4);
+		$pdf = new Pdf('P','mm','A4');
+      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      $pdf->setFooterData(array(0,64,0), array(0,64,128));
+      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      $pdf->setFontSubsetting(true);
+      $pdf->SetFont('thsarabun', '', 16, '', true);
+		$pdf->setPrintHeader(false);
+		$pdf->setCellPadding(1,1,1,1);
+		$pdf->setCellmargins(1,1,1,1);
+		$pdf->SetTitle("รายงานบัญชี");
+		$pdf->AddPage();
+		function DateThai($strDate)
+      { 
+		  $strYear = date("Y",strtotime($strDate))+543;
+		  $thaiyear = "พ.ศ. ". $strYear;
+        $strMonth= date("n",strtotime($strDate));
+        $strDay= date("j",strtotime($strDate));
+        $strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+        $strMonthThai=$strMonthCut[$strMonth];
+        return "$strDay $strMonthThai $thaiyear";
+      } 
+		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
+		$pdf->Ln(8);
+		$content = '<h3>รายงานเปิดบัญชี</h3><span align="center">วันที่'." ".DateThai($this->uri->segment(3))." ถึง ".DateThai($this->uri->segment(4)).'</span><br>
+			<span>ธนาคารโรงเรียน โรงเรียนดอนคาวิทยา ต.ดอนคา อ.อู่ทอง จ.สุพรรณบุรี 72160</span>
+		';
+		$pdf->writeHTMLCell(0,0,'','',$content,0,1,0,true,'C',true);
+		$pdf->Ln(5);
+		$table='<table style="border:1px solid black">';
+		$table.='<tr>
+	               <th style="border:1px solid black" width="8%" scope="col">ลําดับ</th>
+	               <th style="border:1px solid black" width="17%" scope="col">หมายเลขบัญชี	</th>
+	               <th style="border:1px solid black" width="25%" scope="col">ชื่อบัญชี</th>
+	               <th style="border:1px solid black" width="25%" scope="col">ชื่อ - นามสกุล</th>
+	               <th style="border:1px solid black" width="25%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
+    			</tr>';
+		$i=1;
+		foreach ($this->User_model->select_open_account_between_date($this->uri->segment(3),$this->uri->segment(4))->result() as $row) {
+			/*if($row->action == "deposit"){$action = "ฝาก";}
+			elseif($row->action == "add_interest"){$action = "เพิ่มดอกเบี้ย";}
+			else{$action = "ถอน";}
+			$table.='<tr>
+						<td style="border:1px solid black">'.$i.'</td>
+						<td style="border:1px solid black">'.DateThai($row->record_date).'</td>
+						<td style="border:1px solid black">'.$action.'</td>
+						<td align="right" style="border:1px solid black">'.number_format($row->trans_money,2).'</td>
+						<td align="right"  style="border:1px solid black">'.number_format($row->account_detail_balance,2).'</td>
+						<td style="border:1px solid black">'.$row->staff_title."".$row->staff_name.'</td>
+					</tr>';*/
+			$table.='<tr>
+				<td style="border:1px solid black">'.$i.'</td>
+				<td style="border:1px solid black">'.$row->account_id.'</td>
+				<td align="left" style="border:1px solid black">'.$row->account_name.'</td>
+				<td align="left" style="border:1px solid black">'.$row->member_title." ".$row->member_name.'</td>
+				<td style="border:1px solid black">'.DateThai($row->account_open_date).'</td>
+			</tr>';		
+			$i++;
+		}
+		$table.='</table>';
+		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
+		$count="<span>จํานวนผูที่เปิดบัญชีทั้งหมด ".$this->User_model->count_account_opendate_between($this->uri->segment(3),$this->uri->segment(4))." คน</span><br>";
+		$count.="<span>วันที่ออกรายงาน ".DateThai(date('Y-m-d'))."</span>";
+		$pdf->writeHTMLCell(0,0,'','',$count,0,1,0,true,'R',true);
+		ob_clean();
+		$pdf->Output('example_001.pdf', 'I');
+		ob_end_clean();
 	}
 	public function print_passbook_continue_transaction(){
 		$data['account_detail'] = $this->User_model->select_account_detail_parameter($this->uri->segment(3));
