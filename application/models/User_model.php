@@ -863,6 +863,15 @@ class User_model extends CI_Model {
 		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
 		return $result;
 	}
+	public function select_deposit_year(){
+		$this->db->select('substr(record_date,1,4) as year from account_detail WHERE action="deposit" AND record_date !="0000-00-00" group BY year', FALSE);
+		return $this->db->get();
+		
+	}
+	public function select_sum_deposit_year($year){
+		$this->db->select('SUM(trans_money) as sum_year from account_detail WHERE action="deposit" AND substr(record_date, 1, 4) ='.$year.' AND record_date !="0000-00-00"');
+		return $this->db->get();
+	}
 
 	////////////////////////////////////////////////////////////
 	/////////////////////  UPDATE    //////////////////////////

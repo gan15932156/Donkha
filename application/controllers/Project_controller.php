@@ -365,6 +365,12 @@ class Project_controller extends CI_Controller {
 		$account_id=$this->uri->segment(3);
 
 	}
+	public function manager_deposit_report(){
+		$this->load->view('templates/header');
+		$this->load->view('manager_deposit_report');
+		$this->load->view('templates/footer');		
+	}
+	
 
 	////////////////////////////////////////////////////////////
 	//////////////////////  INSERT    //////////////////////////
@@ -1969,19 +1975,57 @@ class Project_controller extends CI_Controller {
 					</tr>';
 				$i++;
 			}
-		}
-		else{
-			$output.='
-			<tr><th colspan="10" scope="col">ไม่พบข้อมูล</th></tr>
-			';
-		}
-		$link =base_url("index.php/Project_controller/print_report_account_betwwen_date")."/".$this->input->post('start_date')."/".$this->input->post('stop_date');
+			$link =base_url("index.php/Project_controller/print_report_account_betwwen_date")."/".$this->input->post('start_date')."/".$this->input->post('stop_date');
 		$output.='
 			</tbody><tfoot></tfoot>
 		</table>
 		<a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a> 
 		 ';
+		}
+		else{
+			$output.='
+			<tr><th colspan="10" scope="col">ไม่พบข้อมูล</th></tr>
+			';
+		$output.='
+			</tbody><tfoot></tfoot>
+		</table>
+		
+		 ';
+		}
+		
 		echo $output;
+	}	
+	public function report_deposit_per_year(){
+		$sumofyear=0.0;
+		$result='<div class="row">
+					<div class="col-4"></div>
+					<div class="col-4">
+					<table class="table table-striped table-hover text-center" id="job-table">
+					<thead class="thead-light table-bordered">
+							<tr>
+									<th width="20%" scope="col">ปี</th>
+									<th width="50%" scope="col">จำนวนเงิน</th>
+							</tr>
+					</thead>
+					<tbody class="table-bordered" style="background-color: #EFFEFD">
+					';
+		foreach ($this->User_model->select_deposit_year()->result() as $row) {
+			foreach ($this->User_model->select_sum_deposit_year($row->year)->result() as $row2) {
+				$sumofyear+=floatval($row2->sum_year);
+				$thaiyear= intval($row->year)+543;
+				//echo $row->year." ".$row2->sum_year."<br>";
+				$result.='<tr>
+				<th id="count"  scope="row">'.$thaiyear.'</th>
+				<td align="right" id="ac_code">'.number_format($row2->sum_year,2)." บาท".'</td>
+						</tr>';
+			}
+		}
+		//echo $sumofyear;
+		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofyear,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
+		</table></div>
+		<div class="col-4"></div>
+		  </div>';
+		echo $result;
 	}
 
 	////////////////////////////////////////////////////////////
