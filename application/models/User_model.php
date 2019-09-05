@@ -872,6 +872,14 @@ class User_model extends CI_Model {
 		$this->db->select('SUM(trans_money) as sum_year from account_detail WHERE action="deposit" AND substr(record_date, 1, 4) ='.$year.' AND record_date !="0000-00-00"');
 		return $this->db->get();
 	}
+	public function select_deposit_month($year){
+		$this->db->select('DISTINCT(SUBSTR(record_date,6,2)) as month FROM account_detail WHERE action="deposit" AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'"');
+		return $this->db->get();
+	}
+	public function select_sum_deposit_month($year,$month){
+		$this->db->select('SUM(trans_money) as summonth FROM `account_detail` WHERE action="deposit" AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" AND SUBSTR(record_date,6,2) = "'.$month.'"');
+		return $this->db->get();
+	}
 
 	////////////////////////////////////////////////////////////
 	/////////////////////  UPDATE    //////////////////////////

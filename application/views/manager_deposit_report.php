@@ -1,57 +1,64 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $("#type").change(function(){
-        if($(this).val() == "1"){
-            $.ajax({
-                type: "POST",
-                url: "<?php echo site_url();?>/Project_controller/fetch_report_open_account",
-                method:"POST",
-                data:{
-                  type:$(this).val()
-                },
-                success:function(response){
-                    $('.table-responsiv').empty();
-                    $('.second').html(response);
-                },
-                error: function( error ){alert( error );}
-            });
-        }
-        else if($(this).val() == "2"){
-            $.ajax({
-                type: "POST",
-                url: "<?php echo site_url();?>/Project_controller/report_deposit_per_year",
-                method:"POST",
-                data:{
-                  type:$(this).val()
-                },
-                success:function(response){
-                  $('.table-responsiv').html(response);
-                },
-                error: function( error ){alert( error );}
-            });
-        }
-        else if($(this).val() == "3"){
-            $.ajax({
-                type: "POST",
-                url: "<?php echo site_url();?>/Project_controller/report_deposit_per_year",
-                method:"POST",
-                data:{
-                  type:$(this).val()
-                },
-                success:function(response){
-                  $('.table-responsiv').html(response);
-                },
-                error: function( error ){alert( error );}
-            });
-        }
-        else{
+      if($(this).val() == "1"){
+        $.ajax({
+          type: "POST",
+          url: "<?php echo site_url();?>/Project_controller/fetch_report_open_account",
+          method:"POST",
+          data:{
+            type:$(this).val()
+          },
+          success:function(response){
+              $('.table-responsiv').empty();
+              $('.second').html(response);
+          },
+          error: function( error ){alert( error );}
+        });
+      }
+      else if($(this).val() == "2"){
+          $.ajax({
+              type: "POST",
+              url: "<?php echo site_url();?>/Project_controller/fetch_deposit_year",
+              method:"POST",
+              data:{
+                type:$(this).val()
+              },
+              success:function(response){
+                $('.table-responsiv').empty();
+                $('.second').html(response);
+              },
+              error: function( error ){alert( error );}
+          });
+      }
+      else if($(this).val() == "3"){
+        $.ajax({
+          type: "POST",
+          url: "<?php echo site_url();?>/Project_controller/report_deposit_per_year",
+          method:"POST",
+          data:{
+            type:$(this).val()
+          },
+          success:function(response){
+            $('.second').empty();
+            $('.third').empty();
             $('.table-responsiv').empty();
-        }
+            $('.table-responsiv').html(response);
+          },
+          error: function( error ){alert( error );}
+        });
+      }
+      else{
+        $('.table-responsiv').empty();
+        $('.second').empty();
+        $('.third').empty();
+      }
         /**/
         //console.log(start_date+" "+stop_date);
 
 
     });
+    
   });
 </script>
 <div class="col-md-12 text-center" ><a href=""></a>
@@ -81,6 +88,7 @@
           </div><hr>
           <!--<div id="chart_div"></div>-->
         </div>
+       
         <div class="col-md-12 text-center">
           <div class="table-responsiv"></div>
         </div>
@@ -88,3 +96,6 @@
     </div>
   </div>
 </div>
+
+
+

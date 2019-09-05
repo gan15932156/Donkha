@@ -2919,5 +2919,75 @@ EOD;
 		$staff_id=$this->uri->segment(3);
 		echo $staff_id;
 	}
-	
+	public function fetch_deposit_year(){
+		$result='<script>
+		$(document).ready(function(){
+			$("#year").change(function(){
+				if($(this).val() == ""){$(".table-responsiv").empty();}
+				else{
+					$.ajax({
+						type: "POST",
+						url: "'.site_url("/Project_controller/report_deposit_per_month").'",
+						method:"POST",
+						data:{
+						  year:$(this).val()
+						},
+						success:function(response){
+							 $(".table-responsiv").html(response);
+						},
+						error: function( error ){alert( error );}
+					});
+				}
+				
+			});
+		});
+	 	</script>';
+		$result.='<div class="row">';
+		$result.='<div class="col-4">เลือกปี:</div>';
+		$result.='<div class="col-5">';
+		$result.='<select class="form-control" name="year" id="year">';
+		$result.='<option value="">เลือกปี</option>';
+		foreach ($this->User_model->select_deposit_year()->result() as $row) {
+			$thaiyear = intval($row->year)+543;
+			$result.='<option value="'.$row->year.'">'.$thaiyear.'</option>';
+		}
+		$result.='</select>';
+		$result.='</div>';
+		$result.='<div class="col-3"></div>';
+		$result.='</div>';
+		echo $result;
+	}
+	public function report_deposit_per_month(){
+		$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+		$sumofmonth=0.0;
+		$result='<div class="row">
+					<div class="col-4"></div>
+					<div class="col-4">
+					<table class="table table-striped table-hover text-center" id="job-table">
+					<thead class="thead-light table-bordered">
+							<tr>
+									<th width="20%" scope="col">เดือน</th>
+									<th width="50%" scope="col">จำนวนเงิน</th>
+							</tr>
+					</thead>
+					<tbody class="table-bordered" style="background-color: #EFFEFD">
+					';
+		foreach ($this->User_model->select_deposit_month($this->input->post('year'))->result() as $row) {
+			foreach ($this->User_model->select_sum_deposit_month($this->input->post('year'),$row->month)->result() as $row2) {
+				$sumofmonth+=floatval($row2->summonth );
+				$thaimonth= $strMonthCut[intval($row->month)];
+				//echo $row->year." ".$row2->sum_year."<br>";
+				$result.='<tr>
+				<th id="count"  scope="row">'.$thaimonth.'</th>
+				<td align="right" id="ac_code">'.number_format($row2->summonth,2)." บาท".'</td>
+						</tr>';
+			}
+		}
+		//echo $sumofyear;
+		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofmonth,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
+		</table></div>
+		<div class="col-4"></div>
+		</div>';
+		echo $result;
+	}
 }
