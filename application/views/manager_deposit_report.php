@@ -1,10 +1,10 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $("#type").change(function(){
-      if($(this).val() == "1"){
+      if($(this).val() == "1"){ //วัน
         $.ajax({
           type: "POST",
-          url: "<?php echo site_url();?>/Project_controller/fetch_report_open_account",
+          url: "<?php echo site_url();?>/Project_controller/fetch_deposit_year",
           method:"POST",
           data:{
             type:$(this).val()
@@ -16,22 +16,24 @@
           error: function( error ){alert( error );}
         });
       }
-      else if($(this).val() == "2"){
-          $.ajax({
-              type: "POST",
-              url: "<?php echo site_url();?>/Project_controller/fetch_deposit_year",
-              method:"POST",
-              data:{
-                type:$(this).val()
-              },
-              success:function(response){
-                $('.table-responsiv').empty();
-                $('.second').html(response);
-              },
-              error: function( error ){alert( error );}
-          });
+      else if($(this).val() == "2"){ //เดือน
+        $.ajax({
+          type: "POST",
+          url: "<?php echo site_url();?>/Project_controller/fetch_deposit_year",
+          method:"POST",
+          data:{
+            type:$(this).val()
+          },
+          success:function(response){
+            $('.table-responsiv').empty();
+            $('.second').empty();
+            $('.third').empty();
+            $('.second').html(response);
+          },
+          error: function( error ){alert( error );}
+        });
       }
-      else if($(this).val() == "3"){
+      else if($(this).val() == "3"){ //ปี
         $.ajax({
           type: "POST",
           url: "<?php echo site_url();?>/Project_controller/report_deposit_per_year",

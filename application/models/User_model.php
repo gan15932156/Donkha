@@ -857,7 +857,6 @@ class User_model extends CI_Model {
 				$data[] = $row;
 			}
 		}
- 
 		$count_condition = $this->db->from('staff')->where($condition)->count_all_results();
 		$count = $this->db->from('staff')->count_all_results();
 		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
@@ -866,18 +865,25 @@ class User_model extends CI_Model {
 	public function select_deposit_year(){
 		$this->db->select('substr(record_date,1,4) as year from account_detail WHERE action="deposit" AND record_date !="0000-00-00" group BY year', FALSE);
 		return $this->db->get();
-		
 	}
 	public function select_sum_deposit_year($year){
 		$this->db->select('SUM(trans_money) as sum_year from account_detail WHERE action="deposit" AND substr(record_date, 1, 4) ='.$year.' AND record_date !="0000-00-00"');
 		return $this->db->get();
 	}
 	public function select_deposit_month($year){
-		$this->db->select('DISTINCT(SUBSTR(record_date,6,2)) as month FROM account_detail WHERE action="deposit" AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'"');
+		$this->db->select('DISTINCT(SUBSTR(record_date,6,2)) as month FROM account_detail WHERE action="deposit" AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" ORDER BY record_date');
 		return $this->db->get();
 	}
 	public function select_sum_deposit_month($year,$month){
 		$this->db->select('SUM(trans_money) as summonth FROM `account_detail` WHERE action="deposit" AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" AND SUBSTR(record_date,6,2) = "'.$month.'"');
+		return $this->db->get();
+	}	
+	public function select_deposit_day($year,$month){
+		$this->db->select('DISTINCT(record_date) as tran_date FROM account_detail WHERE action="deposit" AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" AND SUBSTR(record_date,6,2) = "'.$month.'" ORDER BY record_date');
+		return $this->db->get();
+	}
+	public function select_sum_deposit_day($date){
+		$this->db->select('SUM(trans_money) as sum FROM account_detail WHERE action="deposit" AND record_date != "0000-00-00" AND record_date ="'.$date.'"');
 		return $this->db->get();
 	}
 

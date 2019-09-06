@@ -2923,22 +2923,37 @@ EOD;
 		$result='<script>
 		$(document).ready(function(){
 			$("#year").change(function(){
-				if($(this).val() == ""){$(".table-responsiv").empty();}
+				if($(this).val() == ""){$(".table-responsiv").empty();$(".third").empty();}
 				else{
-					$.ajax({
-						type: "POST",
-						url: "'.site_url("/Project_controller/report_deposit_per_month").'",
-						method:"POST",
-						data:{
-						  year:$(this).val()
-						},
-						success:function(response){
-							 $(".table-responsiv").html(response);
-						},
-						error: function( error ){alert( error );}
-					});
-				}
-				
+					if('.$this->input->post('type').' == "2"){
+						$.ajax({
+							type: "POST",
+							url: "'.site_url("/Project_controller/report_deposit_per_month").'",
+							method:"POST",
+							data:{
+							  year:$(this).val()
+							},
+							success:function(response){
+								$(".table-responsiv").html(response);
+							},
+							error: function( error ){alert( error );}
+						});
+					}else{
+						$.ajax({
+							type: "POST",
+							url: "'.site_url("/Project_controller/fetch_deposit_month").'",
+							method:"POST",
+							data:{
+							  year:$(this).val()
+							},
+							success:function(response){
+								$(".table-responsiv").empty();
+								$(".third").html(response);
+							},
+							error: function( error ){alert( error );}
+						});
+					}	
+				}		
 			});
 		});
 	 	</script>';
@@ -2980,6 +2995,88 @@ EOD;
 				$result.='<tr>
 				<th id="count"  scope="row">'.$thaimonth.'</th>
 				<td align="right" id="ac_code">'.number_format($row2->summonth,2)." บาท".'</td>
+						</tr>';
+			}
+		}
+		//echo $sumofyear;
+		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofmonth,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
+		</table></div>
+		<div class="col-4"></div>
+		</div>';
+		echo $result;
+	}
+	public function fetch_deposit_month(){
+		$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+		$result='<script>
+		$(document).ready(function(){
+			$("#month").change(function(){
+				if($(this).val() == ""){$(".table-responsiv").empty();}
+				else{				
+					$.ajax({
+						type: "POST",
+						url: "'.site_url("/Project_controller/report_deposit_per_day").'",
+						method:"POST",
+						data:{
+							month:$(this).val(),
+							year:'.$this->input->post('year').'
+						},
+						success:function(response){
+							$(".table-responsiv").html(response);
+						},
+						error: function( error ){alert( error );}
+					});					
+				}
+				
+			});
+		});
+	 	</script>';
+		$result.='<div class="row">';
+		$result.='<div class="col-4">เลือกเดือน:</div>';
+		$result.='<div class="col-6">';
+		$result.='<select class="form-control" name="month" id="month">';
+		$result.='<option value="">เลือกเดือน</option>';
+		foreach ($this->User_model->select_deposit_month($this->input->post('year'))->result() as $row) {
+			$result.='<option value="'.$row->month.'">'.$strMonthCut[intval($row->month)].'</option>';
+		}
+		$result.='</select>';
+		$result.='</div>';
+		$result.='<div class="col-3"></div>';
+		$result.='</div>';
+		echo $result;
+	}
+	public function report_deposit_per_day(){
+		//echo $this->input->post('month')." ".$this->input->post('year');
+		function DateThai($strDate)
+      { 
+		  $strYear = date("Y",strtotime($strDate))+543;
+		  $thaiyear = "พ.ศ. ". $strYear;
+        $strMonth= date("n",strtotime($strDate));
+        $strDay= date("j",strtotime($strDate));
+        $strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+        $strMonthThai=$strMonthCut[$strMonth];
+        return "$strDay $strMonthThai $thaiyear";
+		} 
+		$sumofmonth=0.0;
+		$result='<div class="row">
+					<div class="col-4"></div>
+					<div class="col-4">
+					<table class="table table-striped table-hover text-center" id="job-table">
+					<thead class="thead-light table-bordered">
+							<tr>
+									<th width="50%" scope="col">วันที่</th>
+									<th width="40%" scope="col">จำนวนเงิน</th>
+							</tr>
+					</thead>
+					<tbody class="table-bordered" style="background-color: #EFFEFD">
+					';
+		foreach ($this->User_model->select_deposit_day($this->input->post('year'),$this->input->post('month'))->result() as $row) {
+			foreach ($this->User_model->select_sum_deposit_day($row->tran_date)->result() as $row2) {
+				$sumofmonth+=floatval($row2->sum );
+				//$thaimonth= $strMonthCut[intval($row->tran_date)];
+				//echo $row->year." ".$row2->sum_year."<br>";
+				$result.='<tr>
+				<th id="count"  scope="row">'.DateThai($row->tran_date).'</th>
+				<td align="right" id="ac_code">'.number_format($row2->sum,2)." บาท".'</td>
 						</tr>';
 			}
 		}
