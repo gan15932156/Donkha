@@ -2021,9 +2021,10 @@ class Project_controller extends CI_Controller {
 			}
 		}
 		//echo $sumofyear;
+		$link =base_url("index.php/Project_controller/print_report_transaction")."/"."deposit"."/"."year";
 		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofyear,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
 		</table></div>
-		<div class="col-4"></div>
+		<div class="col-4"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
 		  </div>';
 		echo $result;
 	}
@@ -2106,78 +2107,6 @@ class Project_controller extends CI_Controller {
 			return "$strDay $strMonthThai $strYear";
 		}
 	}
-	public function test_PDF(){
-		// สร้าง object สำหรับใช้สร้าง pdf
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        // กำหนดรายละเอียดของ pdf
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Nicola Asuni');
-        $pdf->SetTitle('TCPDF Example 001');
-        $pdf->SetSubject('TCPDF Tutorial');
-        $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
-
-        // กำหนดข้อมูลที่จะแสดงในส่วนของ header และ footer
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 001', PDF_HEADER_STRING, array(0,64,255), array(0,64,128));
-        $pdf->setFooterData(array(0,64,0), array(0,64,128));
-
-        // กำหนดรูปแบบของฟอนท์และขนาดฟอนท์ที่ใช้ใน header และ footer
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-        // กำหนดค่าเริ่มต้นของฟอนท์แบบ monospaced
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-        // กำหนด margins
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-        // กำหนดการแบ่งหน้าอัตโนมัติ
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-        // กำหนดรูปแบบการปรับขนาดของรูปภาพ
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-        // set default font subsetting mode
-        $pdf->setFontSubsetting(true);
-
-        // กำหนดฟอนท์
-        // ฟอนท์ freeserif รองรับภาษาไทย
-        $pdf->SetFont('freeserif', '', 14, '', true);
-
-        // เพิ่มหน้า pdf
-        // การกำหนดในส่วนนี้ สามารถปรับรูปแบบต่างๆ ได้ ดูวิธีใช้งานที่คู่มือของ tcpdf เพิ่มเติม
-        $pdf->AddPage();
-
-        // กำหนดเงาของข้อความ
-        $pdf->setTextShadow(array('enabled'=>true, 'depth_w'=>0.2, 'depth_h'=>0.2, 'color'=>array(196,196,196), 'opacity'=>1, 'blend_mode'=>'Normal'));
-
-// กำหนดเนื้อหาข้อมูลที่จะสร้าง pdf ในที่นี้เราจะกำหนดเป็นแบบ html โปรดระวัง EOD; โค้ดสุดท้ายต้องชิดซ้ายไม่เว้นวรรค
-    $html = <<<EOD
-<h1>ทดสอบข้อความภาษาไทย Welcome to <a href="http://www.tcpdf.org"
-style="text-decoration:none;background-color:#CC0000;color:black;">&nbsp;
-<span style="color:black;">TC</span><span style="color:white;">PDF</span>&nbsp;</a>!</h1>
-<i>This is the first example of TCPDF library. ทดสอบข้อความภาษาไทย</i>
-<p>This text is printed using the <i>writeHTMLCell()</i> method but you can also use:
-<i>Multicell(), writeHTML(), Write(), Cell() and Text()</i>.</p>
-<p>Please check the source code documentation and other examples for further information.</p>
-<p style="color:#CC0000;">TO IMPROVE AND EXPAND TCPDF I NEED YOUR SUPPORT, PLEASE
-<a href="http://sourceforge.net/donate/index.php?group_id=128076">MAKE A DONATION
-ทดสอบข้อความภาษาไทย!</a></p>
-<span style="font-size:12px;">ทดสอบข้อความภาษาไทย มีสระ วรรณยุกต์</span>
-EOD;
-
-    // สร้างข้อเนื้อหา pdf ด้วยคำสั่ง writeHTMLCell()
-    $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
-
-// ---------------------------------------------------------
-
-    // จบการทำงานและแสดงไฟล์ pdf
-    // การกำหนดในส่วนนี้ สามารถปรับรูปแบบต่างๆ ได้ เช่นให้บันทึกเป้นไฟล์ หรือให้แสดง pdf เลย ดูวิธีใช้งานที่คู่มือของ tcpdf เพิ่มเติม
-    $pdf->Output('example_001.pdf', 'I');
-	}
-
-
 	public function confirm_deposit(){
 		$account_detail_id=$this->uri->segment(3);
 		$data['account_detail'] = $this->User_model->select_account_detail_parameter($account_detail_id);
@@ -2268,33 +2197,33 @@ EOD;
 	public function print_report_account_betwwen_date(){
 		//echo $this->uri->segment(3)." ".$this->uri->segment(4);
 		$pdf = new Pdf('P','mm','A4');
-      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
-      $pdf->setFooterData(array(0,64,0), array(0,64,128));
-      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-      $pdf->setFontSubsetting(true);
-      $pdf->SetFont('thsarabun', '', 16, '', true);
+      	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      	$pdf->setFooterData(array(0,64,0), array(0,64,128));
+      	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      	$pdf->setFontSubsetting(true);
+      	$pdf->SetFont('thsarabun', '', 16, '', true);
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
 		$pdf->SetTitle("รายงานบัญชี");
 		$pdf->AddPage();
 		function DateThai($strDate)
-      { 
-		  $strYear = date("Y",strtotime($strDate))+543;
-		  $thaiyear = "พ.ศ. ". $strYear;
-        $strMonth= date("n",strtotime($strDate));
-        $strDay= date("j",strtotime($strDate));
-        $strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
-        $strMonthThai=$strMonthCut[$strMonth];
-        return "$strDay $strMonthThai $thaiyear";
-      } 
+      	{ 
+			$strYear = date("Y",strtotime($strDate))+543;
+			 $thaiyear = "พ.ศ. ". $strYear;
+      	  	$strMonth= date("n",strtotime($strDate));
+      	  	$strDay= date("j",strtotime($strDate));
+      	  	$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+      	  	$strMonthThai=$strMonthCut[$strMonth];
+      	  	return "$strDay $strMonthThai $thaiyear";
+      	} 
 		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
 		$pdf->Ln(8);
 		$content = '<h3>รายงานเปิดบัญชี</h3><span align="center">วันที่'." ".DateThai($this->uri->segment(3))." ถึง ".DateThai($this->uri->segment(4)).'</span><br>
@@ -2312,17 +2241,6 @@ EOD;
     			</tr>';
 		$i=1;
 		foreach ($this->User_model->select_open_account_between_date($this->uri->segment(3),$this->uri->segment(4))->result() as $row) {
-			/*if($row->action == "deposit"){$action = "ฝาก";}
-			elseif($row->action == "add_interest"){$action = "เพิ่มดอกเบี้ย";}
-			else{$action = "ถอน";}
-			$table.='<tr>
-						<td style="border:1px solid black">'.$i.'</td>
-						<td style="border:1px solid black">'.DateThai($row->record_date).'</td>
-						<td style="border:1px solid black">'.$action.'</td>
-						<td align="right" style="border:1px solid black">'.number_format($row->trans_money,2).'</td>
-						<td align="right"  style="border:1px solid black">'.number_format($row->account_detail_balance,2).'</td>
-						<td style="border:1px solid black">'.$row->staff_title."".$row->staff_name.'</td>
-					</tr>';*/
 			$table.='<tr>
 				<td style="border:1px solid black">'.$i.'</td>
 				<td style="border:1px solid black">'.$row->account_id.'</td>
@@ -2999,9 +2917,10 @@ EOD;
 			}
 		}
 		//echo $sumofyear;
+		$link =base_url("index.php/Project_controller/print_report_transaction")."/deposit"."/month"."/".$this->input->post('year');
 		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofmonth,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
 		</table></div>
-		<div class="col-4"></div>
+		<div class="col-4"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
 		</div>';
 		echo $result;
 	}
@@ -3045,16 +2964,15 @@ EOD;
 		echo $result;
 	}
 	public function report_deposit_per_day(){
-		//echo $this->input->post('month')." ".$this->input->post('year');
 		function DateThai($strDate)
-      { 
-		  $strYear = date("Y",strtotime($strDate))+543;
-		  $thaiyear = "พ.ศ. ". $strYear;
-        $strMonth= date("n",strtotime($strDate));
-        $strDay= date("j",strtotime($strDate));
-        $strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
-        $strMonthThai=$strMonthCut[$strMonth];
-        return "$strDay $strMonthThai $thaiyear";
+      	{ 
+		  	$strYear = date("Y",strtotime($strDate))+543;
+		  	$thaiyear = "พ.ศ. ". $strYear;
+        	$strMonth= date("n",strtotime($strDate));
+        	$strDay= date("j",strtotime($strDate));
+        	$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+        	$strMonthThai=$strMonthCut[$strMonth];
+        	return "$strDay $strMonthThai $thaiyear";
 		} 
 		$sumofmonth=0.0;
 		$result='<div class="row">
@@ -3072,19 +2990,126 @@ EOD;
 		foreach ($this->User_model->select_deposit_day($this->input->post('year'),$this->input->post('month'))->result() as $row) {
 			foreach ($this->User_model->select_sum_deposit_day($row->tran_date)->result() as $row2) {
 				$sumofmonth+=floatval($row2->sum );
-				//$thaimonth= $strMonthCut[intval($row->tran_date)];
-				//echo $row->year." ".$row2->sum_year."<br>";
 				$result.='<tr>
 				<th id="count"  scope="row">'.DateThai($row->tran_date).'</th>
 				<td align="right" id="ac_code">'.number_format($row2->sum,2)." บาท".'</td>
 						</tr>';
 			}
 		}
-		//echo $sumofyear;
+		$link =base_url("index.php/Project_controller/print_report_transaction")."/deposit"."/day"."/".$this->input->post('year')."/".$this->input->post('month');
 		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofmonth,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
 		</table></div>
-		<div class="col-4"></div>
+		<div class="col-4"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
 		</div>';
 		echo $result;
+	}
+	public function print_report_transaction(){
+		if($this->uri->segment(3) === "deposit"){$tran_name = "ฝาก";}
+		else{$tran_name = "ถอน";}
+		if($this->uri->segment(4) === "year"){$action_name = "รายปี";$action_name2="ปี";}
+		elseif($this->uri->segment(4) === "month"){$action_name = "รายเดือน";$action_name2="เดือน";}
+		else{$action_name = "รายวัน";$action_name2="วันที่";}
+		$pdf = new Pdf('P','mm','A4');
+      	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      	$pdf->setFooterData(array(0,64,0), array(0,64,128));
+      	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      	$pdf->setFontSubsetting(true);
+      	$pdf->SetFont('thsarabun', '', 16, '', true);
+		$pdf->setPrintHeader(false);
+		$pdf->setCellPadding(1,1,1,1);
+		$pdf->setCellmargins(1,1,1,1);
+		$pdf->SetTitle("รายงานสรุปยอด".$tran_name." ".$action_name);
+		$pdf->AddPage();
+		function DateThai($strDate)
+      	{ 
+			$strYear = date("Y",strtotime($strDate))+543;
+			$thaiyear = "พ.ศ. ". $strYear;
+      	  	$strMonth= date("n",strtotime($strDate));
+      	  	$strDay= date("j",strtotime($strDate));
+      	  	$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+      	  	$strMonthThai=$strMonthCut[$strMonth];
+      	  	return "$strDay $strMonthThai $thaiyear";
+      	} 
+		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
+		$pdf->Ln(8);
+		$content = '<h3>รายงานสรุปยอด'.$tran_name." ".$action_name.'</h3><span>ธนาคารโรงเรียน โรงเรียนดอนคาวิทยา ต.ดอนคา อ.อู่ทอง จ.สุพรรณบุรี 72160</span>
+		';
+		$pdf->writeHTMLCell(0,0,'','',$content,0,1,0,true,'C',true);
+		$pdf->Ln(5);
+		$table='<table style="border:1px solid black">';
+		$table.='<tr>
+	               <th style="border:1px solid black" width="60%" scope="col">'.$action_name2.'</th>
+	               <th style="border:1px solid black" width="40%" scope="col">จำนวนเงิน</th>
+    			</tr>';
+		$trans = $this->uri->segment(3);
+		$action = $this->uri->segment(4);
+		$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+		$sum = 0.0;
+		if($action === "year"){
+			if($trans === "deposit"){
+				foreach ($this->User_model->select_deposit_year()->result() as $row) {
+					foreach ($this->User_model->select_sum_deposit_year($row->year)->result() as $row2) {
+						$sum+=floatval($row2->sum_year);
+						$thaiyear= intval($row->year)+543;
+						//echo $row->year." ".$row2->sum_year."<br>";
+						$table.='<tr>
+						<th style="border:1px solid black" id="count"  scope="row">'.$thaiyear.'</th>
+						<td style="border:1px solid black" align="right" id="ac_code">'.number_format($row2->sum_year,2)." บาท".'</td>
+								</tr>';
+					}
+				}
+			}
+			elseif($trans === "withdraw"){
+
+			}
+		}
+		elseif($action === "month"){
+			if($trans === "deposit"){
+				foreach ($this->User_model->select_deposit_month($this->uri->segment(5))->result() as $row) {
+					foreach ($this->User_model->select_sum_deposit_month($this->uri->segment(5),$row->month)->result() as $row2) {
+						$sum+=floatval($row2->summonth);
+						//echo $row->year." ".$row2->sum_year."<br>";
+						$table.='<tr>
+						<th style="border:1px solid black" id="count"  scope="row">'.$strMonthCut[intval($row->month)].'</th>
+						<td style="border:1px solid black" align="right" id="ac_code">'.number_format($row2->summonth,2)." บาท".'</td>
+								</tr>';
+					}
+				}
+			}
+			elseif($trans === "withdraw"){
+
+			}
+		}
+		elseif($action === "day"){
+			if($trans === "deposit"){
+				foreach ($this->User_model->select_deposit_day($this->uri->segment(5),$this->uri->segment(6))->result() as $row) {
+					foreach ($this->User_model->select_sum_deposit_day($row->tran_date)->result() as $row2) {
+						$sum+=floatval($row2->sum);
+						//echo $row->year." ".$row2->sum_year."<br>";
+						$table.='<tr>
+						<th style="border:1px solid black" id="count"  scope="row">'.DateThai($row->tran_date).'</th>
+						<td style="border:1px solid black" align="right" id="ac_code">'.number_format($row2->sum,2)." บาท".'</td>
+								</tr>';
+					}
+				}
+			}
+			elseif($trans === "withdraw"){
+
+			}
+		}
+		$table.='</table>';
+		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
+		$count.="<span>รวมยอดเงิน ".number_format($sum,2)." บาท"."</span><br><span>วันที่ออกรายงาน ".DateThai(date('Y-m-d'))."</span>";
+		$pdf->writeHTMLCell(0,0,'','',$count,0,1,0,true,'R',true);
+		ob_clean();
+		$pdf->Output('example_001.pdf', 'I');
+		ob_end_clean();
 	}
 }

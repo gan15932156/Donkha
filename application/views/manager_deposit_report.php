@@ -55,15 +55,10 @@
         $('.second').empty();
         $('.third').empty();
       }
-        /**/
-        //console.log(start_date+" "+stop_date);
-
-
-    });
-    
+    });   
   });
 </script>
-<div class="col-md-12 text-center" ><a href=""></a>
+<div class="col-md-12 text-center" >
   <div class="row ">
     <div class="col-md-12">
       <div  class="row">
@@ -81,16 +76,11 @@
                 <option value="3">รายปี</option>
               </select>
             </div>
-            <div class="col-4 second">
-             
-            </div>
-            <div class="col-4 third">
-              
-            </div>
+            <div class="col-4 second"></div>
+            <div class="col-4 third"></div>
           </div><hr>
           <!--<div id="chart_div"></div>-->
-        </div>
-       
+        </div>  
         <div class="col-md-12 text-center">
           <div class="table-responsiv"></div>
         </div>
