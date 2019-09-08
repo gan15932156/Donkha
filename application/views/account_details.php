@@ -103,8 +103,8 @@
       <div class="form-group col-12 schooller">
         <div id="result_table"></div>
         <table class="table table-striped table-hover table-sm" id="data_table">
-          <thead   class="thead-light table-bordered">
-            <tr >
+          <thead class="thead-light table-bordered text-center">
+            <tr>
               <th width="5%" scope="col">ลำดับ</th>
               <th width="30%" scope="col">วันที่</th>
               <th width="10%" scope="col">รายการ</th>
@@ -127,9 +127,9 @@
               date_default_timezone_set('Asia/Bangkok');
               foreach($account_detail->result() as $row){ ?>
             <tr>
-              <th scope="row"><?php echo $i; ?></th>
-              <td><?php echo DateThai($row->record_date)." ".$row->record_time; ?></td>
-              <td><?php
+              <th class="text-center" scope="row"><?php echo $i; ?></th>
+              <td class="text-center"><?php echo DateThai($row->record_date)." ".$row->record_time; ?></td>
+              <td class="text-center"><?php
                 if($row->action == "deposit"){echo "<span class='text-success'>ฝาก</span>";}
                 elseif($row->action == "withdraw"){echo "<span class='text-danger'>ถอน</span>";}
                 elseif($row->action == "add_interest"){echo "<span class='text-success'>เพิ่มดอกเบี้ย</span>";}
@@ -149,7 +149,7 @@
                 echo number_format($row->account_detail_balance,2);
                 ?> 
               </td>
-              <td><?php echo $row->staff_title."".$row->staff_name; ?></td>
+              <td class="text-center"><?php echo $row->staff_title."".$row->staff_name; ?></td>
             </tr>
             <?php $i++; }  ?>  
           </tbody>

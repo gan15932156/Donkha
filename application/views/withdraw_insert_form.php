@@ -63,7 +63,7 @@
     <div class="col-md-12">
       <div  class="row">
         <div class="col-md-12 ">
-          <h4 class="text-center"><B>ฟอร์มถอนเงิน</B></h4>
+          <h4 class="text-center"><B>ถอนเงิน</B></h4>
         </div>
         <div class="col-md-12 ">
          <div class="row">

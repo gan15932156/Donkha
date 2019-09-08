@@ -161,7 +161,7 @@
     <div class="col-md-12">
       <div  class="row scroller">
         <div class="col-md-12 ">
-          <h4 class="text-center"><B>ฟอร์มเพิ่มสมาชิก</B></h4>
+          <h4 class="text-center"><B>เพิ่มสมาชิก</B></h4>
         </div>
         <div class="col-md-12 ">
           <div class="row">

@@ -1,6 +1,9 @@
 <script type="text/javascript">
   $(document).ready(function(){
     var table = $('#data_table').DataTable({
+      columnDefs: [
+        {targets: [1,2],className: 'dt-body-center'}
+      ],
       pageLength: 8,
       serverSide: true,
       processing: true,
@@ -40,34 +43,27 @@
       {
         data:'member_id',
         render: function(data, type, row){
-          var string =  "ต้องการเปลี่ยนสถานะการใช้งานหรือไม่";
-          var divv = ' <div class="dropdown">';
-              divv+='<button style="font-size:16px;"><i class="fa fa-cog" aria-hidden="true"></i></button><div>';   
+          var divv = ' <div class="dropdown">';   
               divv+='<a style="color:black;" href="<?php  echo site_url('Project_controller/member_detail/');?>'+row['member_id']+'"><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียด</a>';
-              divv+='<a style="color:black;" href="<?php  echo site_url('Project_controller/member_update_form/');?>'+row['member_id']+'" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a>';
-              divv+='<a style="color:black;" id="onclickchangestatus" href="<?php  echo site_url('Project_controller/member_change_status/');?>'+row['member_id']+'" ><i class="fa fa-times" aria-hidden="true"></i> เปลี่ยนสถานะ</a>';
-              divv+='</div></div>';                                     
+              divv+='</div>';                                     
           return divv;
         }
       }
       ]
     });
-    $('#data_table tbody ').on('click', '#onclickchangestatus', function () {
-      return confirm('ต้องการเปลี่ยนสถานะการใช้งานหรือไม่');
-    });  
   });
-</script>       
-<div class="col-md-12 text-center" >
-  <div class="row text-center">
+</script>      
+<div class="col-md-12">
+  <div class="row">
     <div class="col-md-12">
       <div  class="row">
         <div class="col-md-12 ">
           <h4 class="text-center"><B>รายงานสมาชิก</B></h4>
         </div>       
-        <div class="col-md-12 text-center">
+        <div class="col-md-12 ">
           <div id="result_search"></div>
           <table class="table table-striped table-hover table-sm " id="data_table">
-            <thead class="thead-light table-bordered">
+            <thead class="thead-light table-bordered text-center">
               <tr>
                 <th width="20%" scope="col">ชื่อ-นามสกุล</th>
                 <th width="30%" scope="col">สถานะ</th>

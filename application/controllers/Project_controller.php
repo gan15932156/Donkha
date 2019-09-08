@@ -1560,7 +1560,7 @@ class Project_controller extends CI_Controller {
 		if($this->input->post('filter') == "deposit"){
 			$output.='
 				<table class="table table-striped table-hover table-sm">
-	                <thead class="thead-light table-bordered">
+	                <thead class="thead-light table-bordered text-center">
 	                    <tr>
 	                        <th width="5%" scope="col">ลำดับ</th>
 	                        <th width="30%" scope="col">วันที่</th>
@@ -1578,12 +1578,12 @@ class Project_controller extends CI_Controller {
 					foreach ($result as $row) {
 						$output.='
 							<tr>
-		                        <th scope="row">'.$i.'</th>
-		                        <td>'.DateThai($row->record_date)." ".$row->record_time.'</td>
-		                        <td><span class="text-success">ฝาก</span></td>
+		                        <th class="text-center" scope="row">'.$i.'</th>
+		                        <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
+		                        <td class="text-center"><span class="text-success">ฝาก</span></td>
 		                        <td align="right"><span class="text-success">+'.number_format($row->trans_money,2).'</span></td>
 		                        <td align="right">'.number_format($row->account_detail_balance,2).'</td>
-		                        <td>'.$row->staff_title."".$row->staff_name.'</td>
+		                        <td class="text-center">'.$row->staff_title."".$row->staff_name.'</td>
 		                    </tr>';
 		                $i++;
 					}
@@ -1591,14 +1591,14 @@ class Project_controller extends CI_Controller {
 				else{
 					$output.='
 						<tr>
-		                	<th scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th>
+		                	<th class="text-center" scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th>
 		                </tr>';
 				}
 		}
 		elseif($this->input->post('filter') == "withdraw"){
 			$output.='
 			<table class="table table-striped table-hover table-sm">
-	            <thead class="thead-light table-bordered">
+	            <thead class="thead-light table-bordered text-center">
 	                <tr>
 	                    <th width="5%" scope="col">ลำดับ</th>
 	                    <th width="30%" scope="col">วันที่</th>
@@ -1616,12 +1616,12 @@ class Project_controller extends CI_Controller {
 				foreach ($result as $row) {
 					$output.='
 						<tr>
-							<th scope="row">'.$i.'</th>
-		                    <td>'.DateThai($row->record_date)." ".$row->record_time.'</td>
-		                    <td><span class="text-danger">ถอน</span></td>
+							<th class="text-center" scope="row">'.$i.'</th>
+		                    <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
+		                    <td class="text-center"><span class="text-danger">ถอน</span></td>
 		                    <td align="right"><span class="text-danger">-'.number_format($row->trans_money,2).'</span></td>
 		                    <td align="right">'.number_format($row->account_detail_balance,2).'</td>
-		                    <td>'.$row->staff_title."".$row->staff_name.'</td>
+		                    <td class="text-center">'.$row->staff_title."".$row->staff_name.'</td>
 		                </tr>';
 		            $i++;
 				}
@@ -1629,14 +1629,14 @@ class Project_controller extends CI_Controller {
 			else{
 				$output.='
 					<tr>
-		            	<th scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th>
+		            	<th class="text-center" scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th>
 		            </tr>';
 			}
 		}
 		elseif($this->input->post('filter') == "tranfer"){
 			$output.='
 			<table class="table table-striped table-hover table-sm">
-	            <thead class="thead-light table-bordered">
+	            <thead class="thead-light table-bordered text-center">
 	                <tr>
 	                   <th width="5%" scope="col">ลำดับ</th>
 	                   <th width="30%" scope="col">วันที่</th>
@@ -1654,12 +1654,12 @@ class Project_controller extends CI_Controller {
 				foreach ($result as $row) {
 					$output.='
 						<tr>
-							<th scope="row">'.$i.'</th>
-		                    <td>'.DateThai($row->record_date)." ".$row->record_time.'</td>
-		                    <td><span class="text-danger">โอน</span></td>
+							<th class="text-center" scope="row">'.$i.'</th>
+		                    <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
+		                    <td class="text-center"><span class="text-danger">โอน</span></td>
 		                    <td align="right"><span class="text-danger">-'.number_format($row->trans_money,2).'</span></td>
 		                    <td align="right">'.number_format($row->account_detail_balance,2).'</td>
-		                    <td>'.$row->staff_title."".$row->staff_name.'</td>
+		                    <td class="text-center">'.$row->staff_title."".$row->staff_name.'</td>
 		                </tr>';
 		            $i++;
 				}
@@ -1667,14 +1667,14 @@ class Project_controller extends CI_Controller {
 			else{
 				$output.='
 					<tr>
-		            	<th scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th>
+		            	<th class="text-center" scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th>
 		            </tr>';
 			}
 		}
 		else{
 			$output.='
 			<table class="table table-striped table-hover table-sm">
-	            <thead class="thead-light table-bordered">
+	            <thead class="thead-light table-bordered text-center">
 	                <tr>
 	                    <th width="5%" scope="col">ลำดับ</th>
 	                    <th width="30%" scope="col">วันที่</th>
@@ -1710,12 +1710,12 @@ class Project_controller extends CI_Controller {
 					}
 					$output.='
 						<tr>
-		                    <th scope="row">'.$i.'</th>
-		                    <td>'.DateThai($row->record_date)." ".$row->record_time.'</td>
-		                    <td>'.$action.'</td>
+		                    <th class="text-center" scope="row">'.$i.'</th>
+		                    <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
+		                    <td class="text-center">'.$action.'</td>
 		                    <td align="right">'.$money.'</td>
 		                    <td align="right">'.number_format($row->account_detail_balance,2).'</td>
-		                    <td>'.$row->staff_title."".$row->staff_name.'</td>
+		                    <td class="text-center">'.$row->staff_title."".$row->staff_name.'</td>
 		                </tr>';
 		            $i++;
 				}
@@ -1723,7 +1723,7 @@ class Project_controller extends CI_Controller {
 			else{
 				$output.='
 					<tr>
-		            	<th scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th>
+		            	<th class="text-center" scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th>
 		            </tr>';
 			}
 		}

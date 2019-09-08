@@ -1,6 +1,9 @@
 <script type="text/javascript">
   $(document).ready(function(){
     var table = $('#data_table').DataTable({
+      columnDefs: [
+        {targets: '_all',className: 'dt-body-center'}
+      ],
       pageLength: 8,
       serverSide: true,
       processing: true,
@@ -52,17 +55,17 @@
     });
   });
 </script>
-<div class="col-md-12 text-center" >
-  <div class="row text-center">
+<div class="col-md-12">
+  <div class="row">
     <div class="col-md-12">
       <div  class="row">
         <div class="col-md-12 ">
           <h4 class="text-center"><B>ข้อมูลบัญชี</B></h4>
         </div>             
-      <div class="col-md-12 text-center">
+      <div class="col-md-12">
         <div id="result_search"></div>
           <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
-            <thead class="thead-light table-bordered">
+            <thead class="thead-light table-bordered text-center">
               <tr>
                 <th width="20%" scope="col">หมายเลขบัญชี</th>
                 <th width="30%" scope="col">ชื่อบัญชี</th>

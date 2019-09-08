@@ -126,7 +126,7 @@
     <div class="col-md-12">
       <div  class="row">
         <div class="col-md-12 ">
-          <h4 class="text-center"><B>ฟอร์มเพิ่มพนักงาน</B></h4>
+          <h4 class="text-center"><B>เพิ่มพนักงาน</B></h4>
         </div>
         <div class="col-md-12 text-center">
           <form  method="post" action="<?=base_url("index.php/Project_controller/staff_insert");?>" enctype="multipart/form-data" name="staff_form" id="staff_form">

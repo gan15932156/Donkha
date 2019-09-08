@@ -126,7 +126,7 @@
     <div class="col-md-12">
       <div  class="row">
         <div class="col-md-12 ">
-          <h4 class="text-center"><B>ฟอร์มแก้ไขพนักงาน</B></h4>
+          <h4 class="text-center"><B>แก้ไขพนักงาน</B></h4>
         </div>
         <div class="col-md-12 text-center">
           <?php foreach($staff->result() as $row){ ?>

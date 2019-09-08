@@ -141,7 +141,7 @@
     <div class="col-md-12">
       <div  class="row scroller">
         <div class="col-md-12 ">
-          <h4 class="text-center"><B>ฟอร์มแก้ไขสมาชิก</B></h4>
+          <h4 class="text-center"><B>แก้ไขสมาชิก</B></h4>
         </div>
         <div class="col-md-12 text-center">
           <?php foreach($member_after->result() as $row){ 
