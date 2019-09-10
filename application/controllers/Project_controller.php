@@ -375,6 +375,11 @@ class Project_controller extends CI_Controller {
 		$this->load->view('manager_withdraw_report');
 		$this->load->view('templates/footer');
 	}
+	public function manager_account_report(){
+		$this->load->view('templates/header');
+		$this->load->view('manager_account_report');
+		$this->load->view('templates/footer');
+	}
 	
 
 	////////////////////////////////////////////////////////////
@@ -1243,6 +1248,34 @@ class Project_controller extends CI_Controller {
 		if($this->input->post("dist_id")){
 			echo $this->User_model->getZip($this->input->post("dist_id"));
 		}
+	}
+	public function get_account_details_modal(){
+		//data['account_detail']=$this->User_model->select_account_detail_parameter_account_id($account_id);
+		$result='<div class="row">';
+		foreach($this->User_model->select_account_with_parameter($this->input->post('account_id'))->result() as $row){
+			$result.= '<div class="col-md-6"><B>หมายเลขบัญชี :</B>'." ".$row->account_id.'</div>
+			<div class="col-md-6"><B>ชื่อบัญชี :</B>'." ".$row->account_name.'</div>';
+			//echo $row->account_name." ".$row->account_id;
+		}
+		$result.='<div class="col-2"></div>';
+		$result.=' <div class="form-group col-2"><br><label><B>การแสดงผล</B></label></div>';	
+		$result.='<div class="form-group col-2"><br>
+				<select  id="filter" name="filter" class="form-control" >
+					<option value="all">ทั้งหมด</option>
+					<option value="deposit">รายการฝาก</option>
+					<option value="withdraw">รายการถอน</option>
+					<option value="tranfer">รายการโอน</option>
+				</select>
+			</div> ';
+		$result.='<div class="form-group col-2"><br><label style="width: 100%"><B>ยอดเงินคงเหลือ</B></label></div>';	
+		$result.='<div class="form-group col-2" align="left"><br><label>'.number_format($row->account_balance,2)." ".'บาท</label></div> ';
+		$result.='<div class="col-2"></div>'; 
+
+
+
+		$result.='</div>';
+		echo $result;
+		
 	}
 	public function search_data_staff(){
 		$output='';
