@@ -1,17 +1,7 @@
 <style type="text/css">     
-  .schooller{
-    height:52vh;
-    
-    overflow:auto;
-  }
-  table{
-    width:20px;
-  }
-  thead tr:nth-child(1) th{
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  } 
+  .schooller{height:52vh;overflow:auto;}
+  table{width:20px;}
+  thead tr:nth-child(1) th{position: sticky;top: 0;z-index: 10;} 
 </style>
 <script type="text/javascript">
   

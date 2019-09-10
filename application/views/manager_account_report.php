@@ -46,7 +46,7 @@
       ]
     });
     $('[id="print_report"]').click(function(){
-        alert($(this).attr('account_id'));
+        alert($('[id="filter"]').val()+" "+$('[id="ac_id"]').val());
     });
   });
   function show_modal(account_id){
@@ -57,11 +57,11 @@
       success:function(data)
       {
         $('.result').html(data);
-        $('[id="print_report"]').attr("account_id",account_id);
         $('#exampleModal').modal('show');
       }
     }); 
   }
+  
 </script>
 <div class="col-md-12">
   <div class="row">

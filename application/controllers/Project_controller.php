@@ -1251,7 +1251,41 @@ class Project_controller extends CI_Controller {
 	}
 	public function get_account_details_modal(){
 		//data['account_detail']=$this->User_model->select_account_detail_parameter_account_id($account_id);
-		$result='<div class="row">';
+		function DateThai($strDate)
+      	{ 
+		  	$strYear = date("Y",strtotime($strDate))+543;
+		  	$thaiyear = "พ.ศ. ". $strYear;
+        	$strMonth= date("n",strtotime($strDate));
+        	$strDay= date("j",strtotime($strDate));
+        	$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+        	$strMonthThai=$strMonthCut[$strMonth];
+        	return "$strDay $strMonthThai $thaiyear";
+		} 
+		$result='<script>
+		$(document).ready(function(){
+			$("#filter").change(function(){
+				$.ajax({
+					url:"'.base_url("index.php/Project_controller/filter_transaction_table_manager_report_modal").'",
+					method:"POST",
+					data:{
+						  "filter":$(this).val(),
+						  "account_id":$("#ac_id").val(),
+						},
+					success:function(data){
+						$("table").remove("#result_table");
+					  	$("#result_table").html(data);				  
+					}
+				  })        
+			});
+		});
+		</script>
+		<style type="text/css">     
+			.schooller{height:56vh;overflow:auto;}
+			table{width:20px;}
+			thead tr:nth-child(1) th{position: sticky;top: 0;z-index: 10;} 
+		</style>
+		
+		<div class="row">';
 		foreach($this->User_model->select_account_with_parameter($this->input->post('account_id'))->result() as $row){
 			$result.= '<div class="col-md-6"><B>หมายเลขบัญชี :</B>'." ".$row->account_id.'</div>
 			<div class="col-md-6"><B>ชื่อบัญชี :</B>'." ".$row->account_name.'</div>';
@@ -1271,7 +1305,50 @@ class Project_controller extends CI_Controller {
 		$result.='<div class="form-group col-2" align="left"><br><label>'.number_format($row->account_balance,2)." ".'บาท</label></div> ';
 		$result.='<div class="col-2"></div>'; 
 
+		//table div
+		$result.='<div class="form-group col-12 schooller"><input type="hidden" name="ac_id" id="ac_id" value="'.$row->account_id.'">';
+		$result.='<div id="result_table"></div>';
+		$result.='<table class="table  table-hover table-sm" id="result_table">
+		<thead class="thead-light table-bordered text-center">
+		  <tr>
+			<th width="5%" scope="col">ลำดับ</th>
+			<th width="26%" scope="col">วันที่</th>
+			<th width="10%" scope="col">รายการ</th>
+			<th width="12%" scope="col">จำนวนเงิน</th>
+			<th width="12%" scope="col">คงเหลือ</th>
+			<th width="35%" scope="col">พนักงานที่ทำรายการ</th>
+		  </tr>
+		</thead>
+		<tbody class="table-bordered text-center">';
+		$i = 1;
+		foreach($this->User_model->select_account_detail_parameter_account_id($this->input->post('account_id'))->result() as $row2){
+			if($row2->action == "deposit"){
+				$action="<span class='text-success'>ฝาก</span>";
+				$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
+			}elseif($row2->action == "withdraw"){
+				$action="<span class='text-danger'>ถอน</span>";
+				$trans_money="<span class='text-danger'>+".number_format($row2->trans_money,2)."</span>";
+			}elseif($row2->action == "add_interest"){
+				$action="<span class='text-success'>เพิ่มดอกเบี้ย</span>";
+				$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
+			}else{
+				$action="<span class='text-danger'>โอน</span>";
+				$trans_money="<span class='text-danger'>+".number_format($row2->trans_money,2)."</span>";
+			}
+			$result.='<tr>';
+				$result.='<td>'.$i.'</td>';
+				$result.='<td>'.DateThai($row2->record_date).'</td>';
+				$result.='<td>'.$action.'</td>';
+				$result.='<td>'.$trans_money.'</td>';
+				$result.='<td>'.number_format($row2->account_detail_balance,2).'</td>';
+				$result.='<td>'.$row2->staff_title."".$row2->staff_name.'</td>';
+			$result.='</tr>';
+			$i++;
+		}
 
+		$result.='</tbody></table>';
+		$result.='</div>';
+		//end table div
 
 		$result.='</div>';
 		echo $result;
@@ -1576,6 +1653,65 @@ class Project_controller extends CI_Controller {
                 </tfoot>
             </table>';
 		echo $output;
+	}
+	public function filter_transaction_table_manager_report_modal(){
+		function DateThai($strDate)
+		{ 
+			$strYear = date("Y",strtotime($strDate))+543;
+			$thaiyear = "พ.ศ. ". $strYear;
+		  	$strMonth= date("n",strtotime($strDate));
+		  	$strDay= date("j",strtotime($strDate));
+		  	$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+		  	$strMonthThai=$strMonthCut[$strMonth];
+		  	return "$strDay $strMonthThai $thaiyear";
+	  	} 
+	  	$result='<table class="table  table-hover table-sm" id="result_table">
+	  	<thead class="thead-light table-bordered text-center">
+			<tr>
+			  <th width="5%" scope="col">ลำดับ</th>
+			  <th width="26%" scope="col">วันที่</th>
+			  <th width="10%" scope="col">รายการ</th>
+			  <th width="12%" scope="col">จำนวนเงิน</th>
+			  <th width="12%" scope="col">คงเหลือ</th>
+			  <th width="35%" scope="col">พนักงานที่ทำรายการ</th>
+			</tr>
+	  	</thead>
+		  <tbody class="table-bordered text-center">';
+		$data['data'] = $this->User_model->select_filter_transaction($this->input->post('account_id'),$this->input->post('filter'));
+		$i = 1;
+		if($data['data']->num_rows() >0){
+			foreach($data['data']->result() as $row2){
+				if($row2->action == "deposit"){
+					$action="<span class='text-success'>ฝาก</span>";
+					$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
+				}elseif($row2->action == "withdraw"){
+					$action="<span class='text-danger'>ถอน</span>";
+					$trans_money="<span class='text-danger'>+".number_format($row2->trans_money,2)."</span>";
+				}elseif($row2->action == "add_interest"){
+					$action="<span class='text-success'>เพิ่มดอกเบี้ย</span>";
+					$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
+				}else{
+					$action="<span class='text-danger'>โอน</span>";
+					$trans_money="<span class='text-danger'>+".number_format($row2->trans_money,2)."</span>";
+				}
+				$result.='<tr>';
+					$result.='<td>'.$i.'</td>';
+					$result.='<td>'.DateThai($row2->record_date).'</td>';
+					$result.='<td>'.$action.'</td>';
+					$result.='<td>'.$trans_money.'</td>';
+					$result.='<td>'.number_format($row2->account_detail_balance,2).'</td>';
+					$result.='<td>'.$row2->staff_title."".$row2->staff_name.'</td>';
+				$result.='</tr>';
+				$i++;
+			}
+		}else{
+			$result.='<tr> <th class="text-center" scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th> </tr>';
+		}
+	  	
+
+	  	$result.='</tbody></table>';
+		  echo $result;
+		  //echo $this->input->post('account_id')." ".$this->input->post('filter');
 	}
 	public function filter_transaction_table(){
 		function DateThai($strDate)
