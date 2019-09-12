@@ -1354,6 +1354,70 @@ class Project_controller extends CI_Controller {
 		echo $result;
 		
 	}
+	public function get_member_detail_modal(){
+		function DateThai($strDate)
+        { 
+          $strYear = date("Y",strtotime($strDate))+543;
+          $thaiyear = "พ.ศ. ". $strYear;
+          $strMonth= date("n",strtotime($strDate));
+          $strDay= date("j",strtotime($strDate));
+          $strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+          $strMonthThai=$strMonthCut[$strMonth];
+          return "$strDay $strMonthThai $thaiyear";
+      	} 
+		foreach ($this->User_model->get_member($this->input->post('member_id'))->result() as $row) {
+			$std_id=$row->std_code;
+		}
+		if($std_id == '0'){ //บุคลากร
+			$data['member_after']=$this->User_model->get_personal_member($this->input->post('member_id'));
+		}
+		else{ //นักเรียน
+			$data['member_after']=$this->User_model->get_student_member($this->input->post('member_id'));
+		}
+		$result = '<div class="row">';		
+		foreach($data['member_after']->result() as $row2){
+			if($row2->std_code == '0'){
+				$std_code = 'ไม่มี';
+				$edu_id = 'ไม่มี';
+				$job = $row2->job_name;
+			} 
+			else{
+			$std_code = $row2->std_code;
+			$edu_id = $row2->edu_name;
+			$job = 'นักเรียน';
+			}
+			$result.='<div class="form-group col-md-1"></div>';
+			$result.= '
+			<div class="form-group col-md-2">
+				<div class="row">
+					<div class="form-group col-md-12"><img width="200px" height= "200px" src="'.$row2->member_pic.'" alt="your image" style="border: solid 1px #c0c0c0;" /> 
+					<figcaption><B>รูปประจำตัว</B></figcaption><br></div>
+					<div class="form-group col-md-12"><img width="200px" height= "200px" src="'.$row2->member_signa_pic.'" alt="your image" style="border: solid 1px #c0c0c0;" /> 
+					<figcaption><B>รูปลายเซ็น</B></figcaption></div>
+					<input type="hidden" id="member_id_hidden" name="member_id_hidden" value="'.$row2->member_id.'">
+				</div>				
+			</div>';
+			$result.='<div class="form-group col-md-1"></div>';
+			$result.='
+			<div class=" form-group col-md-7" align="left">
+				<div class="row">
+					<div class="form-group col-md-6"><B>วันที่สมัคร :</B>'." ".DateThai($row2->member_regis_date).'</div>
+					<div class="form-group col-md-6"><B>วัน/เดือน/ปีเกิด :</B>'." ".DateThai($row2->member_birth_date).'</div>
+					<div class="form-group col-md-6"><B>รหัสนักเรียน :</B>'." ".$std_code.'</div>
+					<div class="form-group col-md-6"><B>เลขบัตรประชาชน :</B>'." ".$row2->member_id_card.'</div>
+					<div class="form-group col-md-12"><B>ชื่อ :</B>'." ".$row2->member_title." ".$row2->member_name.'</div>
+					<div class="form-group col-md-6"><B>ระดับการศึกษา :</B>'." ".$edu_id.'</div>
+					<div class="form-group col-md-6"><B>ตำแหน่ง :</B>'." ".$row2->level_name.'</div>
+					<div class="form-group col-md-12"><B>ที่อยู่ :</B>'." ".$row2->address." ตำบล".$row2->DISTRICT_NAME." อำเภอ".$row2->AMPHUR_NAME." จังหวัด".$row2->PROVINCE_NAME." รหัสไปรษณีย์ ".$row2->zipcode.'</div>
+					<div class="form-group col-md-6"><B>อาชีพ :</B>'." ".$job.'</div>
+					<div class="form-group col-md-6"><B>ชื่อผู้ใช้ :</B>'." ".$row2->username.'</div>
+				</div>
+			</div>';
+			$result.='<div class="form-group col-md-1"></div>';
+		}
+		$result.='</div>';
+		echo $result;
+	}
 	public function search_data_staff(){
 		$output='';
 		$keyword='';
@@ -1707,11 +1771,8 @@ class Project_controller extends CI_Controller {
 		}else{
 			$result.='<tr> <th class="text-center" scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th> </tr>';
 		}
-	  	
-
 	  	$result.='</tbody></table>';
-		  echo $result;
-		  //echo $this->input->post('account_id')." ".$this->input->post('filter');
+		echo $result;
 	}
 	public function filter_transaction_table(){
 		function DateThai($strDate)
@@ -2916,6 +2977,94 @@ class Project_controller extends CI_Controller {
 		}
 		else{
 			$data['statement'] = $this->User_model->select_account_detail_parameter_account_id_filter($this->input->post('account_id'),$this->input->post('filter'));
+		}
+		$pdf = new Pdf('P','mm','A4');
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+        $pdf->setFooterData(array(0,64,0), array(0,64,128));
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $pdf->setFontSubsetting(true);
+        $pdf->SetFont('thsarabun', '', 16, '', true);
+		$pdf->setPrintHeader(false);
+		$pdf->setCellPadding(1,1,1,1);
+		$pdf->setCellmargins(1,1,1,1);
+		$pdf->SetTitle("รายงานบัญชี");
+		$pdf->AddPage();
+		function DateThai($strDate)
+		{
+			date_default_timezone_set('Asia/Bangkok');
+			$strYear = date("Y",strtotime($strDate))+543;
+			$strMonth= date("m",strtotime($strDate));
+			$strDay= date("d",strtotime($strDate));
+			return "$strDay/$strMonth/$strYear";
+		}
+		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
+		$pdf->Ln(8);
+		$heading = "<h3>รายงานบัญชี</h3>";
+		$pdf->Ln(2);
+		$pdf->writeHTMLCell(0,0,'','',$heading,0,1,0,true,'C',true);
+		$data['account'] = $this->User_model->select_account_with_parameter($this->input->post('account_id'));
+		foreach ($data['account']->result() as $row) {
+			$account = '<p style="margin-right:20px"><b>หมายเลขบัญชี '.$this->input->post('account_id').'&nbsp;&nbsp;&nbsp;&nbsp;ชื่อบัญชี '.$row->account_name.'</b></p>';
+		}
+		$pdf->writeHTMLCell(0,0,'','',$account,0,1,0,true,'L',true);
+		$table='<table style="border:1px solid black">';
+		$table.='<tr>
+	                <th style="border:1px solid black" width="10%" scope="col">ลำดับ</th>
+	                <th style="border:1px solid black" width="18%" scope="col">วันที่</th>
+	                <th style="border:1px solid black" width="14%" scope="col">รายการ</th>
+	                <th style="border:1px solid black" width="15%" scope="col">จำนวนเงิน</th>
+	                <th style="border:1px solid black" width="15%" scope="col">คงเหลือ</th>
+	                <th style="border:1px solid black" width="28%" scope="col">พนักงานที่ทำรายการ</th>
+    			</tr>';
+		$i=1;
+		foreach ($data['statement']->result() as $row) {
+			if($row->action == "deposit"){$action = "ฝาก";}
+			elseif($row->action == "add_interest"){$action = "เพิ่มดอกเบี้ย";}
+			else{$action = "ถอน";}
+			$table.='<tr>
+						<td style="border:1px solid black">'.$i.'</td>
+						<td style="border:1px solid black">'.DateThai($row->record_date).'</td>
+						<td style="border:1px solid black">'.$action.'</td>
+						<td align="right" style="border:1px solid black">'.number_format($row->trans_money,2).'</td>
+						<td align="right"  style="border:1px solid black">'.number_format($row->account_detail_balance,2).'</td>
+						<td style="border:1px solid black">'.$row->staff_title."".$row->staff_name.'</td>
+					</tr>';
+			$i++;
+		}
+		$table.='</table>';
+		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
+		ob_clean();
+		$pdf->Output('example_001.pdf', 'I');
+		ob_end_clean();
+	}
+	public function print_member_report(){
+		foreach ($this->User_model->get_member($this->input->post('member_id'))->result() as $row) {
+			$std_id=$row->std_code;
+		}
+		if($std_id == '0'){ //บุคลากร
+			$data['member_after']=$this->User_model->get_personal_member($this->input->post('member_id'));
+		}
+		else{ //นักเรียน
+			$data['member_after']=$this->User_model->get_student_member($this->input->post('member_id'));
+		}	
+		foreach($data['member_after']->result() as $row2){
+			if($row2->std_code == '0'){
+				$std_code = 'ไม่มี';
+				$edu_id = 'ไม่มี';
+				$job = $row2->job_name;
+			} 
+			else{
+			$std_code = $row2->std_code;
+			$edu_id = $row2->edu_name;
+			$job = 'นักเรียน';
+			}
 		}
 		$pdf = new Pdf('P','mm','A4');
         $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);

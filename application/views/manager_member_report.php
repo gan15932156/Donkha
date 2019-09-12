@@ -2,7 +2,7 @@
   $(document).ready(function(){
     var table = $('#data_table').DataTable({
       columnDefs: [
-        {targets: [1,2],className: 'dt-body-center'}
+        {targets: [1],className: 'dt-body-center'}
       ],
       pageLength: 8,
       serverSide: true,
@@ -27,8 +27,8 @@
       'columns':[
       {
         data:'member_name',
-        render: function(data,type,row){      
-          return row['member_title']+" "+row['member_name'];
+        render: function(data,type,row){       
+            return '<a href="#" onclick="show_modal('+row['member_id']+')"  >'+row['member_name']+'</a>';
         }
       },
       {
@@ -39,19 +39,40 @@
           var status = (data==1) ? active : inactive;
           return status;
         }
-      },
-      {
-        data:'member_id',
-        render: function(data, type, row){
-          var divv = ' <div class="dropdown">';   
-              divv+='<a style="color:black;" href="<?php  echo site_url('Project_controller/member_detail/');?>'+row['member_id']+'"><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียด</a>';
-              divv+='</div>';                                     
-          return divv;
-        }
       }
       ]
     });
+    $('[id="print_report"]').click(function(){
+        //alert($('[id="filter"]').val()+" "+$('[id="ac_id"]').val());
+        $.ajax({
+        url:"<?php echo base_url("index.php/Project_controller/print_member_report"); ?>",
+        method:"POST",
+        xhrFields: {
+          responseType: "blob"
+        },
+        data:{
+              member_id:$('[id="member_id_hidden"]').val(),
+              },
+        success:function(response)
+        { 
+          url = window.URL.createObjectURL(response);
+          window.open(url, '_blank');
+        }
+      })
+    });
   });
+  function show_modal(member_id){
+    $.ajax({
+      url:"<?=base_url()?>index.php/Project_controller/get_member_detail_modal/",
+      method:"POST",
+      data:{member_id:member_id},
+      success:function(data)
+      {
+        $('.result').html(data);
+        $('#exampleModal').modal('show');
+      }
+    }); 
+  }
 </script>      
 <div class="col-md-12">
   <div class="row">
@@ -67,7 +88,6 @@
               <tr>
                 <th width="20%" scope="col">ชื่อ-นามสกุล</th>
                 <th width="30%" scope="col">สถานะ</th>
-                <th width="10%" scope="col">การกระทำ</th>
               </tr>
             </thead>
             <tbody class="table-bordered" style="background-color: #EFFEFD"></tbody>
@@ -76,4 +96,37 @@
       </div>
     </div>                   
   </div>        
-</div>            
+</div> 
+
+<style>
+    .modal-dialog {max-height:150vh;max-width:150vh;}  
+    .modal-body{height:100%;width:100%;align:center;}  
+    .body-container{background-color:white;}    
+</style>
+
+<!-- Modal -->
+<div align="center" class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">รายละเอียดสมาชิก</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid body-container">       
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="result"></div>
+                </div>
+            </div> 
+        </div>
+    </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิดหน้าต่าง</button>
+        <!--<button type="button" id="print_report" class="btn btn-warning">พิมพ์รายงาน</button>-->
+      </div>
+    </div>
+  </div>
+</div>

@@ -46,7 +46,23 @@
       ]
     });
     $('[id="print_report"]').click(function(){
-        alert($('[id="filter"]').val()+" "+$('[id="ac_id"]').val());
+        //alert($('[id="filter"]').val()+" "+$('[id="ac_id"]').val());
+        $.ajax({
+        url:"<?php echo base_url("index.php/Project_controller/print_report_statement"); ?>",
+        method:"POST",
+        xhrFields: {
+          responseType: "blob"
+        },
+        data:{
+              filter:$('[id="filter"]').val(),
+              account_id:$('[id="ac_id"]').val()
+              },
+        success:function(response)
+        { 
+          url = window.URL.createObjectURL(response);
+          window.open(url, '_blank');
+        }
+      })
     });
   });
   function show_modal(account_id){

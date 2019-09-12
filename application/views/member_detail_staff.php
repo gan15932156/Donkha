@@ -21,16 +21,15 @@
             $regis_date = $row->member_regis_date;
             $birth_date = $row->member_birth_date;
             function DateThai($strDate)
-            {
+            { 
               $strYear = date("Y",strtotime($strDate))+543;
+              $thaiyear = "พ.ศ. ". $strYear;
               $strMonth= date("n",strtotime($strDate));
               $strDay= date("j",strtotime($strDate));
-              $strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+              $strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
               $strMonthThai=$strMonthCut[$strMonth];
-              return "$strDay $strMonthThai $strYear";
-            }
-            $register_thai_date = DateThai($regis_date);
-            $birth_thai_date  = DateThai($birth_date);
+              return "$strDay $strMonthThai $thaiyear";
+      	    } 
           ?>      
           <div class="row">
             <div  class="form-group col-4" align="center">
@@ -43,8 +42,8 @@
               <div class="row">
                 <div class="col-12">
                   <div class="row">
-                    <div class="form-group col-6"><label><B>วันที่สมัคร : </B><?php echo "".$register_thai_date;?></label></div>
-                    <div class="form-group col-6"><label><B>วัน/เดือน/ปีเกิด : </B><?php echo "".$birth_thai_date;?></label></div>
+                    <div class="form-group col-6"><label><B>วันที่สมัคร : </B><?php echo "".DateThai($regis_date);?></label></div>
+                    <div class="form-group col-6"><label><B>วัน/เดือน/ปีเกิด : </B><?php echo "".DateThai($birth_date);?></label></div>
                   </div>
                   <div class="row">
                     <div class="form-group col-6"><label><B>รหัสนักเรียน : </B><?php echo "".$std_code;?></label></div>
@@ -62,7 +61,7 @@
                       <label><B>ระดับการศึกษา : </B><?php echo "".$edu_id;?></label>
                     </div>
                     <div class="form-group col-6">
-                      <label><B>ตำแหน่ง : </B><?php echo "<?php echo $row->level_name;?>".$row->level_name;?></label>
+                      <label><B>ตำแหน่ง : </B><?php echo "".$row->level_name;?></label>
                     </div> 
                   </div>
                   <div class="row">
