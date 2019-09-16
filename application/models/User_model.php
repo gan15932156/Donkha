@@ -456,6 +456,7 @@ class User_model extends CI_Model {
 	}
 	public function select_account_with_parameter($account_id){
 		$this->db->from('account');
+		$this->db->join('member', 'member.member_id = account.member_id','inner');
 		$this->db->where('account_id',$account_id);
 		$this->db->where('account_status','1');
 		$query=$this->db->get();
@@ -768,6 +769,15 @@ class User_model extends CI_Model {
 		$this->db->from('account');
 		$this->db->where('account_open_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"');
 		$this->db->join('member', 'member.member_id = account.member_id','inner');
+		$query=$this->db->get();
+		return $query;
+	}
+	public function select_account_detail_open($account_id,$record_date){
+		$this->db->from('account_detail');
+		$this->db->where('account_id',$account_id);
+		$this->db->where('record_date',$record_date);
+		$this->db->order_by('record_date ASC, record_time ASC');
+		$this->db->limit(1,0);
 		$query=$this->db->get();
 		return $query;
 	}

@@ -155,9 +155,8 @@ class Project_controller extends CI_Controller {
 		$this->load->view('templates/footer');					
 	}
 	public function test_report(){
-		$data['unconfirm_withdraw'] =  $this->User_model->select_unconfirm_withdraw();	
 		$this->load->view('templates/header');
-		$this->load->view('report_test',$data);
+		$this->load->view('report_test');
 		$this->load->view('templates/footer');				
 	}
 	public function test_get_data_repost(){
@@ -1253,14 +1252,14 @@ class Project_controller extends CI_Controller {
 		//data['account_detail']=$this->User_model->select_account_detail_parameter_account_id($account_id);
 		function DateThai($strDate)
       	{ 
-		  	$strYear = date("Y",strtotime($strDate))+543;
-		  	$thaiyear = "พ.ศ. ". $strYear;
-        	$strMonth= date("n",strtotime($strDate));
-        	$strDay= date("j",strtotime($strDate));
-        	$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
-        	$strMonthThai=$strMonthCut[$strMonth];
-        	return "$strDay $strMonthThai $thaiyear";
-		} 
+			$strYear = date("Y",strtotime($strDate))+543;
+			$thaiyear = $strYear;
+      	  	$strMonth= date("n",strtotime($strDate));
+      	  	$strDay= date("j",strtotime($strDate));
+      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+      	  	$strMonthThai=$strMonthCut[$strMonth];
+      	  	return "$strDay $strMonthThai $thaiyear";
+      	} 
 		$result='<script>
 		$(document).ready(function(){
 			$("#filter").change(function(){
@@ -1356,14 +1355,14 @@ class Project_controller extends CI_Controller {
 	}
 	public function get_member_detail_modal(){
 		function DateThai($strDate)
-        { 
-          $strYear = date("Y",strtotime($strDate))+543;
-          $thaiyear = "พ.ศ. ". $strYear;
-          $strMonth= date("n",strtotime($strDate));
-          $strDay= date("j",strtotime($strDate));
-          $strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
-          $strMonthThai=$strMonthCut[$strMonth];
-          return "$strDay $strMonthThai $thaiyear";
+      	{ 
+			$strYear = date("Y",strtotime($strDate))+543;
+			$thaiyear = $strYear;
+      	  	$strMonth= date("n",strtotime($strDate));
+      	  	$strDay= date("j",strtotime($strDate));
+      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+      	  	$strMonthThai=$strMonthCut[$strMonth];
+      	  	return "$strDay $strMonthThai $thaiyear";
       	} 
 		foreach ($this->User_model->get_member($this->input->post('member_id'))->result() as $row) {
 			$std_id=$row->std_code;
@@ -1718,15 +1717,15 @@ class Project_controller extends CI_Controller {
 	}
 	public function filter_transaction_table_manager_report_modal(){
 		function DateThai($strDate)
-		{ 
+      	{ 
 			$strYear = date("Y",strtotime($strDate))+543;
-			$thaiyear = "พ.ศ. ". $strYear;
-		  	$strMonth= date("n",strtotime($strDate));
-		  	$strDay= date("j",strtotime($strDate));
-		  	$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
-		  	$strMonthThai=$strMonthCut[$strMonth];
-		  	return "$strDay $strMonthThai $thaiyear";
-	  	} 
+			 $thaiyear = $strYear;
+      	  	$strMonth= date("n",strtotime($strDate));
+      	  	$strDay= date("j",strtotime($strDate));
+      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+      	  	$strMonthThai=$strMonthCut[$strMonth];
+      	  	return "$strDay $strMonthThai $thaiyear";
+      	} 
 	  	$result='<table class="table  table-hover table-sm" id="result_table">
 	  	<thead class="thead-light table-bordered text-center">
 			<tr>
@@ -2186,18 +2185,26 @@ class Project_controller extends CI_Controller {
 				<thead class="thead-light table-bordered">
 						<tr>
 								<th width="2%" scope="col">ลำดับ</th>
-								<th width="20%" scope="col">หมายเลขบัญชี</th>
-								<th width="25%" scope="col">ชื่อบัญชี</th>
-								<th width="25%" scope="col">ชื่อ - นามสกุล</th>
+								<th width="15%" scope="col">หมายเลขบัญชี</th>
+								<th width="22%" scope="col">ชื่อบัญชี</th>
+								<th width="25%" scope="col">ชื่อ - นามสกุล</th>					
 								<th width="20%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
+								<th width="20%" scope="col">จำนวนเงินที่เปิดบัญชี</th>
 						</tr>
 				</thead>
 				<tbody class="table-bordered" style="background-color: #EFFEFD">
 		';
 		if($data['result']->num_rows() >0){
 			$i=1;
+			$sum_total = 0.0 ;
 			$result=$data['result']->result();
 			foreach ($result as $row) {
+				$open_money = 0.0 ;
+				
+				foreach ($this->User_model->select_account_detail_open($row->account_id,$row->account_open_date)->result() as $row2) {
+					$open_money = $row2->account_detail_balance;
+					$sum_total+=floatval($row2->account_detail_balance);
+				}
 				$output.='
 					<tr>
 						<th id="count"  scope="row">'.$i.'</th>
@@ -2205,11 +2212,13 @@ class Project_controller extends CI_Controller {
 						<td id="ac_name" align="left"  >'.$row->account_name.'</td>
 						<td id="ac_ac_nae" align="left" >'.$row->member_title." ".$row->member_name.'</td>
 						<td id="date_open" >'.DateThai($row->account_open_date).'</td>
+						<td id="open_money" align="right" >'.number_format($open_money,2).'</td>
 					</tr>';
 				$i++;
 			}
 			$link =base_url("index.php/Project_controller/print_report_account_betwwen_date")."/".$this->input->post('start_date')."/".$this->input->post('stop_date');
 		$output.='
+			<tr><th colspan="4" scope="col"></th><th colspan="1" scope="col">รวมจำนวนเงิน</th><td align="right" colspan="1" scope="col">'.number_format($sum_total,2).'</td></tr>
 			</tbody><tfoot></tfoot>
 		</table>
 		<a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a> 
@@ -2483,10 +2492,10 @@ class Project_controller extends CI_Controller {
 		function DateThai($strDate)
       	{ 
 			$strYear = date("Y",strtotime($strDate))+543;
-			 $thaiyear = "พ.ศ. ". $strYear;
+			 $thaiyear = $strYear;
       	  	$strMonth= date("n",strtotime($strDate));
       	  	$strDay= date("j",strtotime($strDate));
-      	  	$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
       	  	$strMonthThai=$strMonthCut[$strMonth];
       	  	return "$strDay $strMonthThai $thaiyear";
       	} 
@@ -2499,24 +2508,33 @@ class Project_controller extends CI_Controller {
 		$pdf->Ln(5);
 		$table='<table style="border:1px solid black">';
 		$table.='<tr>
-	               <th style="border:1px solid black" width="8%" scope="col">ลําดับ</th>
-	               <th style="border:1px solid black" width="17%" scope="col">หมายเลขบัญชี	</th>
-	               <th style="border:1px solid black" width="25%" scope="col">ชื่อบัญชี</th>
+	               <th style="border:1px solid black" width="6%" scope="col">ลําดับ</th>
+	               <th style="border:1px solid black" width="15%" scope="col">หมายเลขบัญชี	</th>
+	               <th style="border:1px solid black" width="18%" scope="col">ชื่อบัญชี</th>
 	               <th style="border:1px solid black" width="25%" scope="col">ชื่อ - นามสกุล</th>
-	               <th style="border:1px solid black" width="25%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
+				   <th style="border:1px solid black" width="17%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
+				   <th style="border:1px solid black" width="19%" scope="col">จำนวนเงินที่เปิดบัญชี</th>
     			</tr>';
 		$i=1;
+		$sum_total=0.0;
 		foreach ($this->User_model->select_open_account_between_date($this->uri->segment(3),$this->uri->segment(4))->result() as $row) {
+			$open_money=0.0;
+			foreach($this->User_model->select_account_detail_open($row->account_id,$row->account_open_date)->result() as $row2){
+				$open_money = $row2->account_detail_balance;
+				$sum_total+=floatval($row2->account_detail_balance);
+			}
 			$table.='<tr>
 				<td style="border:1px solid black">'.$i.'</td>
 				<td style="border:1px solid black">'.$row->account_id.'</td>
 				<td align="left" style="border:1px solid black">'.$row->account_name.'</td>
-				<td align="left" style="border:1px solid black">'.$row->member_title." ".$row->member_name.'</td>
+				<td align="left" style="border:1px solid black">'.$row->member_title."".$row->member_name.'</td>
 				<td style="border:1px solid black">'.DateThai($row->account_open_date).'</td>
+				<td align="right" style="border:1px solid black">'.number_format($open_money,2).'</td>
 			</tr>';		
 			$i++;
 		}
-		$table.='</table>';
+		$table.='<tr><th colspan="4" scope="col"></th><th style="border-right:1px solid black" colspan="1" scope="col">รวมจำนวนเงิน</th><td align="right" colspan="1" scope="col">'.number_format($sum_total,2).'</td></tr>
+		</tbody><tfoot></tfoot></table>';
 		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
 		$count="<span>จํานวนผูที่เปิดบัญชีทั้งหมด ".$this->User_model->count_account_opendate_between($this->uri->segment(3),$this->uri->segment(4))." คน</span><br>";
 		$count.="<span>วันที่ออกรายงาน ".DateThai(date('Y-m-d'))."</span>";
@@ -3009,7 +3027,7 @@ class Project_controller extends CI_Controller {
 		$pdf->writeHTMLCell(0,0,'','',$heading,0,1,0,true,'C',true);
 		$data['account'] = $this->User_model->select_account_with_parameter($this->input->post('account_id'));
 		foreach ($data['account']->result() as $row) {
-			$account = '<p style="margin-right:20px"><b>หมายเลขบัญชี '.$this->input->post('account_id').'&nbsp;&nbsp;&nbsp;&nbsp;ชื่อบัญชี '.$row->account_name.'</b></p>';
+			$account = '<p style="margin-right:20px"><b>หมายเลขบัญชี '.$this->input->post('account_id').'&nbsp;&nbsp;&nbsp;&nbsp;ชื่อเจ้าของบัญชี '.$row->member_title."".$row->member_name.'&nbsp;&nbsp;&nbsp;&nbsp;ชื่อบัญชี '.$row->account_name.'</b></p>';
 		}
 		$pdf->writeHTMLCell(0,0,'','',$account,0,1,0,true,'L',true);
 		$table='<table style="border:1px solid black">';
@@ -3298,7 +3316,7 @@ class Project_controller extends CI_Controller {
 		echo $result;
 	}
 	public function report_deposit_per_month(){
-		$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+		$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
 		$sumofmonth=0.0;
 		$result='<div class="row">
 					<div class="col-4"></div>
@@ -3332,7 +3350,7 @@ class Project_controller extends CI_Controller {
 		echo $result;
 	}
 	public function report_withdraw_per_month(){
-		$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+		$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
 		$sumofmonth=0.0;
 		$result='<div class="row">
 					<div class="col-4"></div>
@@ -3366,7 +3384,7 @@ class Project_controller extends CI_Controller {
 		echo $result;
 	}
 	public function fetch_deposit_month(){
-		$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+		$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
 		$result='<script>
 		$(document).ready(function(){
 			$("#month").change(function(){
@@ -3405,7 +3423,7 @@ class Project_controller extends CI_Controller {
 		echo $result;
 	}
 	public function fetch_withdraw_month(){
-		$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+		$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
 		$result='<script>
 		$(document).ready(function(){
 			$("#month").change(function(){
@@ -3446,14 +3464,14 @@ class Project_controller extends CI_Controller {
 	public function report_deposit_per_day(){
 		function DateThai($strDate)
       	{ 
-		  	$strYear = date("Y",strtotime($strDate))+543;
-		  	$thaiyear = "พ.ศ. ". $strYear;
-        	$strMonth= date("n",strtotime($strDate));
-        	$strDay= date("j",strtotime($strDate));
-        	$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
-        	$strMonthThai=$strMonthCut[$strMonth];
-        	return "$strDay $strMonthThai $thaiyear";
-		} 
+			$strYear = date("Y",strtotime($strDate))+543;
+			 $thaiyear = $strYear;
+      	  	$strMonth= date("n",strtotime($strDate));
+      	  	$strDay= date("j",strtotime($strDate));
+      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+      	  	$strMonthThai=$strMonthCut[$strMonth];
+      	  	return "$strDay $strMonthThai $thaiyear";
+      	} 
 		$sumofmonth=0.0;
 		$result='<div class="row">
 					<div class="col-4"></div>
@@ -3486,14 +3504,14 @@ class Project_controller extends CI_Controller {
 	public function report_withdraw_per_day(){
 		function DateThai($strDate)
       	{ 
-		  	$strYear = date("Y",strtotime($strDate))+543;
-		  	$thaiyear = "พ.ศ. ". $strYear;
-        	$strMonth= date("n",strtotime($strDate));
-        	$strDay= date("j",strtotime($strDate));
-        	$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
-        	$strMonthThai=$strMonthCut[$strMonth];
-        	return "$strDay $strMonthThai $thaiyear";
-		} 
+			$strYear = date("Y",strtotime($strDate))+543;
+			 $thaiyear = $strYear;
+      	  	$strMonth= date("n",strtotime($strDate));
+      	  	$strDay= date("j",strtotime($strDate));
+      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+      	  	$strMonthThai=$strMonthCut[$strMonth];
+      	  	return "$strDay $strMonthThai $thaiyear";
+      	} 
 		$sumofmonth=0.0;
 		$result='<div class="row">
 					<div class="col-4"></div>
@@ -3550,10 +3568,10 @@ class Project_controller extends CI_Controller {
 		function DateThai($strDate)
       	{ 
 			$strYear = date("Y",strtotime($strDate))+543;
-			$thaiyear = "พ.ศ. ". $strYear;
+			 $thaiyear = $strYear;
       	  	$strMonth= date("n",strtotime($strDate));
       	  	$strDay= date("j",strtotime($strDate));
-      	  	$strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
       	  	$strMonthThai=$strMonthCut[$strMonth];
       	  	return "$strDay $strMonthThai $thaiyear";
       	} 

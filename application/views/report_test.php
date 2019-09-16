@@ -91,10 +91,10 @@
               <label >ถึงวันที่</label>
             </div>
             <div class="col-3">
-              <input type="date" class="form-control" id="stop_date" name="stop_date" required>
+              <input type="date" class="form-control" id="stop_date" name="stop_date" max="<?=date('Y-m-d');?>" required>
             </div>
             <div class="col-1">
-              <button type="submit" class="btn btn-outline-success" id="display_report">แสดงรายงาน</button>
+              <button type="submit" class="btn btn-outline-success " id="display_report">แสดงรายงาน</button>
             </div>
           </div><hr>
           <!--<div id="chart_div"></div>-->
