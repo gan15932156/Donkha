@@ -99,7 +99,7 @@
 </div> 
 
 <style>
-    .modal-dialog {max-height:150vh;max-width:150vh;}  
+    .modal-dialog {max-height:100vh;max-width:150vh;}  
     .modal-body{height:100%;width:100%;align:center;}  
     .body-container{background-color:white;}    
 </style>

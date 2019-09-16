@@ -1280,7 +1280,7 @@ class Project_controller extends CI_Controller {
 		});
 		</script>
 		<style type="text/css">     
-			.schooller{height:56vh;overflow:auto;}
+			.schooller{height:48vh;overflow:auto;}
 			table{width:20px;}
 			thead tr:nth-child(1) th{position: sticky;top: 0;z-index: 10;} 
 		</style>
@@ -1388,18 +1388,17 @@ class Project_controller extends CI_Controller {
 			}
 			$result.='<div class="form-group col-md-1"></div>';
 			$result.= '
-			<div class="form-group col-md-2">
+			<div class="form-group col-md-2" style="margin-right:1%">
 				<div class="row">
-					<div class="form-group col-md-12"><img width="200px" height= "200px" src="'.$row2->member_pic.'" alt="your image" style="border: solid 1px #c0c0c0;" /> 
+					<div class="form-group col-md-12"><img width="150px" height= "150px" src="'.$row2->member_pic.'" alt="your image" style="border: solid 1px #c0c0c0;" /> 
 					<figcaption><B>รูปประจำตัว</B></figcaption><br></div>
-					<div class="form-group col-md-12"><img width="200px" height= "200px" src="'.$row2->member_signa_pic.'" alt="your image" style="border: solid 1px #c0c0c0;" /> 
+					<div class="form-group col-md-12"><img width="150px" height= "150px" src="'.$row2->member_signa_pic.'" alt="your image" style="border: solid 1px #c0c0c0;" /> 
 					<figcaption><B>รูปลายเซ็น</B></figcaption></div>
 					<input type="hidden" id="member_id_hidden" name="member_id_hidden" value="'.$row2->member_id.'">
 				</div>				
 			</div>';
-			$result.='<div class="form-group col-md-1"></div>';
 			$result.='
-			<div class=" form-group col-md-7" align="left">
+			<div class=" form-group col-md-8" align="left">
 				<div class="row">
 					<div class="form-group col-md-6"><B>วันที่สมัคร :</B>'." ".DateThai($row2->member_regis_date).'</div>
 					<div class="form-group col-md-6"><B>วัน/เดือน/ปีเกิด :</B>'." ".DateThai($row2->member_birth_date).'</div>
@@ -1413,7 +1412,6 @@ class Project_controller extends CI_Controller {
 					<div class="form-group col-md-6"><B>ชื่อผู้ใช้ :</B>'." ".$row2->username.'</div>
 				</div>
 			</div>';
-			$result.='<div class="form-group col-md-1"></div>';
 		}
 		$result.='</div>';
 		echo $result;
