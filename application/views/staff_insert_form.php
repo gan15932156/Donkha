@@ -132,7 +132,7 @@
           <form  method="post" action="<?=base_url("index.php/Project_controller/staff_insert");?>" enctype="multipart/form-data" name="staff_form" id="staff_form">
         <div class="row">
           <div class="form-group col-4" align="center">
-            <img id="show_image" width="30%" height= "25%" src="<?php  echo base_url()."picture/No_person.jpg"; ?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
+            <img id="show_image" width="30%" height= "62%" src="<?php  echo base_url()."picture/No_person.jpg"; ?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
             <figcaption>รูปประจำตัว</figcaption>
             <input onchange="readURL(this);" type="file" class="form-control " name="pic" id="pic" required="">                
           </div>  
@@ -198,10 +198,16 @@
                   </div>
                 </div>  
                 <div class="row">
-                  <div class="form-group col-md-3">
-                    <label for="name">ที่อยู่</label>
+                  <div class="form-group col-md-2">
+                    <label>ปีที่เข้าศึกษา</label>
                   </div>   
-                  <div class="form-group col-md-9">
+                  <div class="form-group col-md-3">
+                    <input id="yofadmis" name="yofadmis" require  class="form-control "  type="number" placeholder="ปปปป" min="<?php echo date('Y',strtotime('-6 year'))+543; ?>" max="<?php echo date('Y')+543; ?>">
+                  </div>                
+                  <div class="form-group col-md-1">
+                    <label for="name" style="width:50px">ที่อยู่</label>
+                  </div>   
+                  <div class="form-group col-md-6">
                     <input type="text" class="form-control " name="address" id="address" required="" placeholder="บ้านเลขที่ หมู่ ถนน ซอย">
                   </div>                                          
                 </div>                                     

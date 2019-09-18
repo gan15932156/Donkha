@@ -149,6 +149,8 @@
         $('#career').remove();
         $('#std_code').val("0");
         $('#std_code').prop('readonly', true);
+        $('#yofadmis').val("0");
+        $('#yofadmis').prop('readonly',true);
         $("#edu_level").val("");
         $('#edu_level').prop('disabled', true);
         $('#job option[value=2]').remove();
@@ -256,31 +258,39 @@
                         <input type="date" class="form-control " name="b_date" id="b_date" required="">
                       </div> 
                       <div class="form-group col-md-2">
-                        <label style="width:100px;">เบอร์โทรศัพท์</label>
+                        <label>ปีที่เข้าศึกษา</label>
                       </div>   
                       <div class="form-group col-md-3">
-                        <input type="text" class="form-control " name="phone_number" id="phone_number" required="" placeholder="เช่น 09xxxxxxxx">
-                      </div>                                          
+                        <input id="yofadmis" name="yofadmis" require  class="form-control "  type="number" placeholder="ปปปป" min="<?php echo date('Y',strtotime('-6 year'))+543; ?>" max="<?php echo date('Y')+543; ?>">
+                      </div>                                   
                     </div>
                     <div class="row">
-                      <div class="form-group col-md-2">
-                        <label for="name">ที่อยู่</label>
+                    <div class="form-group col-md-3">
+                        <label >เบอร์โทรศัพท์</label>
                       </div>   
-                      <div class="form-group col-md-5">
-                        <input type="text" class="form-control " name="address" id="address" required="" placeholder="บ้านเลขที่ หมู่ ถนน ซอย">
-                      </div> 
+                      <div class="form-group col-md-4">
+                        <input type="text" class="form-control " name="phone_number" id="phone_number" required="" placeholder="เช่น 09xxxxxxxx">
+                      </div>      
                       <div class="form-group col-md-2">
                         <label for="name">อาชีพ</label>
                       </div>   
                       <div class="form-group col-md-3">
                         <select class="form-control"  name="job" id="job">
-                        <?php 
-                          foreach ($job->result() as $row) {
-                        ?>
-                          <option value="<?php echo $row->job_id; ?>"><?php echo $row->job_name; ?></option>
-                        <?php } ?>
+                          <?php 
+                            foreach ($job->result() as $row) {
+                          ?>
+                              <option value="<?php echo $row->job_id; ?>"><?php echo $row->job_name; ?></option>  
+                          <?php } ?>
                         </select>
-                      </div>                                          
+                      </div>                          
+                    </div>
+                    <div class="row">
+                      <div class="form-group col-md-2">
+                        <label for="name">ที่อยู่</label>
+                      </div>   
+                      <div class="form-group col-md-10">
+                        <input type="text" class="form-control " name="address" id="address" required="" placeholder="บ้านเลขที่ หมู่ ถนน ซอย">
+                      </div>                                  
                     </div>
                     <div class="row">
                       <div class="form-group col-md-2">

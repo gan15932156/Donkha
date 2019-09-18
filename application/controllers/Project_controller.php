@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Project_controller extends CI_Controller {
+	public $ip = '127.0.0.1';
 	public function __construct(){
 		parent::__construct();
 		$this->load->helper('url');
@@ -387,6 +388,7 @@ class Project_controller extends CI_Controller {
 	public function staff_insert(){
 		date_default_timezone_set('Asia/Bangkok');
 		$stdid=$this->input->post("std_code");
+		$yofadmis=intval($this->input->post('yofadmis'))-543;
 		$title=$this->input->post("title");
 		$name=$this->input->post("name");
 		$idcard=$this->input->post("id_card");
@@ -416,9 +418,10 @@ class Project_controller extends CI_Controller {
 			'staff_id_card'=>$idcard,
 			'staff_status'=>'1',
 			'staff_address'=>$address,
-			'staff_pic' => "http://127.0.0.1/Donkha/picture/".$up_file_name['file_name'],
+			'staff_pic' => "http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
 			'staff_regis_date' =>$regis_date,
-			'staff_close_date' =>'0'
+			'staff_close_date' =>'0',
+			'staff_yofadmis'=>$yofadmis
 		);
 		$this->User_model->insert_staff($data_staff);
 		$data['staff'] = $this->User_model->select_staff_latest();
@@ -442,6 +445,7 @@ class Project_controller extends CI_Controller {
 		$id_card=$this->input->post("id_card");
 		$name=$this->input->post("name");
 		$b_date=$this->input->post("b_date");
+		$yofadmis=intval($this->input->post('yofadmis'))-543;
 		$address=$this->input->post("address");
 		$phone=$this->input->post("phone_number");
 		$title=$this->input->post("title");
@@ -469,10 +473,11 @@ class Project_controller extends CI_Controller {
 				'member_id_card'=>$id_card,
 				'member_name'=>$name,
 				'member_birth_date'=>$b_date,
+				'member_yofadmis'=>$yofadmis,
 				'address'=>$address,
 				'phone_number'=>$phone,
-				'member_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_member['file_name'],
-				'member_signa_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_singna['file_name'],
+				'member_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_member['file_name'],
+				'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'],
 				'member_regis_date'=>$regis_date,
 				'member_title'=>$title,
 				'member_status' => "1"
@@ -512,10 +517,11 @@ class Project_controller extends CI_Controller {
 				'member_id_card'=>$id_card,
 				'member_name'=>$name,
 				'member_birth_date'=>$b_date,
+				'member_yofadmis'=>$yofadmis,
 				'address'=>$address,
 				'phone_number'=>$phone,
-				'member_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_member['file_name'],
-				'member_signa_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_singna['file_name'],
+				'member_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_member['file_name'],
+				'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'],
 				'member_regis_date'=>$regis_date,'member_title'=>$title,
 				'member_status' => "1"
 			);
@@ -550,6 +556,7 @@ class Project_controller extends CI_Controller {
 		$id_card=$this->input->post("id_card");
 		$name=$this->input->post("name");
 		$b_date=$this->input->post("b_date");
+		$yofadmis=intval($this->input->post('yofadmis'))-543;
 		$address=$this->input->post("address");
 		$phone=$this->input->post("phone_number");
 		$title=$this->input->post("title");
@@ -576,10 +583,11 @@ class Project_controller extends CI_Controller {
 				'member_id_card'=>$id_card,
 				'member_name'=>$name,
 				'member_birth_date'=>$b_date,
+				'member_yofadmis'=>$yofadmis,
 				'address'=>$address,
 				'phone_number'=>$phone,
-				'member_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_member['file_name'],
-				'member_signa_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_singna['file_name'],
+				'member_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_member['file_name'],
+				'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'],
 				'member_regis_date'=>$regis_date,
 				'member_title'=>$title,
 				'member_status' => "1"
@@ -619,10 +627,11 @@ class Project_controller extends CI_Controller {
 				'member_id_card'=>$id_card,
 				'member_name'=>$name,
 				'member_birth_date'=>$b_date,
+				'member_yofadmis'=>$yofadmis,
 				'address'=>$address,
 				'phone_number'=>$phone,
-				'member_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_member['file_name'],
-				'member_signa_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_singna['file_name'],
+				'member_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_member['file_name'],
+				'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'],
 				'member_regis_date'=>$regis_date,
 				'member_title'=>$title,
 				'member_status' => "1"
@@ -780,6 +789,7 @@ class Project_controller extends CI_Controller {
 
 	public function staff_update(){
 		$staff_id=$this->input->post("staff_id");
+		$yofadmis = intval($this->input->post('yofadmis'))-543;
 		$stdid=$this->input->post("std_code");
 		$title=$this->input->post("title");
 		$name=$this->input->post("name");
@@ -807,7 +817,8 @@ class Project_controller extends CI_Controller {
 				'staff_id_card'=>$idcard,
 				'staff_status'=>'1',
 				'staff_address'=>$address,
-				'staff_pic' => "http://127.0.0.1/Donkha/picture/".$up_file_name['file_name']
+				'staff_pic' => "http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
+				'staff_yofadmis'=>$yofadmis
 			);
 		}
 		else{
@@ -820,7 +831,8 @@ class Project_controller extends CI_Controller {
 				'staff_name'=>$name,
 				'staff_id_card'=>$idcard,
 				'staff_status'=>'1',
-				'staff_address'=>$address
+				'staff_address'=>$address,
+				'staff_yofadmis'=>$yofadmis
 			);
 		}
 		$this->User_model->update_staff($data_staff,$staff_id);
@@ -833,6 +845,7 @@ class Project_controller extends CI_Controller {
 		$id_card=$this->input->post("id_card");
 		$name=$this->input->post("name");
 		$b_date=$this->input->post("b_date");
+		$yofadmis=intval($this->input->post('yofadmis'))-543;
 		$address=$this->input->post("address");
 		$phone=$this->input->post("phone_number");
 		$title=$this->input->post("title");
@@ -852,6 +865,7 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
 					'member_title'=>$title
@@ -866,9 +880,10 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_pic'=>"http://127.0.0.1/Donkha/picture/".$up_file_name['file_name'],
+					'member_pic'=>"http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
 					'member_title'=>$title
 				);
 			}
@@ -881,9 +896,10 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_signa_pic'=>"http://127.0.0.1/Donkha/picture/".$up_file_name['file_name'],
+					'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
 					'member_title'=>$title
 				);
 			}
@@ -899,10 +915,11 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_member['file_name'],
-					'member_signa_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_singna['file_name'],
+					'member_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_member['file_name'],
+					'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'],
 					'member_title'=>$title
 				);
 			}
@@ -920,6 +937,7 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
 					'member_title'=>$title
@@ -936,9 +954,10 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_pic'=>"http://127.0.0.1/Donkha/picture/".$up_file_name['file_name'],
+					'member_pic'=>"http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
 					'member_title'=>$title
 				);
 			}
@@ -953,9 +972,10 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_signa_pic'=>"http://127.0.0.1/Donkha/picture/".$up_file_name['file_name'],
+					'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
 					'member_title'=>$title
 				);
 			}
@@ -972,10 +992,11 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_member['file_name'],
-					'member_signa_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_singna['file_name'],
+					'member_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_member['file_name'],
+					'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'],
 					'member_title'=>$title
 				);
 			}
@@ -990,6 +1011,7 @@ class Project_controller extends CI_Controller {
 		$id_card=$this->input->post("id_card");
 		$name=$this->input->post("name");
 		$b_date=$this->input->post("b_date");
+		$yofadmis=intval($this->input->post('yofadmis'))-543;
 		$address=$this->input->post("address");
 		$phone=$this->input->post("phone_number");
 		$title=$this->input->post("title");
@@ -1009,6 +1031,7 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
 					'member_title'=>$title
@@ -1024,9 +1047,10 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_pic'=>"http://127.0.0.1/Donkha/picture/".$up_file_name['file_name'],
+					'member_pic'=>"http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
 					'member_title'=>$title
 				);
 			}
@@ -1039,9 +1063,10 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_signa_pic'=>"http://127.0.0.1/Donkha/picture/".$up_file_name['file_name'],
+					'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
 					'member_title'=>$title
 				);
 			}
@@ -1057,10 +1082,11 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_member['file_name'],
-					'member_signa_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_singna['file_name'],
+					'member_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_member['file_name'],
+					'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'],
 					'member_title'=>$title
 				);
 			}
@@ -1078,6 +1104,7 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
 					'member_title'=>$title
@@ -1094,9 +1121,10 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_pic'=>"http://127.0.0.1/Donkha/picture/".$up_file_name['file_name'],
+					'member_pic'=>"http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
 					'member_title'=>$title
 				);
 			}
@@ -1111,9 +1139,10 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_signa_pic'=>"http://127.0.0.1/Donkha/picture/".$up_file_name['file_name'],
+					'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
 					'member_title'=>$title
 				);
 			}
@@ -1131,10 +1160,11 @@ class Project_controller extends CI_Controller {
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
+					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_member['file_name'],
-					'member_signa_pic'=>"http://127.0.0.1/Donkha/picture/".$pic_singna['file_name'],
+					'member_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_member['file_name'],
+					'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'],
 					'member_title'=>$title
 				);
 			}
@@ -2369,19 +2399,6 @@ class Project_controller extends CI_Controller {
 		$result = $this->User_model->check_username($query);
 		echo $result;
 	}
-	public function thaidate(){
-		function DateThai($strDate)
-		{
-			date_default_timezone_set('Asia/Bangkok');
-			$regis_date = date('Y-m-d');
-			$strYear = date("Y",strtotime($regis_date))+543;
-			$strMonth= date("n",strtotime($regis_date));
-			$strDay= date("j",strtotime($regis_date));
-			$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-			$strMonthThai=$strMonthCut[$strMonth];
-			return "$strDay $strMonthThai $strYear";
-		}
-	}
 	public function confirm_deposit(){
 		$account_detail_id=$this->uri->segment(3);
 		$data['account_detail'] = $this->User_model->select_account_detail_parameter($account_detail_id);
@@ -2605,8 +2622,7 @@ class Project_controller extends CI_Controller {
 				<td style="height:16px;width:34px;border-spacing: 0">'.$action.'</td>
 				<td alizgn="right" style="height:16px;width:117px;border-spacing: 0">'.$wd.'</td>
 				<td align="right" style="height:16px;width:117px;border-spacing: 0">'.$dep.'</td>
-				<td align="right" style="height:16px;width:121px;border-spacing: 0">'.
-				number_format($row->account_detail_balance,2).'</td>
+				<td align="right" style="height:16px;width:121px;border-spacing: 0">'.number_format($row->account_detail_balance,2).'</td>
 				<td align="right" style="height:16px;width:35px;border-spacing: 0"></td>
 				<td align="right" style="height:16px;width:35px;border-spacing: 0"></td>
 			</tr>';

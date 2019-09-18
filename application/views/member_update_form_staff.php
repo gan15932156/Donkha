@@ -243,26 +243,26 @@
                       </div>
                     </div>  
                     <div class="row">
-                      <div class="form-group col-md-3">
+                    <div class="form-group col-md-3">
                         <label >วัน/เดือน/ปีเกิด</label>
                       </div>   
                       <div class="form-group col-md-4">
-                        <input type="date" class="form-control " name="b_date" id="b_date" required="" value="<?php echo $row->member_birth_date;?>">
+                        <input type="date" class="form-control " name="b_date" id="b_date" required="" value="<?=$row->member_birth_date;?>">
                       </div> 
                       <div class="form-group col-md-2">
-                        <label style="width:100px;">เบอร์โทรศัพท์</label>
+                        <label>ปีที่เข้าศึกษา</label>
                       </div>   
                       <div class="form-group col-md-3">
-                        <input type="text" class="form-control " name="phone_number" id="phone_number" required="" value="<?php echo $row->phone_number;?>">
-                      </div>                                          
+                        <input id="yofadmis" name="yofadmis" require  class="form-control "  type="number" placeholder="ปปปป" min="<?php echo date('Y',strtotime('-6 year'))+543; ?>" max="<?php echo date('Y')+543; ?>" value="<?=intval($row->member_yofadmis)+543;?>">
+                      </div>                                         
                     </div>
                     <div class="row">
-                      <div class="form-group col-md-2">
-                        <label for="name">ที่อยู่</label>
+                    <div class="form-group col-md-3">
+                        <label >เบอร์โทรศัพท์</label>
                       </div>   
-                      <div class="form-group col-md-5">
-                        <input type="text" class="form-control " name="address" id="address" required="" value="<?php echo $row->address; ?>">
-                      </div> 
+                      <div class="form-group col-md-4">
+                        <input type="text" class="form-control " name="phone_number" id="phone_number" required="" placeholder="เช่น 09xxxxxxxx" value="<?=$row->phone_number;?>">
+                      </div>      
                       <div class="form-group col-md-2">
                         <label for="name">อาชีพ</label>
                       </div>   
@@ -275,6 +275,14 @@
                           <?php } ?>
                         </select>
                       </div>                                          
+                    </div>
+                    <div class="row">
+                      <div class="form-group col-md-2">
+                        <label for="name">ที่อยู่</label>
+                      </div>   
+                      <div class="form-group col-md-10">
+                        <input type="text" class="form-control " name="address" id="address" required="" placeholder="บ้านเลขที่ หมู่ ถนน ซอย" value="<?=$row->address;?>">
+                      </div>                                  
                     </div>
                     <div class="row">
                       <div class="form-group col-md-2">

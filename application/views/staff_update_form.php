@@ -133,7 +133,7 @@
             <form  method="post" action="<?=base_url("index.php/Project_controller/staff_update");?>" enctype="multipart/form-data" name="staff_form" id="staff_form">
               <div class="row">
                 <div class="form-group col-4">  
-                  <img id="show_image" width="30%" height= "25%" src="<?php echo $row->staff_pic;?>" alt="your image" style="border: solid 1px #c0c0c0;" /><figcaption>รูปประจำตัว</figcaption>
+                  <img id="show_image" width="30%" height= "65%" src="<?php echo $row->staff_pic;?>" alt="your image" style="border: solid 1px #c0c0c0;" /><figcaption>รูปประจำตัว</figcaption>
                   <input onchange="readURL(this);" type="file" class="form-control " name="pic" id="pic">                
                 </div>  
                 <div class="form-group col-8" align="left">
@@ -197,12 +197,18 @@
                         </div>
                       </div>  
                       <div class="row">
-                        <div class="form-group col-md-3">
-                          <label for="name">ที่อยู่</label>
+                        <div class="form-group col-md-2">
+                          <label>ปีที่เข้าศึกษา</label>
                         </div>   
-                        <div class="form-group col-md-9">
-                          <input type="text" class="form-control " name="address" id="address" required="" value="<?php echo $row->staff_address; ?>">
-                        </div>                                          
+                        <div class="form-group col-md-3">
+                          <input id="yofadmis" name="yofadmis" require  class="form-control "  type="number" placeholder="ปปปป" min="<?php echo date('Y',strtotime('-6 year'))+543; ?>" max="<?php echo date('Y')+543; ?>" value="<?=intval($row->staff_yofadmis)+543;?>">
+                        </div>                
+                        <div class="form-group col-md-1">
+                          <label for="name" style="width:50px">ที่อยู่</label>
+                        </div>   
+                        <div class="form-group col-md-6">
+                          <input type="text" class="form-control " name="address" id="address" required="" placeholder="บ้านเลขที่ หมู่ ถนน ซอย" value="<?=$row->staff_address;?>">
+                        </div>                                         
                       </div>                                     
                     </div>
                   </div>
@@ -254,7 +260,7 @@
                       <input type="text" class="form-control " name="zipcode" id="zipcode" value="<?php echo $row->zipcode; ?>">
                     </div>                                  
                     <div class="form-group col-md-1">
-                      <label >รูปประจำตัว</label>
+                      <label style="width:100px">รูปประจำตัว</label>
                     </div> 
                     <div class="form-group col-md-7">
                       <input type="text" id="show_image" name="show_image" class="form-control" readonly="" value="<?php echo $row->staff_pic; ?>">
