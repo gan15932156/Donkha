@@ -195,8 +195,9 @@ class Project_controller extends CI_Controller {
 	//////////////////////  FORM    //////////////////////////
 
 	public function index(){
-		//$this->cal_end_day();
+		$this->cal_end_day();
 		//$this->cal_interest_auto();
+		$this->cal_edu_level_auto();
 		$this->load->view('index');
     }
     public function staff_insert_form(){
@@ -3695,5 +3696,58 @@ class Project_controller extends CI_Controller {
 		ob_clean();
 		$pdf->Output('example_001.pdf', 'I');
 		ob_end_clean();
+	}
+	public function cal_edu_level_auto(){
+		foreach ($this->User_model->get_all_member_with_no_edu_6()->result() as $row) {	
+			$year=0;
+			$cal_year=0;
+			//if(วันที่เปิดภาคเรียน){
+				if($row->edu_id != '6'){
+					$year = intval(date("Y")) - intval($row->member_yofadmis);
+					if($year != 0){
+						//echo "<br>".$row->member_name."<br>ปีที่เข้าศึกษา:".$row->member_yofadmis." ปีปัจจุบัน:".date("Y")." ม.".$row->edu_id." year_diff ".$year."<br>";
+						$cal_year = intval($row->edu_id) + $year;
+						//echo "Year before cal:".$cal_year."<br>";
+						if($cal_year > 6){
+							$cal_year = 6;
+							//echo "Year after cal:".$cal_year."<br>";
+						}
+						//echo "ปัจจุบันเรียนชั้น ม.".$cal_year."<br>";
+					}
+					$data=array(
+						'edu_id'=>$cal_year
+					);
+					$this->User_model->update_edu_level("member",$row->member_id,$data);
+					
+				}
+			//}
+			
+		}
+		//echo"<br><br><br><br><br><br><br>พนักงาน<br><br><br>";
+		foreach ($this->User_model->get_all_staff_with_no_edu_6()->result() as $row) {	
+			$year=0;
+			$cal_year=0;
+			//if(วันที่เปิดภาคเรียน){
+				if($row->edu_id != '6'){
+					$year = intval(date("Y")) - intval($row->staff_yofadmis);
+					if($year != 0){
+						//echo "<br>".$row->staff_name."<br>ปีที่เข้าศึกษา:".$row->staff_yofadmis." ปีปัจจุบัน:".date("Y")." ม.".$row->edu_id." year_diff ".$year."<br>";
+						$cal_year = intval($row->edu_id) + $year;
+						//echo "Year before cal:".$cal_year."<br>";
+						if($cal_year > 6){
+							$cal_year = 6;
+							//echo "Year after cal:".$cal_year."<br>";
+						}
+						//echo "ปัจจุบันเรียนชั้น ม.".$cal_year."<br>";
+					}
+					$data=array(
+						'edu_id'=>$cal_year
+					);
+					$this->User_model->update_edu_level("staff",$row->staff_id,$data);
+					
+				}
+			//}
+			
+		}
 	}
 }

@@ -30,6 +30,7 @@ class User_model extends CI_Model {
 		$this->db->join('staff', 'user.staff_id = staff.staff_id','inner');
 		$this->db->where('username',$user);
 		$this->db->where('password',$pass);
+		$this->db->where('staff_status','1');		
 		$query=$this->db->get('user');
 		if($query->num_rows() > 0){
             return $query;
@@ -243,7 +244,6 @@ class User_model extends CI_Model {
 		return $query;
 	}
 	public function get_member($member_id){
-		$response=array();
 		$this->db->select('*');
 		$this->db->from('member');
 		$this->db->join('zipcodes', 'zipcodes.DISTRICT_CODE = member.DISTRICT_CODE','inner');
@@ -255,14 +255,32 @@ class User_model extends CI_Model {
 		return $query;
 	}
 	public function get_member_noparameter(){
-		$response=array();
 		$this->db->select('*');
 		$this->db->from('member');
+		$this->db->join('edu_level', 'member.edu_id = edu_level.edu_id','inner');
 		$this->db->join('zipcodes', 'zipcodes.DISTRICT_CODE = member.DISTRICT_CODE','inner');
 		$this->db->join('districts', 'member.DISTRICT_CODE = districts.DISTRICT_CODE','inner');
 		$this->db->join('amphures', 'amphures.AMPHUR_ID = districts.AMPHUR_ID','inner');
 		$this->db->join('provinces', 'provinces.PROVINCE_ID = amphures.PROVINCE_ID','inner');
 		$this->db->order_by('member_name','ASC');
+		$query=$this->db->get();
+		return $query;
+	}
+	public function get_all_member_with_no_edu_6(){
+		$this->db->select('*');
+		$this->db->from('member');
+		$this->db->where('std_code !=', '0');
+		$this->db->where('member.edu_id !=', '0');
+		$this->db->order_by('member_id','ASC');
+		$query=$this->db->get();
+		return $query;
+	}
+	public function get_all_staff_with_no_edu_6(){
+		$this->db->select('*');
+		$this->db->from('staff');
+		$this->db->where('stu_code !=', '0');
+		$this->db->where('staff.edu_id !=', '0');
+		$this->db->order_by('staff_id','ASC');
 		$query=$this->db->get();
 		return $query;
 	}
@@ -1007,5 +1025,9 @@ class User_model extends CI_Model {
 	public function update_account($account_id,$data_account){
 		$this->db->where("account_id",$account_id);
 		$this->db->update('account',$data_account);
+	}
+	public function update_edu_level($tb,$id,$data){
+		$this->db->where($tb."_id",$id);
+		$this->db->update($tb,$data);
 	}
 }
