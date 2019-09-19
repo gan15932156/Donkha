@@ -156,6 +156,20 @@
         $('#job option[value=2]').remove();
       }
     });
+    /*var edu_level=0;
+    var cal_edu;
+    var d = new Date().getFullYear();
+    $('#yofadmis').change(function(){   
+      
+      edu_level = parseInt(d) - parseInt(($(this).val()-543));       
+      if(edu_level == 0){
+        $('#edu_level option[value=1]').prop("selected", true);
+      }
+      else{
+        $('#edu_level option[value='+edu_level+']').prop("selected", true);
+      }
+      console.log(edu_level+" "+d+" "+($(this).val()-543));
+    });*/
   });
 </script>
 <div class="col-md-12 text-center" >
