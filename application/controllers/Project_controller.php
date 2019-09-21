@@ -1622,7 +1622,7 @@ class Project_controller extends CI_Controller {
                     <tr>
                           <th width="5%" scope="col">ลำดับ</th>
                           <th width="25%" scope="col">หมายเลขบัญชี</th>
-                          <th width="30%" scope="col">ชื่อบัญชี</th>
+                          <th width="30%" scope="col">ชื่อบัญช��</th>
                           <th width="30%" scope="col">สถานะ</th>
                           <th width="10%" scope="col">การกระทำ</th>
                     </tr>

@@ -39,6 +39,19 @@ class User_model extends CI_Model {
             return false;
         }
 	}
+	public function check_login_app($user,$pass){
+		$this->db->join('member', 'user.member_id = member.member_id','inner');
+		$this->db->where('username',$user);
+		$this->db->where('password',$pass);
+		$this->db->where('member_status','1');		
+		$query=$this->db->get('user');
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+	}
 	public function check_std_code($std_code){
 		$this->db->where('stu_code',$std_code);
 		$query=$this->db->get('staff');
