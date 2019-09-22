@@ -40,11 +40,25 @@ class User_model extends CI_Model {
         }
 	}
 	public function check_login_app($user,$pass){
+		$this->db->from('user');
 		$this->db->join('member', 'user.member_id = member.member_id','inner');
 		$this->db->where('username',$user);
 		$this->db->where('password',$pass);
 		$this->db->where('member_status','1');		
-		$query=$this->db->get('user');
+		return $query=$this->db->get('');
+		
+	}
+	public function fotgot_password_app($forgot,$state){
+		$this->db->from('user');
+		$this->db->join('member', 'user.member_id = member.member_id','inner');
+		if($state == "นักเรียน"){
+			$this->db->where('std_code',$forgot);
+		}
+		else{
+			$this->db->where('member_id_card',$forgot);
+		}	
+		$this->db->where('member_status','1');		
+		$query=$this->db->get();
 		if($query->num_rows() > 0){
             return $query;
         }

@@ -400,7 +400,7 @@ class Project_controller extends CI_Controller {
 		$did=$this->input->post("DISTRICT_CODE");
 		$zip=$this->input->post("zipcode");
 		$username=$this->input->post("username");
-		$password=md5($this->input->post("password"));
+		$password=base64_encode($this->input->post("password"));
 		$regis_date = date('Y-m-d');
 		$permiss=$this->input->post("permiss");
 		$config['overwrite'] = TRUE;
@@ -452,7 +452,7 @@ class Project_controller extends CI_Controller {
 		$title=$this->input->post("title");
 		$stdid=$this->input->post("std_code");
 		$username=$this->input->post("username");
-		$password=md5($this->input->post("password"));
+		$password=base64_encode($this->input->post("password"));
 		$regis_date = date('Y-m-d');
 		$config['upload_path'] = './picture/';
 		$config['allowed_types'] = '*';
@@ -563,7 +563,7 @@ class Project_controller extends CI_Controller {
 		$title=$this->input->post("title");
 		$stdid=$this->input->post("std_code");
 		$username=$this->input->post("username");
-		$password=md5($this->input->post("password"));
+		$password=base64_encode($this->input->post("password"));
 		$regis_date = date('Y-m-d');
 		$config['upload_path'] = './picture/';
 		$config['allowed_types'] = '*';
@@ -2340,7 +2340,7 @@ class Project_controller extends CI_Controller {
 
 	public function login_check(){
 		$user=$this->input->post("username");
-		$pass=md5($this->input->post("password"));
+		$pass=base64_encode($this->input->post("password"));
 		if($data['login']=$this->User_model->check_login($user, $pass))  {
         	foreach($data['login']->result() as $row){
 	            if($row->level_id == '1'){ $level = "สมาชิก";}
