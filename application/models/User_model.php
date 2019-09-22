@@ -48,7 +48,7 @@ class User_model extends CI_Model {
 		return $query=$this->db->get('');
 		
 	}
-	public function fotgot_password_app($forgot,$state){
+	public function fotgot_password_app($forgot,$state,$username){
 		$this->db->from('user');
 		$this->db->join('member', 'user.member_id = member.member_id','inner');
 		if($state == "นักเรียน"){
@@ -57,6 +57,7 @@ class User_model extends CI_Model {
 		else{
 			$this->db->where('member_id_card',$forgot);
 		}	
+		$this->db->where('username',$username);	
 		$this->db->where('member_status','1');		
 		$query=$this->db->get();
 		if($query->num_rows() > 0){

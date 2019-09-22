@@ -46,17 +46,28 @@ class Service_app extends CI_Controller {
 	public function forgot_password(){
 		$forgot = $this->input->post('Forgot');
 		$state = $this->input->post('State');
-		$forgot = "15932158";
-		$state = "นักเรียน";
-		if($data['result']=$this->User_model->fotgot_password_app($forgot,$state))  {
+		$username = $this->input->post('Username');
+
+		/*$forgot = '15932120';
+		$state = 'นักเรียน';
+		$username = 'abcd';*/
+		if($data['result']=$this->User_model->fotgot_password_app($forgot,$state,$username))  {
 			foreach ($data['result']->result() as $row) {
-				echo "[{'error':'failed','password':'".base64_decode($row->password)."'}]";
+				$forgot_array = array(
+					'username'=>$row->username, 
+					'password'=>base64_decode($row->password), 
+				);
 			}
+			$this->response['error'] = false; 
+			$this->response['message'] = 'สำเร็จ'; 
+			$this->response['forgot'] = $forgot_array;     
 			
 		}
 		else{
-			echo "[{'error':'failed','password':''}]";
+			$this->response['error'] = true; 
+			$this->response['message'] = 'ไม่สำเร็จ';
 		}
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
 	}
 
 }
