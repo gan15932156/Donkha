@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class User_model extends CI_Model {
@@ -32,34 +32,6 @@ class User_model extends CI_Model {
 		$this->db->where('password',$pass);
 		$this->db->where('staff_status','1');		
 		$query=$this->db->get('user');
-		if($query->num_rows() > 0){
-            return $query;
-        }
-        else{
-            return false;
-        }
-	}
-	public function check_login_app($user,$pass){
-		$this->db->from('user');
-		$this->db->join('member', 'user.member_id = member.member_id','inner');
-		$this->db->where('username',$user);
-		$this->db->where('password',$pass);
-		$this->db->where('member_status','1');		
-		return $query=$this->db->get('');
-		
-	}
-	public function fotgot_password_app($forgot,$state,$username){
-		$this->db->from('user');
-		$this->db->join('member', 'user.member_id = member.member_id','inner');
-		if($state == "นักเรียน"){
-			$this->db->where('std_code',$forgot);
-		}
-		else{
-			$this->db->where('member_id_card',$forgot);
-		}	
-		$this->db->where('username',$username);	
-		$this->db->where('member_status','1');		
-		$query=$this->db->get();
 		if($query->num_rows() > 0){
             return $query;
         }
