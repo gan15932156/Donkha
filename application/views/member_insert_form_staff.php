@@ -25,7 +25,7 @@
   }
   function check_std_code(query){
     $.ajax({
-      url:"<?php echo base_url("index.php/Project_controller/check_std_code"); ?>",
+      url:"<?php echo base_url("index.php/Project_controller/check_std_code_member"); ?>",
       method:"POST",
       data:{query:query},
       success:function(data){
