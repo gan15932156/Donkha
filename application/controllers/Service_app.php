@@ -18,6 +18,7 @@ class Service_app extends CI_Controller {
 		return true; 
 	}
 	public function login_check_app(){
+		$this->response = null ;
 		$username = $this->input->post('Username');
 		$password = base64_encode($this->input->post('Password'));
 
@@ -42,6 +43,7 @@ class Service_app extends CI_Controller {
 		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
 	}
 	public function forgot_password(){
+		$this->response = null ;
 		$forgot = $this->input->post('Forgot');
 		$state = $this->input->post('State');
 		$username = $this->input->post('Username');
@@ -64,7 +66,60 @@ class Service_app extends CI_Controller {
 		}
 		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
 	}
+	public function get_account_balance(){
+		$this->response = null ;
+		$member_id = $this->input->post('member_id');
+		//$member_id = "17"; //abcd
+		if($data['member']=$this->Service_App_Model->check__isset_account($member_id)){
+			foreach ($data['member']->result() as $row) {
+				$account_balance = array(
+					'account_id'=>$row->account_id, 
+					'balance'=>$row->account_balance, 
+				);	
+			}  
+			$this->response['error'] = false; 
+			$this->response['message'] = 'พบข้อมูล'; 
+			$this->response['account_balance'] = $account_balance;   
+		}
+		else{
+			$this->response['error'] = true;
+			$this->response['message'] = 'ไม่พบบัญชี';
+		}  
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
+	}
+	public function get_filter_statement(){
+		$this->response = null ;
+		$account_id = $this->input->post("account_id");
+		$action = $this->input->post("action");
+		/*$action = "deposit";
+		$account_id = "2019001";*/
+		if($data['statement']=$this->Service_App_Model->select_filter_st($account_id,$action)){
+			foreach ($data['statement']->result() as $row) {
+				$account_balance = array(
+					'account_detail_id'=>$row->account_detail_id,
+					'trans_id'=>$row->trans_id,
+					'account_id'=>$row->account_id,
+					'staff_record_id'=>$row->staff_record_id,
+					'action'=>$row->action,
+					'record_date'=>$row->record_date,
+					'record_time'=>$row->record_time,
+					'account_detail_balance'=>$row->account_detail_balance,
+					'trans_money'=>$row->trans_money,
+				);	
+				$st[] = $account_balance;
+			}  
+			$this->response['error'] = false; 
+			$this->response['message'] = 'พบข้อมูล'; 
+			$this->response['statement'] = $st;   
+		}
+		else{
+			$this->response['error'] = true;
+			$this->response['message'] = 'ไม่พบรายการ';
+		}  
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
+	}
 	public function get_statement(){
+		$this->response = null ;
 		$member_id = $this->input->post('member_id');
 		//$member_id = "2"; //abcd
 		
@@ -76,13 +131,15 @@ class Service_app extends CI_Controller {
 				
 				foreach ($data['statement']->result() as $row2) {
 					$statement_array = array(
-						'account_id'=>$row2->account_id, 
-						'account_detail_id'=>$row2->account_detail_id, 
-						'action'=>$row2->action, 
-						'record_date'=>$row2->record_date, 
-						'record_time'=>$row2->record_time, 
-						'trans_money'=>$row2->trans_money, 
-
+						'account_detail_id'=>$row2->account_detail_id,
+						'trans_id'=>$row2->trans_id,
+						'account_id'=>$row2->account_id,
+						'staff_record_id'=>$row2->staff_record_id,
+						'action'=>$row2->action,
+						'record_date'=>$row2->record_date,
+						'record_time'=>$row2->record_time,
+						'account_detail_balance'=>$row2->account_detail_balance,
+						'trans_money'=>$row2->trans_money,
 					);
 					$st[] = $statement_array;	
 				}
