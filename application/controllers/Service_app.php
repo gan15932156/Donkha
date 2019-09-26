@@ -121,7 +121,7 @@ class Service_app extends CI_Controller {
 	public function get_statement(){
 		$this->response = null ;
 		$member_id = $this->input->post('member_id');
-		//$member_id = "2"; //abcd
+		//$member_id = "17"; //abcd
 		
 		if($data['member']=$this->Service_App_Model->check__isset_account($member_id)){
 			foreach ($data['member']->result() as $row) {

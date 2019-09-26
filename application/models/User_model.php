@@ -114,6 +114,9 @@ class User_model extends CI_Model {
 	public function insert_withdraw($data_wd){
 		$this->db->insert('withdraw',$data_wd);
 	}
+	public function insert_tranfer_money($data_tdf){
+		$this->db->insert('tranfer_money',$data_tdf);
+	}
 	public function insert_interest_history($data_interest){
 		$this->db->insert('interest_history',$data_interest);
 	}
@@ -419,6 +422,24 @@ class User_model extends CI_Model {
 	    $real_code = "WD". $wdcode;
 	    return $real_code;
 	}
+	public function auto_generate_tranfer_money_code()
+	{
+	    $year = date("Y");
+	    $this->db->select('RIGHT(tranfer_money.tranfer_money_id,3) as num', FALSE);
+	    $this->db->order_by('tranfer_money_id', 'DESC');
+	    $this->db->limit(1);
+	    $query = $this->db->get('tranfer_money');
+	    if($query->num_rows() <> 0) {
+	        $data = $query->row();
+	        $num = intval($data->num) + 1;
+	    }
+	    else {
+	        $num = 1;
+	    }
+	    $wdcode = $year . str_pad($num, 3, 0, STR_PAD_LEFT);
+	    $real_code = "TDF". $wdcode;
+	    return $real_code;
+	}
 	public function select_account_detail_latest(){
 		$this->db->select('*');
 		$this->db->limit('1','0');
@@ -472,6 +493,12 @@ class User_model extends CI_Model {
 		$this->db->where('action', 'withdraw');
 		return $this->db->count_all_results();
 	}
+	public function count_not_confirm_record_tdf(){
+		$this->db->from('account_detail');
+		$this->db->where('account_detail_confirm',"0");
+		$this->db->where('action', 'tranfer_money');
+		return $this->db->count_all_results();
+	}
 	public function select_account_with_parameter($account_id){
 		$this->db->from('account');
 		$this->db->join('member', 'member.member_id = account.member_id','inner');
@@ -495,6 +522,15 @@ class User_model extends CI_Model {
 		$this->db->join('account', 'account_detail.account_id = account.account_id','inner');
 		$this->db->where('account_detail_confirm',"0");
 		$this->db->where('action', 'withdraw');
+		$query = $this->db->get();
+		return $query;
+	}
+	public function select_unconfirm_tranfer_money(){
+		$this->db->from('account_detail');
+		$this->db->join('tranfer_money', 'trans_id = tranfer_money_id','inner');
+		$this->db->join('account', 'account_detail.account_id = account.account_id','inner');
+		$this->db->where('account_detail_confirm',"0");
+		$this->db->where('action', 'tranfer_money');
 		$query = $this->db->get();
 		return $query;
 	}
@@ -584,19 +620,26 @@ class User_model extends CI_Model {
 	public function select_account_detail_parameter_account_id_filter($account_id,$filter){
 		$this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);
-		$this->db->where('action',$filter);
+		if($filter == "deposit"){
+			$this->db->where("(action = 'recive_money' OR action = 'add_interest' OR action = 'deposit')"); 
+		}
+		else if($filter == "withdraw"){
+			$this->db->where("(action = 'tranfer_money' OR action = 'withdraw')"); 
+		}
+		else{
+			$this->db->where('action',$filter);	
+		}
 		$this->db->join('staff', 'staff_id = staff_record_id','inner');
 		$this->db->order_by('record_date ASC, record_time ASC');
 		$query=$this->db->get();
 		return $query;
 	}
 	public function select_filter_transaction($account_id,$transaction){
-		if($transaction == "all"){
-			$this->db->from('account_detail');
+		$this->db->from('account_detail');
+		if($transaction == "all"){		
 			$this->db->where('account_id',$account_id);
 		}
 		else{
-			$this->db->from('account_detail');
 			$this->db->where('account_id',$account_id);
 			$this->db->where('action',$transaction);
 		}
@@ -752,6 +795,7 @@ class User_model extends CI_Model {
 		$response=array();
 		$this->db->select('*');
 		$this->db->from('member');
+		$this->db->where('member_status','1');
 		$this->db->like('member_name',$member_name);
 		$this->db->order_by('member_name', 'ASC');
 		$query = $this->db->get();
@@ -766,9 +810,25 @@ class User_model extends CI_Model {
 		$response=array();
 		$this->db->select('*');
 		$this->db->from('account');
+		$this->db->where('account_status','1');
 		$this->db->like('account_name',$account);
 		$this->db->or_like('account_id',$account);
 		$this->db->order_by('account_name', 'ASC');
+		$query = $this->db->get();
+	   if($query->num_rows() > 0) {
+			return $query->result();
+	   }
+	   else {
+	   	return false;
+	   }
+	}
+	public function fetch_account_tranfer_auto_complete($account){
+		$response=array();
+		$this->db->select('*');
+		$this->db->from('account');
+		$this->db->where('account_status','1');
+		$this->db->like('account_id',$account);
+		$this->db->order_by('account_id', 'ASC');
 		$query = $this->db->get();
 	   if($query->num_rows() > 0) {
 			return $query->result();
@@ -988,12 +1048,24 @@ class User_model extends CI_Model {
 		$this->db->where("trans_id",$trans_id);
 		$this->db->update("account_detail",$data_account_detail);
 	}
+	public function update_confirm_tranfer_money($account_detail_id,$trans_id){
+		$data_account_detail = array('account_detail_confirm' => '1');
+		$this->db->where("account_detail_id",$account_detail_id);
+		$this->db->where("action","tranfer_money");
+		$this->db->where("trans_id",$trans_id);
+		$this->db->update("account_detail",$data_account_detail);
+	}
 	public function update_confirm_account_deposit($account_id,$account_balance){
 		$data_account = array('account_balance' => $account_balance);
 		$this->db->where("account_id",$account_id);
 		$this->db->update("account",$data_account);
 	}
 	public function update_confirm_account_withdraw($account_id,$account_balance){
+		$data_account = array('account_balance' => $account_balance);
+		$this->db->where("account_id",$account_id);
+		$this->db->update("account",$data_account);
+	}
+	public function update_confirm_account_tranfer($account_id,$account_balance){
 		$data_account = array('account_balance' => $account_balance);
 		$this->db->where("account_id",$account_id);
 		$this->db->update("account",$data_account);
@@ -1013,6 +1085,10 @@ class User_model extends CI_Model {
 	public function update_table_confirm_withdraw_money_tb_withdraw($withdraw_id,$data_withdraw){
 		$this->db->where("withdraw_id",$withdraw_id);
 		$this->db->update("withdraw",$data_withdraw);
+	}
+	public function update_table_confirm_tranfer_money_tb_tranfer($tdf_id,$data_tdf){
+		$this->db->where("tranfer_money_id",$tdf_id);
+		$this->db->update("tranfer_money",$data_tdf);
 	}
 	public function update_end_day_account_detail($account_detail_id,$data){
 		$this->db->where("account_detail_id",$account_detail_id);

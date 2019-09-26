@@ -29,7 +29,43 @@ class Service_App_Model extends CI_Model {
         else{
             return false;
         }
-    }
+	}
+	/*public function get_state_transaction($account_id,$action){
+		$this->db->from('account_detail');
+		if($action == "deposit"){
+			$this->db->join('deposit', 'deposit.deposit_id = account_detail.trans_id','inner');
+		}
+		elseif($action == "withdraw"){
+			$this->db->join('withdraw', 'withdraw.withdraw_id = account_detail.trans_id','inner');
+		}	
+		elseif($action == "tranfer"){
+			$this->db->join('tranfer_money', 'tranfer_money.tranfer_money_id = account_detail.trans_id','inner');
+		}
+		$this->db->where('account_detail.account_id',$account_id);
+		$this->db->where('account_detail_confirm','1');	
+		$query=$this->db->get('');
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+	}*/	
+	public function select_filter_st($account_id,$action){
+		$this->db->from('account_detail');
+		$this->db->where('account_id',$account_id);
+		if($action != "all"){
+			$this->db->where('action',$action);
+		}
+		$this->db->where('account_detail_confirm','1');	
+		$query=$this->db->get('');
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+	}
     public function check_login_app($user,$pass){
 		$this->db->from('user');
 		$this->db->join('member', 'user.member_id = member.member_id','inner');

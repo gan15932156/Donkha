@@ -36,6 +36,7 @@ class Project_controller extends CI_Controller {
    public function index_staff(){
     	$data['not_confirm_dep'] = $this->User_model->count_not_confirm_record_dep();
 		$data['not_confirm_wd'] = $this->User_model->count_not_confirm_record_wd();
+		$data['not_confirm_tdf'] = $this->User_model->count_not_confirm_record_tdf();
 		$this->load->view('templates/header');
 		$this->load->view('index_staff',$data);
 		$this->load->view('templates/footer');	
@@ -120,6 +121,12 @@ class Project_controller extends CI_Controller {
 		$data['unconfirm_withdraw'] =  $this->User_model->select_unconfirm_withdraw();		
 		$this->load->view('templates/header');
 		$this->load->view('noti_wd',$data);
+		$this->load->view('templates/footer');						
+	}
+	public function noti_tdf(){
+		$data['unconfirm_tdf'] =  $this->User_model->select_unconfirm_tranfer_money();		
+		$this->load->view('templates/header');
+		$this->load->view('noti_tdf',$data);
 		$this->load->view('templates/footer');						
 	}
 	public function passbook_display(){
@@ -326,6 +333,11 @@ class Project_controller extends CI_Controller {
 		$this->load->view('templates/header');
 		$this->load->view('withdraw_insert_form');
 		$this->load->view('templates/footer');				
+	}
+	public function tranfer_money_insert_form(){
+		$this->load->view('templates/header');
+		$this->load->view('tranfer_money_insert_form');
+		$this->load->view('templates/footer');			
 	}
 	public function close_account(){
 		$this->load->view('templates/header');
@@ -743,6 +755,54 @@ class Project_controller extends CI_Controller {
 		);
 		$this->User_model->insert_account_details($data_account_detail);
 		redirect(base_url()."Project_controller/noti_wd");
+	}
+	public function tranfer_money_insert(){
+		date_default_timezone_set('Asia/Bangkok');
+		$now_time= date('H:i:s');
+		$td_code = $this->User_model->auto_generate_tranfer_money_code();
+		$data_tdf=array(
+			'tranfer_money_id'=>$td_code,
+			'account_id'=>$this->input->post("acc_code"),
+			'account_id_tranfer'=>$this->input->post("ac_tranfer"),
+			'money_tranfer'=>$this->input->post("tranfer_money")
+		);
+		$this->User_model->insert_tranfer_money($data_tdf);
+		$data_account_detail=array(
+			'trans_id'=>$td_code,
+			'account_id'=>$this->input->post("acc_code"),
+			'staff_record_id'=>$this->input->post("staff_id"),
+			'action'=>'tranfer_money',
+			'record_date'=>$this->input->post("date"),
+			'record_time'=>$now_time,
+			'account_detail_balance'=>$this->input->post("new_balance"),
+			'trans_money'=>$this->input->post("tranfer_money"),
+			'account_detail_confirm'=>'0',
+		);
+		$this->User_model->insert_account_details($data_account_detail);
+		//ผู้รับ
+		foreach ($this->User_model->select_account_with_parameter($this->input->post("ac_tranfer"))->result() as $row) {
+			$account_balance=$row->account_balance;
+		}
+		$new_balance = $account_balance+$this->input->post('tranfer_money',true);
+
+		$data_account_detail_reciver=array(
+			'trans_id'=>"REC_TDF", //recive tranfer money
+			'account_id'=>$this->input->post("ac_tranfer"),
+			'staff_record_id'=>$this->input->post("staff_id"),
+			'action'=>'recive_money',
+			'record_date'=>$this->input->post("date"),
+			'record_time'=>$now_time,
+			'account_detail_balance'=>$new_balance,
+			'trans_money'=>$this->input->post("tranfer_money"),
+			'account_detail_confirm'=>'1',
+		);
+		$this->User_model->insert_account_details($data_account_detail_reciver);
+
+		
+		$this->User_model->update_confirm_account_tranfer($this->input->post("ac_tranfer"),$new_balance);
+
+		
+		redirect(base_url()."Project_controller/noti_tdf");
 	}
 	public function close_account_insert(){
 		$data_clsoe_account=array(
@@ -1226,6 +1286,35 @@ class Project_controller extends CI_Controller {
 		);
 		$this->User_model->update_table_confirm_withdraw_money_tb_account_detail($this->input->post('account_detail_id',true),$data_account_detail);
 	    $this->User_model->update_table_confirm_withdraw_money_tb_withdraw($this->input->post('trand_id',true),$data_withdraw);
+        echo '<script type="text/javascript">
+           	location.reload();
+            </script>';
+	}
+	public function edit_table_confirm_tranfer_money(){
+		if( $_SERVER['REQUEST_METHOD']  != 'POST'  ){
+            redirect(base_url()."Project_controller/noti_tdf");
+        }
+        $data['account_detail'] = $this->User_model->select_account_detail_parameter($this->input->post('account_detail_id',true));
+		$account_detail=$data['account_detail']->result();
+		foreach ($account_detail as $row) {
+			$account_id=$row->account_id;
+		}
+		$data['account'] = $this->User_model->select_account_with_parameter($account_id);
+		$account=$data['account']->result();
+		foreach ($account as $row) {
+			$account_balance=$row->account_balance;
+		}
+		$new_balance = $account_balance-$this->input->post('money',true);
+
+		$data_account_detail=array(
+			'trans_money'=>$this->input->post('money',true),
+			'account_detail_balance'=>$new_balance,
+		);
+		$data_tranfer_money=array(
+			'money_tranfer'=>$this->input->post('money',true),
+		);
+		$this->User_model->update_table_confirm_withdraw_money_tb_account_detail($this->input->post('account_detail_id',true),$data_account_detail);
+	    $this->User_model->update_table_confirm_tranfer_money_tb_tranfer($this->input->post('trand_id',true),$data_tranfer_money);
         echo '<script type="text/javascript">
            	location.reload();
             </script>';
@@ -1861,7 +1950,7 @@ class Project_controller extends CI_Controller {
 		            </tr>';
 			}
 		}
-		elseif($this->input->post('filter') == "tranfer"){
+		elseif($this->input->post('filter') == "tranfer_money"){
 			$output.='
 			<table class="table table-striped table-hover table-sm">
 	            <thead class="thead-light table-bordered text-center">
@@ -1930,6 +2019,10 @@ class Project_controller extends CI_Controller {
 					}
 					elseif($row->action == "add_interest"){
 						$action = '<span class="text-success">เพิ่มดอกเบี้ย</span>';
+						$money = '<span class="text-success">+'.number_format($row->trans_money,2).'</span>';
+					}
+					elseif($row->action == "recive_money"){
+						$action = '<span class="text-success">รับเงินโอน</span>';
 						$money = '<span class="text-success">+'.number_format($row->trans_money,2).'</span>';
 					}
 					else{
@@ -2167,6 +2260,17 @@ class Project_controller extends CI_Controller {
 			}
       }
 	}
+	public function fetch_account_tranfer(){
+		if (isset($_GET['term'])) {
+		   $result = $this->User_model->fetch_account_tranfer_auto_complete($_GET['term']);
+		   if (count($result) > 0) {
+				  foreach ($result as $row){
+					  $arr_result[] = $row->account_id;
+					  echo json_encode($arr_result);
+				  }
+			  }
+		}
+	  }
 	public function fetch_report_open_account(){
 		function DateThai($strDate)
 		{
@@ -2404,6 +2508,27 @@ class Project_controller extends CI_Controller {
 		$this->User_model->update_confirm_account_withdraw($account_id,$account_detail_balance);
 		$url1 = base_url('Project_controller/check_next_passbook_page_accountdetail_id/').$account_detail_id;
 		$url2 = base_url('Project_controller/noti_wd/');
+		echo '
+            <script type="text/javascript">
+            	var confirn =  confirm("ทำรายการเรียบร้อย\nต้องการพิมพ์สมุดคู่ฝาก หรือไม่");
+            	if(confirn == true){ window.open("'.$url1.'", "_self");}
+            	else{ window.open("'.$url2.'", "_self"); }
+            </script>
+            ';
+	}
+	public function confirm_tranfer_money(){
+		$account_detail_id=$this->uri->segment(3);
+		$data['account_detail'] = $this->User_model->select_account_detail_parameter($account_detail_id);
+		$account_detail=$data['account_detail']->result();
+		foreach ($account_detail as $row) {
+			$account_id=$row->account_id;
+			$trans_id=$row->trans_id;
+			$account_detail_balance=$row->account_detail_balance;
+		}
+		$this->User_model->update_confirm_tranfer_money($account_detail_id,$trans_id);
+		$this->User_model->update_confirm_account_tranfer($account_id,$account_detail_balance);
+		$url1 = base_url('Project_controller/check_next_passbook_page_accountdetail_id/').$account_detail_id;
+		$url2 = base_url('Project_controller/noti_tdf/');
 		echo '
             <script type="text/javascript">
             	var confirn =  confirm("ทำรายการเรียบร้อย\nต้องการพิมพ์สมุดคู่ฝาก หรือไม่");
@@ -3030,6 +3155,8 @@ class Project_controller extends CI_Controller {
 		foreach ($data['statement']->result() as $row) {
 			if($row->action == "deposit"){$action = "ฝาก";}
 			elseif($row->action == "add_interest"){$action = "เพิ่มดอกเบี้ย";}
+			elseif($row->action == "recive_money"){$action = "รับเงินโอน";}
+			elseif($row->action == "tranfer_money"){$action = "โอนเงิน";}
 			else{$action = "ถอน";}
 			$table.='<tr>
 						<td style="border:1px solid black">'.$i.'</td>

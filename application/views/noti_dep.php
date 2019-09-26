@@ -49,7 +49,7 @@
             <thead class="thead-light table-bordered">
               <tr>
                 <th scope="col">ลำดับ</th>
-                <th scope="col">หมายเลขฝากเงิน</th>
+                <th scope="col">เลขที่ฝากเงิน</th>
                 <th scope="col">เลขที่บัญชี</th>
                 <th scope="col">ชื่อบัญชี</th>
                 <th scope="col">จำนวนเงิน(บาท)</th>

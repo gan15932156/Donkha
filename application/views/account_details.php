@@ -74,7 +74,7 @@
               <option value="all">ทั้งหมด</option>
               <option value="deposit">รายการฝาก</option>
               <option value="withdraw">รายการถอน</option>
-              <option value="tranfer">รายการโอน</option>
+              <option value="tranfer_money">รายการโอน</option>
             </select>
           </div> 
           <div class="form-group col-2">
@@ -123,6 +123,8 @@
                 if($row->action == "deposit"){echo "<span class='text-success'>ฝาก</span>";}
                 elseif($row->action == "withdraw"){echo "<span class='text-danger'>ถอน</span>";}
                 elseif($row->action == "add_interest"){echo "<span class='text-success'>เพิ่มดอกเบี้ย</span>";}
+                elseif($row->action == "tranfer_money"){echo "<span class='text-danger'>โอน</span>";}
+                elseif($row->action == "recive_money"){echo "<span class='text-success'>รับเงินโอน</span>";}
                 else{
                   echo "<span class='text-danger'>โอน</span>";
                 }
@@ -132,6 +134,8 @@
                 if($row->action == "deposit"){echo "<span class='text-success'>+".number_format($row->trans_money,2)."</span>";}
                 elseif($row->action == "withdraw"){echo  "<span class='text-danger'>-".number_format($row->trans_money,2)."</span>";}
                 elseif($row->action == "add_interest"){echo  "<span class='text-success'>+".number_format($row->trans_money,2)."</span>";}
+                elseif($row->action == "tranfer_money"){echo  "<span class='text-danger'>+".number_format($row->trans_money,2)."</span>";}
+                elseif($row->action == "recive_money"){echo  "<span class='text-success'>+".number_format($row->trans_money,2)."</span>";}
                 else{echo  "<span class='text-danger'>-".number_format($row->trans_money,2)."</span>";}
                 ?>  
               </td>
