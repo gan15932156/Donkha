@@ -698,7 +698,7 @@ class Project_controller extends CI_Controller {
 			'trans_id'=>$dep_code,
 			'account_id'=>$this->input->post("ac_code"),
 			'staff_record_id'=>$this->input->post("staff_id"),
-			'action'=>'deposit',
+			'action'=>'open_account',
 			'record_date'=>$this->input->post("date"),
 			'record_time'=>$now_time,
 			'account_detail_balance'=>$this->input->post("money"),
@@ -1414,13 +1414,28 @@ class Project_controller extends CI_Controller {
 			if($row2->action == "deposit"){
 				$action="<span class='text-success'>ฝาก</span>";
 				$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
-			}elseif($row2->action == "withdraw"){
+			}
+			elseif($row2->action == "withdraw"){
 				$action="<span class='text-danger'>ถอน</span>";
 				$trans_money="<span class='text-danger'>+".number_format($row2->trans_money,2)."</span>";
-			}elseif($row2->action == "add_interest"){
+			}
+			elseif($row2->action == "add_interest"){
 				$action="<span class='text-success'>เพิ่มดอกเบี้ย</span>";
 				$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
-			}else{
+			}
+			elseif($row2->action == "open_account"){
+				$action="<span class='text-success'>เปิดบัญชี</span>";
+				$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
+			}
+			elseif($row2->action == "tranfer_money"){
+				$action="<span class='text-danger'>โอน</span>";
+				$trans_money="<span class='text-danger'>-".number_format($row2->trans_money,2)."</span>";
+			}
+			elseif($row2->action == "recive_money"){
+				$action="<span class='text-success'>รับเงินโอน</span>";
+				$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
+			}
+			else{
 				$action="<span class='text-danger'>โอน</span>";
 				$trans_money="<span class='text-danger'>+".number_format($row2->trans_money,2)."</span>";
 			}
@@ -1835,13 +1850,28 @@ class Project_controller extends CI_Controller {
 				if($row2->action == "deposit"){
 					$action="<span class='text-success'>ฝาก</span>";
 					$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
-				}elseif($row2->action == "withdraw"){
+				}
+				elseif($row2->action == "withdraw"){
 					$action="<span class='text-danger'>ถอน</span>";
 					$trans_money="<span class='text-danger'>+".number_format($row2->trans_money,2)."</span>";
-				}elseif($row2->action == "add_interest"){
+				}
+				elseif($row2->action == "open_account"){
+					$action="<span class='text-success'>เปิดบัญชี</span>";
+					$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
+				}
+				elseif($row2->action == "recive_money"){
+					$action="<span class='text-success'>รับเงินโอน</span>";
+					$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
+				}
+				elseif($row2->action == "tranfer_money"){
+					$action="<span class='text-danger'>โอน</span>";
+					$trans_money="<span class='text-danger'>-".number_format($row2->trans_money,2)."</span>";
+				}
+				elseif($row2->action == "add_interest"){
 					$action="<span class='text-success'>เพิ่มดอกเบี้ย</span>";
 					$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
-				}else{
+				}
+				else{
 					$action="<span class='text-danger'>โอน</span>";
 					$trans_money="<span class='text-danger'>+".number_format($row2->trans_money,2)."</span>";
 				}
@@ -1891,13 +1921,24 @@ class Project_controller extends CI_Controller {
 				';
 				if($data['result']->num_rows() >0){
 					$i=1;
-					$result=$data['result']->result();
-					foreach ($result as $row) {
+					foreach ($data['result']->result() as $row) {
+						if($row->action == "deposit"){
+							$action = 'ฝาก';
+						}
+						elseif($row->action == "recive_money"){
+							$action = 'รับเงินโอน';
+						}
+						elseif($row->action == "add_interest"){
+							$action = 'เพิ่มดอกเบี้ย';
+						}
+						else{
+							$action = 'เปิดบัญชี';
+						}
 						$output.='
 							<tr>
 		                        <th class="text-center" scope="row">'.$i.'</th>
 		                        <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
-		                        <td class="text-center"><span class="text-success">ฝาก</span></td>
+		                        <td class="text-center"><span class="text-success">'.$action.'</span></td>
 		                        <td align="right"><span class="text-success">+'.number_format($row->trans_money,2).'</span></td>
 		                        <td align="right">'.number_format($row->account_detail_balance,2).'</td>
 		                        <td class="text-center">'.$row->staff_title."".$row->staff_name.'</td>
@@ -2021,8 +2062,16 @@ class Project_controller extends CI_Controller {
 						$action = '<span class="text-success">เพิ่มดอกเบี้ย</span>';
 						$money = '<span class="text-success">+'.number_format($row->trans_money,2).'</span>';
 					}
+					elseif($row->action == "tranfer_money"){
+						$action = '<span class="text-danger">โอน</span>';
+						$money = '<span class="text-danger">-'.number_format($row->trans_money,2).'</span>';
+					}
 					elseif($row->action == "recive_money"){
 						$action = '<span class="text-success">รับเงินโอน</span>';
+						$money = '<span class="text-success">+'.number_format($row->trans_money,2).'</span>';
+					}
+					elseif($row->action == "open_account"){
+						$action = '<span class="text-success">เปิดบัญชี</span>';
 						$money = '<span class="text-success">+'.number_format($row->trans_money,2).'</span>';
 					}
 					else{
@@ -3156,6 +3205,7 @@ class Project_controller extends CI_Controller {
 			if($row->action == "deposit"){$action = "ฝาก";}
 			elseif($row->action == "add_interest"){$action = "เพิ่มดอกเบี้ย";}
 			elseif($row->action == "recive_money"){$action = "รับเงินโอน";}
+			elseif($row->action == "open_account"){$action = "เปิดบัญชี";}
 			elseif($row->action == "tranfer_money"){$action = "โอนเงิน";}
 			else{$action = "ถอน";}
 			$table.='<tr>

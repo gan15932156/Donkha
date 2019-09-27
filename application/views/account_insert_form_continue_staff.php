@@ -1,38 +1,3 @@
-<script type="text/javascript">
-  $(document).ready(function(){   
-    $('#m_id').change(function(){
-      $.ajax({
-        type: "POST",
-        url: "<?php echo site_url();?>/Project_controller/getMember/"+$(this).val(),
-        dataType: "JSON",
-        success:function(response){
-          $.each(response,function(index,data)
-          {  
-            $('#name').val(data['member_name']);
-            if(data['std_code'] == '0'){
-              $('#std_code').val('ไม่มี');
-            }
-            else{
-              $('#std_code').val(data['std_code']);
-            }
-            $("#show_image_pic").attr("src",data['member_pic']);
-            var b_thai_date = data['member_birth_date'];
-            var thday = new Array ("อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัส","ศุกร์","เสาร์");
-            var thmonth = new Array ("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-            var thai_b_day = b_thai_date.substring(8,10);
-            var thai_b_month = parseInt(b_thai_date.substring(5, 7));
-            var thai_b_year = parseInt(b_thai_date.substring(0, 4));
-            var real_thai_year = thai_b_year+543;
-            $('#b_date').val(thai_b_day+" "+thmonth[thai_b_month]+" "+real_thai_year);
-            $('#tel').val(data['phone_number']);
-            $('#member_id').val(data['member_id']);
-            $('#ac_name').val(data['member_name']);                  
-          });
-        },
-      });
-    });
-  });
-</script>
 <div class="col-md-12 text-center" >
   <div class="row text-center">
     <div class="col-md-12">

@@ -119,9 +119,10 @@
             <tr>
               <th class="text-center" scope="row"><?php echo $i; ?></th>
               <td class="text-center"><?php echo DateThai($row->record_date)." ".$row->record_time; ?></td>
-              <td class="text-center"><?php
+              <td class="text-center"><?php 
                 if($row->action == "deposit"){echo "<span class='text-success'>ฝาก</span>";}
                 elseif($row->action == "withdraw"){echo "<span class='text-danger'>ถอน</span>";}
+                elseif($row->action == "open_account"){echo "<span class='text-success'>เปิดบัญชี</span>";}
                 elseif($row->action == "add_interest"){echo "<span class='text-success'>เพิ่มดอกเบี้ย</span>";}
                 elseif($row->action == "tranfer_money"){echo "<span class='text-danger'>โอน</span>";}
                 elseif($row->action == "recive_money"){echo "<span class='text-success'>รับเงินโอน</span>";}
@@ -133,8 +134,9 @@
               <td align="right"><?php
                 if($row->action == "deposit"){echo "<span class='text-success'>+".number_format($row->trans_money,2)."</span>";}
                 elseif($row->action == "withdraw"){echo  "<span class='text-danger'>-".number_format($row->trans_money,2)."</span>";}
+                elseif($row->action == "open_account"){echo  "<span class='text-success'>+".number_format($row->trans_money,2)."</span>";}
                 elseif($row->action == "add_interest"){echo  "<span class='text-success'>+".number_format($row->trans_money,2)."</span>";}
-                elseif($row->action == "tranfer_money"){echo  "<span class='text-danger'>+".number_format($row->trans_money,2)."</span>";}
+                elseif($row->action == "tranfer_money"){echo  "<span class='text-danger'>-".number_format($row->trans_money,2)."</span>";}
                 elseif($row->action == "recive_money"){echo  "<span class='text-success'>+".number_format($row->trans_money,2)."</span>";}
                 else{echo  "<span class='text-danger'>-".number_format($row->trans_money,2)."</span>";}
                 ?>  

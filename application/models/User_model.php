@@ -512,7 +512,7 @@ class User_model extends CI_Model {
 		$this->db->join('deposit', 'trans_id = deposit_id','inner');
 		$this->db->join('account', 'account_detail.account_id = account.account_id','inner');
 		$this->db->where('account_detail_confirm',"0");
-		$this->db->where('action', 'deposit');
+		$this->db->where("(action = 'deposit' OR action = 'open_account')");
 		$query = $this->db->get();
 		return $query;
 	}
@@ -621,13 +621,13 @@ class User_model extends CI_Model {
 		$this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);
 		if($filter == "deposit"){
-			$this->db->where("(action = 'recive_money' OR action = 'add_interest' OR action = 'deposit')"); 
+			$this->db->where("(action = 'recive_money' OR action = 'add_interest' OR action = 'deposit' OR action = 'open_account')"); 
 		}
 		else if($filter == "withdraw"){
-			$this->db->where("(action = 'tranfer_money' OR action = 'withdraw')"); 
+			$this->db->where("action = 'withdraw'"); 
 		}
-		else{
-			$this->db->where('action',$filter);	
+		else if($filter == "tranfer_money"){
+			$this->db->where('action','tranfer_money');	
 		}
 		$this->db->join('staff', 'staff_id = staff_record_id','inner');
 		$this->db->order_by('record_date ASC, record_time ASC');
@@ -641,7 +641,15 @@ class User_model extends CI_Model {
 		}
 		else{
 			$this->db->where('account_id',$account_id);
-			$this->db->where('action',$transaction);
+			if($transaction == "deposit"){
+				$this->db->where("(action = 'recive_money' OR action = 'add_interest' OR action = 'deposit' OR action = 'open_account')"); 
+			}
+			else if($transaction == "withdraw"){
+				$this->db->where("action = 'withdraw'"); 
+			}
+			else{
+				$this->db->where("action = 'tranfer_money'"); 
+			}
 		}
 		$this->db->join('staff', 'staff_id = staff_record_id','inner');
 		$this->db->order_by('record_date ASC, record_time ASC');
@@ -1038,6 +1046,7 @@ class User_model extends CI_Model {
 		$data_account_detail = array('account_detail_confirm' => '1');
 		$this->db->where("account_detail_id",$account_detail_id);
 		$this->db->where("action","deposit");
+		$this->db->or_where("action","open_account");
 		$this->db->where("trans_id",$trans_id);
 		$this->db->update("account_detail",$data_account_detail);
 	}
