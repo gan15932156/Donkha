@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Project_controller extends CI_Controller {
-	public $ip = '18.140.49.199';
+	public $ip = '127.0.0.1';
 	public function __construct(){
 		parent::__construct();
 		$this->load->helper('url');
