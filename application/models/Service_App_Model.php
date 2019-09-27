@@ -55,7 +55,15 @@ class Service_App_Model extends CI_Model {
 		$this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);
 		if($action != "all"){
-			$this->db->where('action',$action);
+			if($action == "deposit"){
+				$this->db->where("(action = 'recive_money' OR action = 'add_interest' OR action = 'deposit' OR action = 'open_account')"); 
+			}
+			else if($action == "withdraw"){
+				$this->db->where("action = 'withdraw'"); 
+			}
+			else{
+				$this->db->where('action','tranfer_money');	
+			}
 		}
 		$this->db->where('account_detail_confirm','1');	
 		$query=$this->db->get('');
