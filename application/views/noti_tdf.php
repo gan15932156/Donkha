@@ -33,6 +33,7 @@
           <table class="table table-striped table-hover text-center table-sm" id="data_table" >
             <thead class="thead-light table-bordered">
               <tr>
+               
                 <th width="5%" scope="col">ลำดับ</th>
                 <th width="15%" scope="col">เลขที่โอนเงิน</th>
                 <th width="15%" scope="col">เลขที่บัญชีผู้โอน</th>
@@ -50,7 +51,7 @@
                   <td><?php echo $row->account_id; ?></td>
                   <td><?php echo $row->account_name; ?></td>
                   <td><?php echo $row->account_id_tranfer; ?></td>
-                  <td title="ดับเบิ้ลคลิกเพื่อแก้ไขและกดปุ่ม Enter เพื่อบันทึก" ondblclick="this.contentEditable=true;" onblur="this.contentEditable=false;" onkeypress="saveData(event,'<?php echo $row->account_detail_id; ?>','<?php echo $row->trans_id; ?>',$(this).html() )"><?php echo number_format($row->trans_money,2); ?></td>
+                  <td title="ดับเบิ้ลคลิกเพื่อแก้ไขและกดปุ่ม Enter เพื่อบันทึก"><?php echo number_format($row->trans_money,2); ?></td>
                   <td>
                     <a onclick="return confirm('ยืนยันรายการหรือไม่');" href="<?php  echo base_url('Project_controller/confirm_tranfer_money/'.$row->account_detail_id); ?>" >ยืนยันรายการ</a>
                   </td><div id="result"></div>

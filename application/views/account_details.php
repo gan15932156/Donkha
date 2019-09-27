@@ -8,6 +8,27 @@
   function logout(){
     location.replace("<?php  echo base_url()."Project_controller/logout"; ?>");
   }
+  function onmouseover_foo(ac,action){
+    if(action == "recive_money" || action == "tranfer_money"){
+      //$('#exampleModal').modal('show');
+      //alert(ac+" "+action);
+      $.ajax({
+        url:"<?php echo base_url("index.php/Project_controller/show_modal_tranfer"); ?>",
+        method:"POST",
+        data:{
+              'account_detail_id':ac,
+              'action':action,
+            },
+        success:function(data){
+          $('.result').html(data);
+          $('#exampleModal').modal('show');
+        }
+      })
+    }
+  }
+  function onmouseout_foo(){
+    console.log('out');
+  }
   $(document).ready(function(){
     $("#filter").change(function(){
       $.ajax({
@@ -116,7 +137,7 @@
               } 
               date_default_timezone_set('Asia/Bangkok');
               foreach($account_detail->result() as $row){ ?>
-            <tr>
+            <tr onmouseover="onmouseover_foo('<?php echo $row->account_detail_id; ?>','<?php echo $row->action; ?>')" onmouseout="onmouseout_foo()" id="tr_body">
               <th class="text-center" scope="row"><?php echo $i; ?></th>
               <td class="text-center"><?php echo DateThai($row->record_date)." ".$row->record_time; ?></td>
               <td class="text-center"><?php 
@@ -154,3 +175,38 @@
     </div>
   </div>                   
 </div>        
+
+
+
+
+<style>
+    .modal-dialog {max-height:100vh;max-width:150vh;}  
+    .modal-body{height:100%;width:100%;align:center;}  
+    .body-container{background-color:white;}    
+</style>
+
+<!-- Modal -->
+<div align="center" class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">บัญชีธนาคาร</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid body-container">       
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="result"></div>
+                </div>
+            </div> 
+        </div>
+    </div>
+      <div class="modal-footer">
+       
+      </div>
+    </div>
+  </div>
+</div>

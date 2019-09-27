@@ -440,6 +440,26 @@ class User_model extends CI_Model {
 	    $real_code = "TDF". $wdcode;
 	    return $real_code;
 	}
+	public function auto_generate_recive_money_code()
+	{
+	    $year = date("Y");
+		 $this->db->select('RIGHT(tranfer_money.tranfer_money_id,3) as num', FALSE);
+		 $this->db->where('tranfer_money_id != ');
+		 $this->db->where('SUBSTR(tranfer_money_id,1,3) != "TDF"');
+	    $this->db->order_by('tranfer_money_id', 'DESC');
+	    $this->db->limit(1);
+	    $query = $this->db->get('tranfer_money');
+	    if($query->num_rows() <> 0) {
+	        $data = $query->row();
+	        $num = intval($data->num) + 1;
+	    }
+	    else {
+	        $num = 1;
+	    }
+	    $wdcode = $year . str_pad($num, 3, 0, STR_PAD_LEFT);
+	    $real_code = "REC". $wdcode;
+	    return $real_code;
+	}
 	public function select_account_detail_latest(){
 		$this->db->select('*');
 		$this->db->limit('1','0');
@@ -506,6 +526,14 @@ class User_model extends CI_Model {
 		$this->db->where('account_status','1');
 		$query=$this->db->get();
 		return $query;
+	}
+	public function select_account_detail_id_tranfer_money($accdetail,$action){
+		$this->db->from('account_detail');
+		$this->db->join('tranfer_money', 'tranfer_money.tranfer_money_id = account_detail.trans_id','inner');
+		$this->db->where('account_detail_id',$accdetail);
+		$this->db->where('action',$action);
+		$query=$this->db->get();
+		return $query;	
 	}
 	public function select_unconfirm_deposit(){
 		$this->db->from('account_detail');

@@ -756,6 +756,7 @@ class Project_controller extends CI_Controller {
 		$this->User_model->insert_account_details($data_account_detail);
 		redirect(base_url()."Project_controller/noti_wd");
 	}
+
 	public function tranfer_money_insert(){
 		date_default_timezone_set('Asia/Bangkok');
 		$now_time= date('H:i:s');
@@ -780,13 +781,14 @@ class Project_controller extends CI_Controller {
 		);
 		$this->User_model->insert_account_details($data_account_detail);
 		//ผู้รับ
+		$rec_code = $this->User_model->auto_generate_recive_money_code();
 		foreach ($this->User_model->select_account_with_parameter($this->input->post("ac_tranfer"))->result() as $row) {
 			$account_balance=$row->account_balance;
 		}
 		$new_balance = $account_balance+$this->input->post('tranfer_money',true);
 
 		$data_account_detail_reciver=array(
-			'trans_id'=>"REC_TDF", //recive tranfer money
+			'trans_id'=>$rec_code, //recive tranfer money
 			'account_id'=>$this->input->post("ac_tranfer"),
 			'staff_record_id'=>$this->input->post("staff_id"),
 			'action'=>'recive_money',
@@ -796,9 +798,17 @@ class Project_controller extends CI_Controller {
 			'trans_money'=>$this->input->post("tranfer_money"),
 			'account_detail_confirm'=>'1',
 		);
-		$this->User_model->insert_account_details($data_account_detail_reciver);
+		$data_rec=array(
+			'tranfer_money_id'=>$rec_code,
+			'account_id'=>$this->input->post("ac_tranfer"),
+			'account_id_tranfer'=>$this->input->post("acc_code"),
+			'money_tranfer'=>$this->input->post("tranfer_money")
+		);
+		$this->User_model->insert_tranfer_money($data_rec);
 
-		
+
+
+		$this->User_model->insert_account_details($data_account_detail_reciver);
 		$this->User_model->update_confirm_account_tranfer($this->input->post("ac_tranfer"),$new_balance);
 
 		
@@ -1314,7 +1324,10 @@ class Project_controller extends CI_Controller {
 			'money_tranfer'=>$this->input->post('money',true),
 		);
 		$this->User_model->update_table_confirm_withdraw_money_tb_account_detail($this->input->post('account_detail_id',true),$data_account_detail);
-	    $this->User_model->update_table_confirm_tranfer_money_tb_tranfer($this->input->post('trand_id',true),$data_tranfer_money);
+
+		$this->User_model->update_table_confirm_tranfer_money_tb_recive($this->input->post('trand_id',true),$data_tranfer_money);
+		
+		$this->User_model->update_table_confirm_tranfer_money_tb_tranfer($this->input->post('trand_id',true),$data_tranfer_money);
         echo '<script type="text/javascript">
            	location.reload();
             </script>';
@@ -1456,6 +1469,41 @@ class Project_controller extends CI_Controller {
 
 		$result.='</div>';
 		echo $result;
+		
+	}
+	public function show_modal_tranfer(){
+		$ac = $this->input->post('account_detail_id');
+		$action = $this->input->post('action');
+		$result = '<div class="row">';
+		function DateThai($strDate)
+      { 
+			$strYear = date("Y",strtotime($strDate))+543;
+			$thaiyear = $strYear;
+      	  	$strMonth= date("n",strtotime($strDate));
+      	  	$strDay= date("j",strtotime($strDate));
+      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+      	  	$strMonthThai=$strMonthCut[$strMonth];
+      	  	return "$strDay $strMonthThai $thaiyear";
+		}
+		foreach($this->User_model->select_account_detail_id_tranfer_money($ac,$action)->result() as $row){
+
+			if($row->action == "recive_money"){
+				$stringggg = '<div class="col-md-6"><B>รับเงินจากบัญชี :</B>'." ".$row->account_id_tranfer.'</div>';
+				$actionn = "รับเงินโอน";
+			}
+			else{
+				$stringggg = '<div class="col-md-6"><B>โอนให้บัญชี :</B>'." ".$row->account_id_tranfer.'</div>';
+				$actionn = "โอน";
+			}
+			$result.= '<div class="col-md-4"><B>วันที่ :</B>'." ".DateThai($row->record_date)." ".$row->record_time.'</div>
+			<div class="col-md-4"><B>รายการ :</B>'." ".$actionn.'</div>
+			<div class="col-md-4"><B>จำนวนเงิน :</B>'." ".number_format($row->trans_money,2)." บาท".'</div>';
+			$result.=$stringggg;
+			//echo $row->account_name." ".$row->account_id;
+		}
+
+		$result.= '</div>';
+		echo $result; 
 		
 	}
 	public function get_member_detail_modal(){
@@ -1935,7 +1983,7 @@ class Project_controller extends CI_Controller {
 							$action = 'เปิดบัญชี';
 						}
 						$output.='
-							<tr>
+							<tr onmouseover="onmouseover_foo()" onmouseout="onmouseout_foo()">
 		                        <th class="text-center" scope="row">'.$i.'</th>
 		                        <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
 		                        <td class="text-center"><span class="text-success">'.$action.'</span></td>
@@ -1973,7 +2021,7 @@ class Project_controller extends CI_Controller {
 				$result=$data['result']->result();
 				foreach ($result as $row) {
 					$output.='
-						<tr>
+						<tr onmouseover="onmouseover_foo()" onmouseout="onmouseout_foo()">
 							<th class="text-center" scope="row">'.$i.'</th>
 		                    <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
 		                    <td class="text-center"><span class="text-danger">ถอน</span></td>
@@ -2011,7 +2059,7 @@ class Project_controller extends CI_Controller {
 				$result=$data['result']->result();
 				foreach ($result as $row) {
 					$output.='
-						<tr>
+						<tr onmouseover="onmouseover_foo()" onmouseout="onmouseout_foo()">
 							<th class="text-center" scope="row">'.$i.'</th>
 		                    <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
 		                    <td class="text-center"><span class="text-danger">โอน</span></td>
@@ -2079,7 +2127,7 @@ class Project_controller extends CI_Controller {
 						$money = '<span class="text-danger">-'.number_format($row->trans_money,2).'</span>';
 					}
 					$output.='
-						<tr>
+						<tr onmouseover="onmouseover_foo()" onmouseout="onmouseout_foo()">
 		                    <th class="text-center" scope="row">'.$i.'</th>
 		                    <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
 		                    <td class="text-center">'.$action.'</td>
