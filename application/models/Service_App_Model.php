@@ -50,7 +50,46 @@ class Service_App_Model extends CI_Model {
         else{
             return false;
         }
-	}*/	
+	}	*/
+	public function select_st_deposit($account_detail_id){
+		$this->db->from('account_detail');
+		$this->db->join('deposit', 'deposit.deposit_id = account_detail.trans_id','inner');
+		$this->db->where('account_detail_id',$account_detail_id);
+		$this->db->where("(action = 'deposit' OR action = 'open_account')"); 
+		$query=$this->db->get('');
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+	}
+	public function select_st_withdraw($account_detail_id){
+		$this->db->from('account_detail');
+		$this->db->join('withdraw', 'withdraw.withdraw_id = account_detail.trans_id','inner');
+		$this->db->where('account_detail_id',$account_detail_id);
+		$this->db->where("action = 'withdraw'"); 
+		$query=$this->db->get('');
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+	}
+	public function select_st_tranfer($account_detail_id){
+		$this->db->from('account_detail');
+		$this->db->join('tranfer_money', 'tranfer_money.tranfer_money_id = account_detail.trans_id','inner');
+		$this->db->where('account_detail_id',$account_detail_id);
+		$this->db->where("(action = 'recive_money' OR action = 'tranfer_money')"); 
+		$query=$this->db->get('');
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+	}
 	public function select_filter_st($account_id,$action){
 		$this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);

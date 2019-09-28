@@ -121,7 +121,7 @@ class Service_app extends CI_Controller {
 	public function get_statement(){
 		$this->response = null ;
 		$member_id = $this->input->post('member_id');
-		//$member_id = "18"; //abcd
+		//$member_id = "17"; //abcd
 		
 		if($data['member']=$this->Service_App_Model->check__isset_account($member_id)){
 			foreach ($data['member']->result() as $row) {
@@ -130,18 +130,59 @@ class Service_app extends CI_Controller {
 			if($data['statement']=$this->Service_App_Model->get_statement($account_id))  {
 				
 				foreach ($data['statement']->result() as $row2) {
-					$statement_array = array(
-						'account_detail_id'=>$row2->account_detail_id,
-						'trans_id'=>$row2->trans_id,
-						'account_id'=>$row2->account_id,
-						'staff_record_id'=>$row2->staff_record_id,
-						'action'=>$row2->action,
-						'record_date'=>$row2->record_date,
-						'record_time'=>$row2->record_time,
-						'account_detail_balance'=>$row2->account_detail_balance,
-						'trans_money'=>$row2->trans_money,
-					);
-					$st[] = $statement_array;	
+					$account_detail_id = $row2->account_detail_id;
+					$acccc = $row2->action;
+					if($acccc == 'deposit' || $acccc == 'open_account'){
+						foreach ($this->Service_App_Model->select_st_deposit($account_detail_id)->result() as $row3) {
+							$statement_array = array(
+								'account_detail_id'=>$row3->account_detail_id,
+								'trans_id'=>$row3->trans_id,
+								'account_id'=>$row3->account_id,
+								'staff_record_id'=>$row3->staff_record_id,
+								'action'=>$row3->action,
+								'record_date'=>$row3->record_date,
+								'record_time'=>$row3->record_time,
+								'account_detail_balance'=>$row3->account_detail_balance,
+								'trans_money'=>$row3->trans_money,
+								'account_id_tranfer'=>$row3->trans_money
+							);
+							$st[] = $statement_array;	
+						}
+					}
+					else if($acccc == 'withdraw'){
+						foreach ($this->Service_App_Model->select_st_withdraw($account_detail_id)->result() as $row3) {
+							$statement_array = array(
+								'account_detail_id'=>$row3->account_detail_id,
+								'trans_id'=>$row3->trans_id,
+								'account_id'=>$row3->account_id,
+								'staff_record_id'=>$row3->staff_record_id,
+								'action'=>$row3->action,
+								'record_date'=>$row3->record_date,
+								'record_time'=>$row3->record_time,
+								'account_detail_balance'=>$row3->account_detail_balance,
+								'trans_money'=>$row3->trans_money,
+								'account_id_tranfer'=>$row3->trans_money
+							);
+							$st[] = $statement_array;	
+						}
+					}
+					else if($acccc == 'recive_money' || $acccc == 'tranfer_money'){
+						foreach ($this->Service_App_Model->select_st_tranfer($account_detail_id)->result() as $row3) {
+							$statement_array = array(
+								'account_detail_id'=>$row3->account_detail_id,
+								'trans_id'=>$row3->trans_id,
+								'account_id'=>$row3->account_id,
+								'staff_record_id'=>$row3->staff_record_id,
+								'action'=>$row3->action,
+								'record_date'=>$row3->record_date,
+								'record_time'=>$row3->record_time,
+								'account_detail_balance'=>$row3->account_detail_balance,
+								'trans_money'=>$row3->trans_money,
+								'account_id_tranfer'=>$row3->account_id_tranfer
+							);
+							$st[] = $statement_array;	
+						}
+					}		
 				}
 				$this->response['error'] = false; 
 				$this->response['message'] = 'พบข้อมูล'; 
