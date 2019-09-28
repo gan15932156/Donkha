@@ -532,8 +532,13 @@ class User_model extends CI_Model {
 		$this->db->join('tranfer_money', 'tranfer_money.tranfer_money_id = account_detail.trans_id','inner');
 		$this->db->where('account_detail_id',$accdetail);
 		$this->db->where('action',$action);
-		$query=$this->db->get();
-		return $query;	
+		$query=$this->db->get('');
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
 	}
 	public function select_unconfirm_deposit(){
 		$this->db->from('account_detail');

@@ -26,9 +26,6 @@
       })
     }
   }
-  function onmouseout_foo(){
-    console.log('out');
-  }
   $(document).ready(function(){
     $("#filter").change(function(){
       $.ajax({
@@ -137,7 +134,7 @@
               } 
               date_default_timezone_set('Asia/Bangkok');
               foreach($account_detail->result() as $row){ ?>
-            <tr onmouseover="onmouseover_foo('<?php echo $row->account_detail_id; ?>','<?php echo $row->action; ?>')" onmouseout="onmouseout_foo()" id="tr_body">
+            <tr onclick="onmouseover_foo('<?php echo $row->account_detail_id; ?>','<?php echo $row->action; ?>')" id="tr_body">
               <th class="text-center" scope="row"><?php echo $i; ?></th>
               <td class="text-center"><?php echo DateThai($row->record_date)." ".$row->record_time; ?></td>
               <td class="text-center"><?php 

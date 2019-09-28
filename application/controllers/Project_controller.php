@@ -1476,7 +1476,7 @@ class Project_controller extends CI_Controller {
 		$action = $this->input->post('action');
 		$result = '<div class="row">';
 		function DateThai($strDate)
-      { 
+      	{ 
 			$strYear = date("Y",strtotime($strDate))+543;
 			$thaiyear = $strYear;
       	  	$strMonth= date("n",strtotime($strDate));
@@ -1485,26 +1485,27 @@ class Project_controller extends CI_Controller {
       	  	$strMonthThai=$strMonthCut[$strMonth];
       	  	return "$strDay $strMonthThai $thaiyear";
 		}
-		foreach($this->User_model->select_account_detail_id_tranfer_money($ac,$action)->result() as $row){
-
-			if($row->action == "recive_money"){
-				$stringggg = '<div class="col-md-6"><B>รับเงินจากบัญชี :</B>'." ".$row->account_id_tranfer.'</div>';
-				$actionn = "รับเงินโอน";
+		if($data['statement']=$this->User_model->select_account_detail_id_tranfer_money($ac,$action)){
+			foreach($data['statement']->result() as $row){
+				if($row->action == "tranfer_money"){
+					$stringggg = '<div class="col-md-6"><br><B>โอนให้บัญชี :</B>'." ".$row->account_id_tranfer.'</div>';
+					$actionn = "โอน";
+				}
+				else{
+					$stringggg = '<div class="col-md-6"><br><B>รับเงินจากบัญชี :</B>'." ".$row->account_id_tranfer.'</div>';
+					$actionn = "รับเงินโอน";			
+				}
+				$result.= '<div class="col-md-4"><B>วันที่ :</B>'." ".DateThai($row->record_date)." ".$row->record_time.'</div>
+				<div class="col-md-4"><B>รายการ :</B>'." ".$actionn.'</div>
+				<div class="col-md-4"><B>จำนวนเงิน :</B>'." ".number_format($row->trans_money,2)." บาท".'</div>';
+				$result.=$stringggg;
 			}
-			else{
-				$stringggg = '<div class="col-md-6"><B>โอนให้บัญชี :</B>'." ".$row->account_id_tranfer.'</div>';
-				$actionn = "โอน";
-			}
-			$result.= '<div class="col-md-4"><B>วันที่ :</B>'." ".DateThai($row->record_date)." ".$row->record_time.'</div>
-			<div class="col-md-4"><B>รายการ :</B>'." ".$actionn.'</div>
-			<div class="col-md-4"><B>จำนวนเงิน :</B>'." ".number_format($row->trans_money,2)." บาท".'</div>';
-			$result.=$stringggg;
-			//echo $row->account_name." ".$row->account_id;
 		}
-
+		else{
+			$result.= '<div class="col-md-12"><B>ไม่พบข้อมูล</B></div>';
+		}
 		$result.= '</div>';
 		echo $result; 
-		
 	}
 	public function get_member_detail_modal(){
 		function DateThai($strDate)
@@ -1983,7 +1984,7 @@ class Project_controller extends CI_Controller {
 							$action = 'เปิดบัญชี';
 						}
 						$output.='
-							<tr onmouseover="onmouseover_foo()" onmouseout="onmouseout_foo()">
+							<tr onclick="onmouseover_foo('."'".$row->account_detail_id."'".','."'".$row->action."'".')">
 		                        <th class="text-center" scope="row">'.$i.'</th>
 		                        <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
 		                        <td class="text-center"><span class="text-success">'.$action.'</span></td>
@@ -2021,7 +2022,7 @@ class Project_controller extends CI_Controller {
 				$result=$data['result']->result();
 				foreach ($result as $row) {
 					$output.='
-						<tr onmouseover="onmouseover_foo()" onmouseout="onmouseout_foo()">
+						<tr>
 							<th class="text-center" scope="row">'.$i.'</th>
 		                    <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
 		                    <td class="text-center"><span class="text-danger">ถอน</span></td>
@@ -2059,7 +2060,7 @@ class Project_controller extends CI_Controller {
 				$result=$data['result']->result();
 				foreach ($result as $row) {
 					$output.='
-						<tr onmouseover="onmouseover_foo()" onmouseout="onmouseout_foo()">
+						<tr onclick="onmouseover_foo('."'".$row->account_detail_id."'".','."'".$row->action."'".')">
 							<th class="text-center" scope="row">'.$i.'</th>
 		                    <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
 		                    <td class="text-center"><span class="text-danger">โอน</span></td>
@@ -2127,7 +2128,7 @@ class Project_controller extends CI_Controller {
 						$money = '<span class="text-danger">-'.number_format($row->trans_money,2).'</span>';
 					}
 					$output.='
-						<tr onmouseover="onmouseover_foo()" onmouseout="onmouseout_foo()">
+						<tr onclick="onmouseover_foo('."'".$row->account_detail_id."'".','."'".$row->action."'".')">
 		                    <th class="text-center" scope="row">'.$i.'</th>
 		                    <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
 		                    <td class="text-center">'.$action.'</td>
