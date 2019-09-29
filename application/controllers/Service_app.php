@@ -92,21 +92,81 @@ class Service_app extends CI_Controller {
 		$account_id = $this->input->post("account_id");
 		$action = $this->input->post("action");
 		/*$action = "deposit";
-		$account_id = "2019001";*/
+		$account_id = "2019002";*/
 		if($data['statement']=$this->Service_App_Model->select_filter_st($account_id,$action)){
 			foreach ($data['statement']->result() as $row) {
-				$account_balance = array(
-					'account_detail_id'=>$row->account_detail_id,
-					'trans_id'=>$row->trans_id,
-					'account_id'=>$row->account_id,
-					'staff_record_id'=>$row->staff_record_id,
-					'action'=>$row->action,
-					'record_date'=>$row->record_date,
-					'record_time'=>$row->record_time,
-					'account_detail_balance'=>$row->account_detail_balance,
-					'trans_money'=>$row->trans_money,
-				);	
-				$st[] = $account_balance;
+				$acccc = $row->action;
+				$account_detail_id = $row->account_detail_id;
+				if($acccc == "deposit" || $acccc == "open_account"){
+					foreach ($this->Service_App_Model->select_st_deposit($account_detail_id)->result() as $row2) {
+						$statement_array = array(
+							'account_detail_id'=>$row2->account_detail_id,
+							'trans_id'=>$row2->trans_id,
+							'account_id'=>$row2->account_id,
+							'staff_record_id'=>$row2->staff_record_id,
+							'action'=>$row2->action,
+							'record_date'=>$row2->record_date,
+							'record_time'=>$row2->record_time,
+							'account_detail_balance'=>$row2->account_detail_balance,
+							'trans_money'=>$row2->trans_money,
+							'account_id_tranfer'=>$row2->trans_money
+						);
+						$st[] = $statement_array;	
+					}
+				}
+				else if($acccc == "tranfer_money" || $acccc == "recive_money"){
+					foreach ($this->Service_App_Model->select_st_tranfer($account_detail_id)->result() as $row2) {
+						$statement_array = array(
+							'account_detail_id'=>$row2->account_detail_id,
+							'trans_id'=>$row2->trans_id,
+							'account_id'=>$row2->account_id,
+							'staff_record_id'=>$row2->staff_record_id,
+							'action'=>$row2->action,
+							'record_date'=>$row2->record_date,
+							'record_time'=>$row2->record_time,
+							'account_detail_balance'=>$row2->account_detail_balance,
+							'trans_money'=>$row2->trans_money,
+							'account_id_tranfer'=>$row2->account_id_tranfer
+						);
+						$st[] = $statement_array;	
+					}
+				}
+				else if($acccc == "add_interest"){
+					foreach ($this->Service_App_Model->select_st_add_interest($account_detail_id)->result() as $row2) {
+						$statement_array = array(
+							'account_detail_id'=>$row2->account_detail_id,
+							'trans_id'=>$row2->trans_id,
+							'account_id'=>$row2->account_id,
+							'staff_record_id'=>$row2->staff_record_id,
+							'action'=>$row2->action,
+							'record_date'=>$row2->record_date,
+							'record_time'=>$row2->record_time,
+							'account_detail_balance'=>$row2->account_detail_balance,
+							'trans_money'=>$row2->trans_money,
+							'account_id_tranfer'=>$row2->trans_money
+						);
+						$st[] = $statement_array;	
+					}
+				}
+				else if($acccc == "withdraw"){
+					foreach ($this->Service_App_Model->select_st_withdraw($account_detail_id)->result() as $row3) {
+						$statement_array = array(
+							'account_detail_id'=>$row3->account_detail_id,
+							'trans_id'=>$row3->trans_id,
+							'account_id'=>$row3->account_id,
+							'staff_record_id'=>$row3->staff_record_id,
+							'action'=>$row3->action,
+							'record_date'=>$row3->record_date,
+							'record_time'=>$row3->record_time,
+							'account_detail_balance'=>$row3->account_detail_balance,
+							'trans_money'=>$row3->trans_money,
+							'account_id_tranfer'=>$row3->trans_money
+						);
+						$st[] = $statement_array;	
+					}
+				}
+
+				
 			}  
 			$this->response['error'] = false; 
 			$this->response['message'] = 'พบข้อมูล'; 
@@ -128,11 +188,10 @@ class Service_app extends CI_Controller {
 				$account_id = $row->account_id;
 			}    
 			if($data['statement']=$this->Service_App_Model->get_statement($account_id))  {
-				
 				foreach ($data['statement']->result() as $row2) {
 					$account_detail_id = $row2->account_detail_id;
 					$acccc = $row2->action;
-					if($acccc == 'deposit' || $acccc == 'open_account'){
+					if($acccc == 'deposit' || $acccc == 'open_account' || $acccc == 'add_interest'){
 						foreach ($this->Service_App_Model->select_st_deposit($account_detail_id)->result() as $row3) {
 							$statement_array = array(
 								'account_detail_id'=>$row3->account_detail_id,

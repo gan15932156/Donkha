@@ -19,7 +19,7 @@ class Service_App_Model extends CI_Model {
         }
     }
     public function get_statement($account_id){
-        $this->db->from('account_detail');
+      $this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);
 		$this->db->where('account_detail_confirm','1');	
 		$query=$this->db->get('');
@@ -30,27 +30,6 @@ class Service_App_Model extends CI_Model {
             return false;
         }
 	}
-	/*public function get_state_transaction($account_id,$action){
-		$this->db->from('account_detail');
-		if($action == "deposit"){
-			$this->db->join('deposit', 'deposit.deposit_id = account_detail.trans_id','inner');
-		}
-		elseif($action == "withdraw"){
-			$this->db->join('withdraw', 'withdraw.withdraw_id = account_detail.trans_id','inner');
-		}	
-		elseif($action == "tranfer"){
-			$this->db->join('tranfer_money', 'tranfer_money.tranfer_money_id = account_detail.trans_id','inner');
-		}
-		$this->db->where('account_detail.account_id',$account_id);
-		$this->db->where('account_detail_confirm','1');	
-		$query=$this->db->get('');
-		if($query->num_rows() > 0){
-            return $query;
-        }
-        else{
-            return false;
-        }
-	}	*/
 	public function select_st_deposit($account_detail_id){
 		$this->db->from('account_detail');
 		$this->db->join('deposit', 'deposit.deposit_id = account_detail.trans_id','inner');
@@ -69,6 +48,19 @@ class Service_App_Model extends CI_Model {
 		$this->db->join('withdraw', 'withdraw.withdraw_id = account_detail.trans_id','inner');
 		$this->db->where('account_detail_id',$account_detail_id);
 		$this->db->where("action = 'withdraw'"); 
+		$query=$this->db->get('');
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+	}
+	public function select_st_add_interest($account_detail_id){
+		$this->db->from('account_detail');
+		$this->db->join('interest_history', 'interest_history.ih_id = account_detail.trans_id','inner');
+		$this->db->where('account_detail_id',$account_detail_id);
+		$this->db->where("action = 'add_interest'"); 
 		$query=$this->db->get('');
 		if($query->num_rows() > 0){
             return $query;
