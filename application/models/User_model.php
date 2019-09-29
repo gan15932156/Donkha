@@ -440,6 +440,24 @@ class User_model extends CI_Model {
 	    $real_code = "TDF". $wdcode;
 	    return $real_code;
 	}
+	public function auto_generate_interest_code()
+	{
+	    $year = date("Y");
+	    $this->db->select('RIGHT(interest_history.ih_id,3) as num', FALSE);
+	    $this->db->order_by('ih_id', 'DESC');
+	    $this->db->limit(1);
+	    $query = $this->db->get('interest_history');
+	    if($query->num_rows() <> 0) {
+	        $data = $query->row();
+	        $num = intval($data->num) + 1;
+	    }
+	    else {
+	        $num = 1;
+	    }
+	    $wdcode = $year . str_pad($num, 3, 0, STR_PAD_LEFT);
+	    $real_code = "TDF". $wdcode;
+	    return $real_code;
+	}
 	public function auto_generate_recive_money_code()
 	{
 	    $year = date("Y");

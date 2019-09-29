@@ -10,7 +10,17 @@ class Project_controller extends CI_Controller {
 		$this->load->model('User_model');
 		$this->load->library('pagination');
 		$this->load->library('Pdf');
-    }
+	}
+	public function DateThai($strDate)
+   { 
+		$strYear = date("Y",strtotime($strDate))+543;
+		$thaiyear = $strYear;
+      $strMonth= date("n",strtotime($strDate));
+      $strDay= date("j",strtotime($strDate));
+      $strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+      $strMonthThai=$strMonthCut[$strMonth];
+      return "$strDay $strMonthThai $thaiyear";
+   } 
 
 	////////////////////////////////////////////////////////////
 	//////////////////////  PAGE    //////////////////////////
@@ -805,13 +815,8 @@ class Project_controller extends CI_Controller {
 			'money_tranfer'=>$this->input->post("tranfer_money")
 		);
 		$this->User_model->insert_tranfer_money($data_rec);
-
-
-
 		$this->User_model->insert_account_details($data_account_detail_reciver);
 		$this->User_model->update_confirm_account_tranfer($this->input->post("ac_tranfer"),$new_balance);
-
-		
 		redirect(base_url()."Project_controller/noti_tdf");
 	}
 	public function close_account_insert(){
@@ -1295,16 +1300,16 @@ class Project_controller extends CI_Controller {
 			'money_withdraw'=>$this->input->post('money',true),
 		);
 		$this->User_model->update_table_confirm_withdraw_money_tb_account_detail($this->input->post('account_detail_id',true),$data_account_detail);
-	    $this->User_model->update_table_confirm_withdraw_money_tb_withdraw($this->input->post('trand_id',true),$data_withdraw);
-        echo '<script type="text/javascript">
+	   $this->User_model->update_table_confirm_withdraw_money_tb_withdraw($this->input->post('trand_id',true),$data_withdraw);
+      echo '<script type="text/javascript">
            	location.reload();
             </script>';
 	}
 	public function edit_table_confirm_tranfer_money(){
 		if( $_SERVER['REQUEST_METHOD']  != 'POST'  ){
             redirect(base_url()."Project_controller/noti_tdf");
-        }
-        $data['account_detail'] = $this->User_model->select_account_detail_parameter($this->input->post('account_detail_id',true));
+      }
+      $data['account_detail'] = $this->User_model->select_account_detail_parameter($this->input->post('account_detail_id',true));
 		$account_detail=$data['account_detail']->result();
 		foreach ($account_detail as $row) {
 			$account_id=$row->account_id;
@@ -1353,16 +1358,6 @@ class Project_controller extends CI_Controller {
 	}
 	public function get_account_details_modal(){
 		//data['account_detail']=$this->User_model->select_account_detail_parameter_account_id($account_id);
-		function DateThai($strDate)
-      	{ 
-			$strYear = date("Y",strtotime($strDate))+543;
-			$thaiyear = $strYear;
-      	  	$strMonth= date("n",strtotime($strDate));
-      	  	$strDay= date("j",strtotime($strDate));
-      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-      	  	$strMonthThai=$strMonthCut[$strMonth];
-      	  	return "$strDay $strMonthThai $thaiyear";
-      	} 
 		$result='<script>
 		$(document).ready(function(){
 			$("#filter").change(function(){
@@ -1454,7 +1449,7 @@ class Project_controller extends CI_Controller {
 			}
 			$result.='<tr>';
 				$result.='<td>'.$i.'</td>';
-				$result.='<td>'.DateThai($row2->record_date).'</td>';
+				$result.='<td>'.$this->DateThai($row2->record_date).'</td>';
 				$result.='<td>'.$action.'</td>';
 				$result.='<td>'.$trans_money.'</td>';
 				$result.='<td>'.number_format($row2->account_detail_balance,2).'</td>';
@@ -1475,16 +1470,6 @@ class Project_controller extends CI_Controller {
 		$ac = $this->input->post('account_detail_id');
 		$action = $this->input->post('action');
 		$result = '<div class="row">';
-		function DateThai($strDate)
-      	{ 
-			$strYear = date("Y",strtotime($strDate))+543;
-			$thaiyear = $strYear;
-      	  	$strMonth= date("n",strtotime($strDate));
-      	  	$strDay= date("j",strtotime($strDate));
-      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-      	  	$strMonthThai=$strMonthCut[$strMonth];
-      	  	return "$strDay $strMonthThai $thaiyear";
-		}
 		if($data['statement']=$this->User_model->select_account_detail_id_tranfer_money($ac,$action)){
 			foreach($data['statement']->result() as $row){
 				if($row->action == "tranfer_money"){
@@ -1495,7 +1480,7 @@ class Project_controller extends CI_Controller {
 					$stringggg = '<div class="col-md-6"><br><B>รับเงินจากบัญชี :</B>'." ".$row->account_id_tranfer.'</div>';
 					$actionn = "รับเงินโอน";			
 				}
-				$result.= '<div class="col-md-4"><B>วันที่ :</B>'." ".DateThai($row->record_date)." ".$row->record_time.'</div>
+				$result.= '<div class="col-md-4"><B>วันที่ :</B>'." ".$this->DateThai($row->record_date)." ".$row->record_time.'</div>
 				<div class="col-md-4"><B>รายการ :</B>'." ".$actionn.'</div>
 				<div class="col-md-4"><B>จำนวนเงิน :</B>'." ".number_format($row->trans_money,2)." บาท".'</div>';
 				$result.=$stringggg;
@@ -1508,16 +1493,6 @@ class Project_controller extends CI_Controller {
 		echo $result; 
 	}
 	public function get_member_detail_modal(){
-		function DateThai($strDate)
-      	{ 
-			$strYear = date("Y",strtotime($strDate))+543;
-			$thaiyear = $strYear;
-      	  	$strMonth= date("n",strtotime($strDate));
-      	  	$strDay= date("j",strtotime($strDate));
-      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-      	  	$strMonthThai=$strMonthCut[$strMonth];
-      	  	return "$strDay $strMonthThai $thaiyear";
-      	} 
 		foreach ($this->User_model->get_member($this->input->post('member_id'))->result() as $row) {
 			$std_id=$row->std_code;
 		}
@@ -1553,8 +1528,8 @@ class Project_controller extends CI_Controller {
 			$result.='
 			<div class=" form-group col-md-8" align="left">
 				<div class="row">
-					<div class="form-group col-md-6"><B>วันที่สมัคร :</B>'." ".DateThai($row2->member_regis_date).'</div>
-					<div class="form-group col-md-6"><B>วัน/เดือน/ปีเกิด :</B>'." ".DateThai($row2->member_birth_date).'</div>
+					<div class="form-group col-md-6"><B>วันที่สมัคร :</B>'." ".$this->DateThai($row2->member_regis_date).'</div>
+					<div class="form-group col-md-6"><B>วัน/เดือน/ปีเกิด :</B>'." ".$this->DateThai($row2->member_birth_date).'</div>
 					<div class="form-group col-md-6"><B>รหัสนักเรียน :</B>'." ".$std_code.'</div>
 					<div class="form-group col-md-6"><B>เลขบัตรประชาชน :</B>'." ".$row2->member_id_card.'</div>
 					<div class="form-group col-md-12"><B>ชื่อ :</B>'." ".$row2->member_title." ".$row2->member_name.'</div>
@@ -1569,159 +1544,6 @@ class Project_controller extends CI_Controller {
 		$result.='</div>';
 		echo $result;
 	}
-	public function search_data_staff(){
-		$output='';
-		$keyword='';
-		if($this->input->post('data')){
-			$keyword=$this->input->post('data');
-		}
-		$data['result'] = $this->User_model->select_search_staff_data($keyword);
-		$output.='
-			<table class="table table-striped table-hover table-sm ">
-                <thead class="thead-light table-bordered">
-                    <tr>
-                        <th width="5%" scope="col">ลำดับ</th>
-                        <th width="15%" scope="col">รหัสนักเรียน</th>
-                        <th width="25%" scope="col">ชื่อ-นามสกุล</th>
-                        <th width="15%" scope="col">ตำแหน่ง</th>
-                        <th width="20%" scope="col">สถานะ</th>
-                        <th width="15%" scope="col">การกระทำ</th>
-                    </tr>
-                </thead>
-                <tbody class="table-bordered" style="background-color: #EFFEFD">
-		';
-		if($data['result']->num_rows() >0){
-			$i=1;
-			$result=$data['result']->result();
-			foreach ($result as $row) {
-				if($row->staff_status =='1'){
-                    $status="<p class='text-success'>เปิดใช้งาน</p>";
-                }
-                else{
-                    $status="<p class='text-danger'>ปิดใช้งาน</p>";
-                }
-
-                if($row->level_id == '1'){
-                	$level = "สมาชิก";
-                }
-                elseif ($row->level_id == '2') {
-                	$level = "พนักงาน";
-                }
-                elseif ($row->level_id == '3') {
-                	$level = "ผู้จัดการ";
-                }
-                else{ // 4
-                	$level = "ผู้ดูแลระบบ";
-                }
-
-				$output.='
-					<tr>
-						<th scope="row">'.$i.'</th>
-                        <td>'.$row->stu_code.'</td>
-                        <td>'.$row->staff_name.'</td>
-                        <td>'.$level.'</td>
-                        <td>'.$status.'</td>
-                        <td>
-                        <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown"><i class="fa fa-cog" aria-hidden="true"></i></button>
-                        <ul style="background-color:#E8ECEF;"  class="dropdown-menu">
-                          <li><a style="color:black;" href="'.base_url("Project_controller/staff_detail/".$row->staff_id).'" ><i class="fa fa-address-book" aria-hidden="true"></i> ดูรายละเอียด</a></li>
-                          <li><a style="color:black;" href="'.base_url("Project_controller/staff_update_form/".$row->staff_id).'" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a></li>
-                          <li><a style="color:black;" onclick="return confirm("ต้องการเปลี่ยนสถานะการใช้งานหรือไม่");" href="'.base_url('Project_controller/staff_change_status/'.$row->staff_id).'" ><i class="fa fa-times" aria-hidden="true"></i> เปลี่ยนสถานะ</a></li>
-                        </ul>
-                      </div>
-                        </td>
-                    </tr>';
-                $i++;
-			}
-		}
-		else{
-			$output.='
-				<tr>
-            		<th scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th>
-                </tr>';
-		}
-		$output.='
-			</tbody>
-            	<tfoot>
-                </tfoot>
-            </table>';
-		echo $output;
-	}
-	public function search_data_member(){
-		$output='';
-		$keyword='';
-		if($this->input->post('data')){
-			$keyword=$this->input->post('data');
-		}
-		$data['result'] = $this->User_model->select_search_member_data($keyword);
-		$output.='
-			<table class="table table-striped table-hover table-sm" id="search_table">
-                <thead class="thead-light table-bordered">
-                    <tr>
-		                <th width="5%" scope="col">ลำดับ</th>
-		                <th width="30%" scope="col">ชื่อ-นามสกุล</th>
-		                <th width="30%" scope="col">สถานะ</th>
-		                <th width="10%" scope="col">การกระทำ</th>
-                    </tr>
-                </thead>
-            	<tbody class="table-bordered" style="background-color: #EFFEFD">
-		';
-		if($data['result']->num_rows() >0){
-			$i=1;
-			$result=$data['result']->result();
-			foreach ($result as $row) {
-				if($row->member_status =='1'){
-                    $status="<p class='text-success'>เปิดใช้งาน</p>";
-                }
-                else{
-                    $status="<p class='text-danger'>ปิดใช้งาน</p>";
-                }
-
-                if($row->level_id == '1'){
-                	$level = "สมาชิก";
-                }
-                elseif ($row->level_id == '2') {
-                	$level = "พนักงาน";
-                }
-                elseif ($row->level_id == '3') {
-                	$level = "ผู้จัดการ";
-                }
-                else{ // 4
-                	$level = "ผู้ดูแลระบบ";
-                }
-				$output.='
-					<tr>
-						<th scope="row">'.$i.'</th>
-                        <td>'.$row->member_name.'</td>
-                        <td>'.$status.'</td>
-                        <td>
-                        	<div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown"><i class="fa fa-cog" aria-hidden="true"></i></button>
-                        <ul style="background-color:#E8ECEF;"  class="dropdown-menu">
-                          <li><a style="color:black;" href="'.base_url("Project_controller/member_detail/".$row->member_id).'" ><i class="fa fa-address-book" aria-hidden="true"></i> ดูรายละเอียด</a></li>
-                          <li><a style="color:black;" href="'.base_url("Project_controller/member_update_form/".$row->member_id).'" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a></li>
-                          <li><a style="color:black;" onclick="return confirm("ต้องการเปลี่ยนสถานะการใช้งานหรือไม่");" href="'.base_url('Project_controller/member_change_status/'.$row->member_id).'" ><i class="fa fa-times" aria-hidden="true"></i> เปลี่ยนสถานะ</a></li>
-                        </ul>
-                      </div>
-                        </td>
-                    </tr>';
-                $i++;
-			}
-		}
-		else{
-			$output.='
-				<tr>
-                    <th scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th>
-                </tr>';
-		}
-		$output.='
-			</tbody>
-                <tfoot>
-                </tfoot>
-            </table>';
-		echo $output;
-	}
 	public function searchMember(){
 		echo json_encode($this->User_model->get_memberr($this->input->post('member_name')));
 	}
@@ -1731,155 +1553,7 @@ class Project_controller extends CI_Controller {
 	public function searchAccount_passbook(){
 		echo json_encode($this->User_model->get_search_account_id_passbook($this->input->post('account_id')));
 	}
-	public function search_data_account(){
-		$output='';
-		$keyword='';
-		if($this->input->post('data')){
-			$keyword=$this->input->post('data');
-		}
-		$data['result'] = $this->User_model->select_search_account_data($keyword);
-		$output.='
-		<div class="result_search">
-			<table class="table table-striped table-hover table-sm" id="data_table">
-                <thead class="thead-light table-bordered">
-                    <tr>
-                          <th width="5%" scope="col">ลำดับ</th>
-                          <th width="25%" scope="col">หมายเลขบัญชี</th>
-                          <th width="30%" scope="col">ชื่อบัญช��</th>
-                          <th width="30%" scope="col">สถานะ</th>
-                          <th width="10%" scope="col">การกระทำ</th>
-                    </tr>
-                </thead>
-                <tbody class="table-bordered" style="background-color: #EFFEFD">
-		';
-		if($data['result']->num_rows() >0){
-			$i=1;
-			$result=$data['result']->result();
-			foreach ($result as $row) {
-				if($row->account_status =='1'){
-                    $status="<p class='text-success'>เปิดใช้งาน</p>";
-                }
-                else{
-                    $status="<p class='text-danger'>ปิดใช้งาน</p>";
-                }
-				$output.='
-					<tr>
-                        <th scope="row">'.$i.'</th>
-                        <td>'.$row->account_id.'</td>
-                        <td>'.$row->account_name.'</td>
-                        <td>'.$status.'</td>
-                        <td>
-										<div class="dropdown">
-                              <button style="font-size:16px;"><i class="fa fa-cog" aria-hidden="true"></i></button>
-                              <div>
-                                <a style="color:black;" href="'.base_url("Project_controller/account_detail/".$row->account_id).'" ><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียดบัญชี</a>
-                                <a style="color:black;" href="'.base_url("Project_controller/member_update_form_staff/".$row->member_id).'" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a>
-                              </div>
-                            </div>
-                        </td>
-                    </tr>';
-                $i++;
-			}
-		}
-		else{
-			$output.='
-				<tr>
-                	<th scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th>
-                </tr>';
-		}
-		$output.='
-		    </tbody>
-                <tfoot>
-                </tfoot>
-				</table>
-				</div>';
-		echo $output;
-	}
-	public function search_data_member_staff(){
-		$output='';
-		$keyword='';
-		if($this->input->post('data')){
-			$keyword=$this->input->post('data');
-		}
-		$data['result'] = $this->User_model->select_search_member_staff_data($keyword);
-		$output.='
-			<table class="table table-striped table-hover table-sm" id="search_table">
-                <thead class="thead-light table-bordered">
-                    <tr>
-                        <th width="5%" scope="col">ลำดับ</th>
-                		<th width="30%" scope="col">ชื่อ-นามสกุล</th>
-                		<th width="30%" scope="col">สถานะ</th>
-                		<th width="10%" scope="col">การกระทำ</th>
-                    </tr>
-                </thead>
-                <tbody class="table-bordered" style="background-color: #EFFEFD">
-		';
-		if($data['result']->num_rows() >0){
-			$i=1;
-			$result=$data['result']->result();
-			foreach ($result as $row) {
-				if($row->member_status =='1'){
-                    $status="<p class='text-success'>เปิดใช้งาน</p>";
-                }
-                else{
-                    $status="<p class='text-danger'>ปิดใช้งาน</p>";
-                }
-
-                if($row->level_id == '1'){
-                	$level = "สมาชิก";
-                }
-                elseif ($row->level_id == '2') {
-                	$level = "พนักงาน";
-                }
-                elseif ($row->level_id == '3') {
-                	$level = "ผู้จัดการ";
-                }
-                else{ // 4
-                	$level = "ผู้ดูแลระบบ";
-                }
-				$output.='
-					<tr>
-						<th scope="row">'.$i.'</th>
-                        <td>'.$row->member_name.'</td>
-                        <td>'.$status.'</td>
-                        <td>
-                        	<div class="dropdown">
-                        		<button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown"><i class="fa fa-cog" aria-hidden="true"></i></button>
-                        		<ul style="background-color:#E8ECEF;"  class="dropdown-menu">
-                          			<li><a style="color:black;" href="'.base_url("Project_controller/member_detail_staff/".$row->member_id).'" ><i class="fa fa-address-book" aria-hidden="true"></i> ดูรายละเอียด</a></li>
-                          			<li><a style="color:black;" href="'.base_url("Project_controller/member_update_form_staff/".$row->member_id).'" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a></li>
-                          			<li><a style="color:black;" onclick="return confirm("ต้องการเปลี่ยนสถานะการใช้งานหรือไม่");" href="'.base_url('Project_controller/member_change_status_staff/'.$row->member_id).'" ><i class="fa fa-times" aria-hidden="true"></i> เปลี่ยนสถานะ</a></li>
-                        		</ul>
-                      		</div>
-                        </td>
-                    </tr>';
-                $i++;
-			}
-		}
-		else{
-			$output.='
-				<tr>
-                    <th scope="col" colspan="7">ไม่พบข้อมูลที่ค้นหา</th>
-                </tr>';
-		}
-		$output.='
-			</tbody>
-                <tfoot>
-                </tfoot>
-            </table>';
-		echo $output;
-	}
 	public function filter_transaction_table_manager_report_modal(){
-		function DateThai($strDate)
-      	{ 
-			$strYear = date("Y",strtotime($strDate))+543;
-			 $thaiyear = $strYear;
-      	  	$strMonth= date("n",strtotime($strDate));
-      	  	$strDay= date("j",strtotime($strDate));
-      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-      	  	$strMonthThai=$strMonthCut[$strMonth];
-      	  	return "$strDay $strMonthThai $thaiyear";
-      	} 
 	  	$result='<table class="table  table-hover table-sm" id="result_table">
 	  	<thead class="thead-light table-bordered text-center">
 			<tr>
@@ -1926,7 +1600,7 @@ class Project_controller extends CI_Controller {
 				}
 				$result.='<tr>';
 					$result.='<td>'.$i.'</td>';
-					$result.='<td>'.DateThai($row2->record_date).'</td>';
+					$result.='<td>'.$this->DateThai($row2->record_date).'</td>';
 					$result.='<td>'.$action.'</td>';
 					$result.='<td>'.$trans_money.'</td>';
 					$result.='<td>'.number_format($row2->account_detail_balance,2).'</td>';
@@ -1941,16 +1615,6 @@ class Project_controller extends CI_Controller {
 		echo $result;
 	}
 	public function filter_transaction_table(){
-		function DateThai($strDate)
-	    {
-	        $strYear = date("Y",strtotime($strDate))+543;
-	        $strMonth= date("n",strtotime($strDate));
-	        $strDay= date("j",strtotime($strDate));
-	        $strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-	        $strMonthThai=$strMonthCut[$strMonth];
-	        return "$strDay $strMonthThai $strYear";
-	    }
-	    date_default_timezone_set('Asia/Bangkok');
 		$output='';
 		$data['result'] = $this->User_model->select_filter_transaction($this->input->post('accoint_id'),$this->input->post('filter'));
 		if($this->input->post('filter') == "deposit"){
@@ -1986,7 +1650,7 @@ class Project_controller extends CI_Controller {
 						$output.='
 							<tr onclick="onmouseover_foo('."'".$row->account_detail_id."'".','."'".$row->action."'".')">
 		                        <th class="text-center" scope="row">'.$i.'</th>
-		                        <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
+		                        <td class="text-center">'.$this->DateThai($row->record_date)." ".$row->record_time.'</td>
 		                        <td class="text-center"><span class="text-success">'.$action.'</span></td>
 		                        <td align="right"><span class="text-success">+'.number_format($row->trans_money,2).'</span></td>
 		                        <td align="right">'.number_format($row->account_detail_balance,2).'</td>
@@ -2024,7 +1688,7 @@ class Project_controller extends CI_Controller {
 					$output.='
 						<tr>
 							<th class="text-center" scope="row">'.$i.'</th>
-		                    <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
+		                    <td class="text-center">'.$this->DateThai($row->record_date)." ".$row->record_time.'</td>
 		                    <td class="text-center"><span class="text-danger">ถอน</span></td>
 		                    <td align="right"><span class="text-danger">-'.number_format($row->trans_money,2).'</span></td>
 		                    <td align="right">'.number_format($row->account_detail_balance,2).'</td>
@@ -2062,7 +1726,7 @@ class Project_controller extends CI_Controller {
 					$output.='
 						<tr onclick="onmouseover_foo('."'".$row->account_detail_id."'".','."'".$row->action."'".')">
 							<th class="text-center" scope="row">'.$i.'</th>
-		                    <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
+		                    <td class="text-center">'.$this->DateThai($row->record_date)." ".$row->record_time.'</td>
 		                    <td class="text-center"><span class="text-danger">โอน</span></td>
 		                    <td align="right"><span class="text-danger">-'.number_format($row->trans_money,2).'</span></td>
 		                    <td align="right">'.number_format($row->account_detail_balance,2).'</td>
@@ -2130,7 +1794,7 @@ class Project_controller extends CI_Controller {
 					$output.='
 						<tr onclick="onmouseover_foo('."'".$row->account_detail_id."'".','."'".$row->action."'".')">
 		                    <th class="text-center" scope="row">'.$i.'</th>
-		                    <td class="text-center">'.DateThai($row->record_date)." ".$row->record_time.'</td>
+		                    <td class="text-center">'.$this->DateThai($row->record_date)." ".$row->record_time.'</td>
 		                    <td class="text-center">'.$action.'</td>
 		                    <td align="right">'.$money.'</td>
 		                    <td align="right">'.number_format($row->account_detail_balance,2).'</td>
@@ -2154,16 +1818,6 @@ class Project_controller extends CI_Controller {
 		echo $output;
 	}
 	public function select_con_print(){
-		function DateThai($strDate)
-	    {
-	        $strYear = date("Y",strtotime($strDate))+543;
-	        $strMonth= date("n",strtotime($strDate));
-	        $strDay= date("j",strtotime($strDate));
-	        $strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-	        $strMonthThai=$strMonthCut[$strMonth];
-	        return "$strDay $strMonthThai $strYear";
-	    }
-	    date_default_timezone_set('Asia/Bangkok');
 		$output='';
 		$data['result'] = $this->User_model->select_account_detail_with_account_id_not_print($this->input->post('account_id'));
 		$output.='
@@ -2203,7 +1857,7 @@ class Project_controller extends CI_Controller {
 				$output.='
 					<tr>
 						<th width="2%" scope="row">'.$i.'</th>
-                        <td width="30%">'.DateThai($row->record_date)." ".$row->record_time.'</td>
+                        <td width="30%">'.$this->DateThai($row->record_date)." ".$row->record_time.'</td>
                         <td width="20%">'.$action.'</td>
                         <td align="right">'.$trans_money.'</td>
                         <td align="right">'.number_format($row->account_detail_balance,2).'</td>
@@ -2220,16 +1874,6 @@ class Project_controller extends CI_Controller {
 		echo $output;
 	}
 	public function select_new_print(){
-		function DateThai($strDate)
-	    {
-	        $strYear = date("Y",strtotime($strDate))+543;
-	        $strMonth= date("n",strtotime($strDate));
-	        $strDay= date("j",strtotime($strDate));
-	        $strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-	        $strMonthThai=$strMonthCut[$strMonth];
-	        return "$strDay $strMonthThai $strYear";
-	    }
-	    date_default_timezone_set('Asia/Bangkok');
 		$output='';
 		$data['result'] = $this->User_model->select_account_detail_with_account_id_not_print($this->input->post('account_id'));
 		$output.='
@@ -2320,7 +1964,7 @@ class Project_controller extends CI_Controller {
 					<tr>
 						<th width="2%" scope="row"><input type="checkbox" class="delete_checkbox" value="'.$row->account_detail_id.'" /></th>
 						<th width="2%" scope="row">'.$i.'</th>
-                        <td width="30%">'.DateThai($row->record_date)." ".$row->record_time.'</td>
+                        <td width="30%">'.$this->DateThai($row->record_date)." ".$row->record_time.'</td>
                         <td width="20%">'.$action.'</td>
                         <td align="right">'.$trans_money.'</td>
                         <td align="right">'.number_format($row->account_detail_balance,2).'</td>
@@ -2370,15 +2014,6 @@ class Project_controller extends CI_Controller {
 		}
 	  }
 	public function fetch_report_open_account(){
-		function DateThai($strDate)
-		{
-			$strYear = date("Y",strtotime($strDate))+543;
-			$strMonth= date("n",strtotime($strDate));
-			$strDay= date("j",strtotime($strDate));
-			$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-			$strMonthThai=$strMonthCut[$strMonth];
-			return "$strDay $strMonthThai $strYear";
-		}
 		date_default_timezone_set('Asia/Bangkok');
 		$output='';
 		$data['result'] = $this->User_model->select_open_account_between_date($this->input->post('start_date'),$this->input->post('stop_date'));
@@ -2414,7 +2049,7 @@ class Project_controller extends CI_Controller {
 						<td id="ac_code">'.$row->account_id.'</td>
 						<td id="ac_name" align="left"  >'.$row->account_name.'</td>
 						<td id="ac_ac_nae" align="left" >'.$row->member_title." ".$row->member_name.'</td>
-						<td id="date_open" >'.DateThai($row->account_open_date).'</td>
+						<td id="date_open" >'.$this->DateThai($row->account_open_date).'</td>
 						<td id="open_money" align="right" >'.number_format($open_money,2).'</td>
 					</tr>';
 				$i++;
@@ -2436,8 +2071,7 @@ class Project_controller extends CI_Controller {
 		</table>
 		
 		 ';
-		}
-		
+		}	
 		echo $output;
 	}	
 	public function report_deposit_per_year(){
@@ -2681,35 +2315,24 @@ class Project_controller extends CI_Controller {
 		}
 	}
 	public function print_report_account_betwwen_date(){
-		//echo $this->uri->segment(3)." ".$this->uri->segment(4);
 		$pdf = new Pdf('P','mm','A4');
-      	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
-      	$pdf->setFooterData(array(0,64,0), array(0,64,128));
-      	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-      	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-      	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-      	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-      	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-      	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-      	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-      	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-      	$pdf->setFontSubsetting(true);
-      	$pdf->SetFont('thsarabun', '', 16, '', true);
+      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      $pdf->setFooterData(array(0,64,0), array(0,64,128));
+      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      $pdf->setFontSubsetting(true);
+      $pdf->SetFont('thsarabun', '', 16, '', true);
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
 		$pdf->SetTitle("รายงานบัญชี");
 		$pdf->AddPage();
-		function DateThai($strDate)
-      	{ 
-			$strYear = date("Y",strtotime($strDate))+543;
-			 $thaiyear = $strYear;
-      	  	$strMonth= date("n",strtotime($strDate));
-      	  	$strDay= date("j",strtotime($strDate));
-      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-      	  	$strMonthThai=$strMonthCut[$strMonth];
-      	  	return "$strDay $strMonthThai $thaiyear";
-      	} 
 		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
 		$pdf->Ln(8);
 		$content = '<h3>รายงานเปิดบัญชี</h3><span align="center">วันที่'." ".DateThai($this->uri->segment(3))." ถึง ".DateThai($this->uri->segment(4)).'</span><br>
@@ -2739,7 +2362,7 @@ class Project_controller extends CI_Controller {
 				<td style="border:1px solid black">'.$row->account_id.'</td>
 				<td align="left" style="border:1px solid black">'.$row->account_name.'</td>
 				<td align="left" style="border:1px solid black">'.$row->member_title."".$row->member_name.'</td>
-				<td style="border:1px solid black">'.DateThai($row->account_open_date).'</td>
+				<td style="border:1px solid black">'.$this->DateThai($row->account_open_date).'</td>
 				<td align="right" style="border:1px solid black">'.number_format($open_money,2).'</td>
 			</tr>';		
 			$i++;
@@ -2748,7 +2371,7 @@ class Project_controller extends CI_Controller {
 		</tbody><tfoot></tfoot></table>';
 		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
 		$count="<span>จํานวนผูที่เปิดบัญชีทั้งหมด ".$this->User_model->count_account_opendate_between($this->uri->segment(3),$this->uri->segment(4))." คน</span><br>";
-		$count.="<span>วันที่ออกรายงาน ".DateThai(date('Y-m-d'))."</span>";
+		$count.="<span>วันที่ออกรายงาน ".$this->DateThai(date('Y-m-d'))."</span>";
 		$pdf->writeHTMLCell(0,0,'','',$count,0,1,0,true,'R',true);
 		ob_clean();
 		$pdf->Output('example_001.pdf', 'I');
@@ -2960,22 +2583,22 @@ class Project_controller extends CI_Controller {
 		date_default_timezone_set('Asia/Bangkok');
  		$data["account"] = $this->User_model->select_all_account_never_cal();
  		foreach ($data["account"]->result() as $row) {
- 			if($row->interest_update == "0000-00-00" && /*date('Y-m-d')*/"2019-04-01" == date('Y-04-01') && $row->account_open_date < date('Y-04-01')){
+ 			if($row->interest_update == "0000-00-00" && date('Y-m-d')/*"2019-04-01"*/ == date('Y-04-01') && $row->account_open_date < date('Y-04-01')){
  				$this->cal_interest_phase1($row->account_id);
  			}
- 			elseif($row->interest_update == "0000-00-00" && /*date('Y-m-d')*/"2019-10-01" == date('Y-10-01') && $row->account_open_date >= date('Y-04-01') && $row->account_open_date < date('Y-10-01')) {
+ 			elseif($row->interest_update == "0000-00-00" && date('Y-m-d')/*"2019-10-01"*/ == date('Y-10-01') && $row->account_open_date >= date('Y-04-01') && $row->account_open_date < date('Y-10-01')) {
  				$this->cal_interest_phase2($row->account_id);
  			}
- 			elseif($row->interest_update == "0000-00-00" && /*date('Y-m-d')*/ "2019-04-01" == date('Y-04-01') && $row->account_open_date > date('Y-10-01',strtotime('-1 year')) && $row->account_open_date < date('Y-04-01')) {
+ 			elseif($row->interest_update == "0000-00-00" && date('Y-m-d') /*"2019-04-01"*/ == date('Y-04-01') && $row->account_open_date > date('Y-10-01',strtotime('-1 year')) && $row->account_open_date < date('Y-04-01')) {
  				$this->cal_interest_phase1($row->account_id);
  			}
- 			elseif($row->interest_update == date('Y-04-01') && /*date('Y-m-d')*/ "2019-10-01" == date('Y-10-01')){
+ 			elseif($row->interest_update == date('Y-04-01') && date('Y-m-d') /*"2019-10-01"*/ == date('Y-10-01')){
  				$this->cal_interest_phase2($row->account_id);
  			}
- 			elseif($row->interest_update == substr($row->interest_update,0,4)."-10-01" && /*date('Y-m-d')*/ "2019-04-01" == date('Y-04-01')){
+ 			elseif($row->interest_update == substr($row->interest_update,0,4)."-10-01" && date('Y-m-d') /*"2019-04-01"*/ == date('Y-04-01')){
  				$this->cal_interest_phase1($row->account_id);
  			}
- 			elseif($row->interest_update == substr($row->interest_update,0,4)."-04-01" && /*date('Y-m-d')*/ "2019-10-01" == date('Y-10-01')){
+ 			elseif($row->interest_update == substr($row->interest_update,0,4)."-04-01" && date('Y-m-d') /*"2019-10-01"*/ == date('Y-10-01')){
  				$this->cal_interest_phase2($row->account_id);
  			}
  		}
@@ -3093,8 +2716,9 @@ class Project_controller extends CI_Controller {
 				$total_balance = floatval($account_balance) + $result_all_int;
 				//echo "interest="."(".$row->account_detail_balance."*".$interest_rate."*".$date_diff.")/(".$per_100."*".$year.")<br>";
 			}//echo "total:".$result_all_int."<br>";
+			$ir_code = $this->User_model->auto_generate_interest_code();
 			$data_account_detail=array(
-				'trans_id'=>'0',
+				'trans_id'=>$ir_code,
 				'account_id'=>$account_id,
 				'staff_record_id'=>'1',
 				'action'=>'add_interest',
@@ -3106,7 +2730,9 @@ class Project_controller extends CI_Controller {
 				'passbook_row_status'=>'1',
 				'end_day'=>'0',
 			);
+			
 			$data_interest_history=array(
+				'ih_id'=>$ir_code,
 				'account_id'=>$account_id,
 				'interest_money'=>round($result_all_int,2),
 				'interest_date'=>date('Y-04-01')
@@ -3153,8 +2779,9 @@ class Project_controller extends CI_Controller {
 				//echo "interest="."(".$row->account_detail_balance."*".$interest_rate."*".$date_diff.")/(".$per_100."*".$year.")<br>";
 			}
 			//echo "total:".$result_all_int."<br>";
+			$ir_code = $this->User_model->auto_generate_interest_code();
 			$data_account_detail=array(
-				'trans_id'=>'0',
+				'trans_id'=>$ir_code,
 				'account_id'=>$account_id,
 				'staff_record_id'=>'1',
 				'action'=>'add_interest',
@@ -3167,6 +2794,7 @@ class Project_controller extends CI_Controller {
 				'end_day'=>'0',
 			);
 			$data_interest_history=array(
+				'ih_id'=>$ir_code,
 				'account_id'=>$account_id,
 				'interest_money'=>round($result_all_int,2),
 				'interest_date'=>date('Y-10-01')
@@ -3205,18 +2833,18 @@ class Project_controller extends CI_Controller {
 			$data['statement'] = $this->User_model->select_account_detail_parameter_account_id_filter($this->input->post('account_id'),$this->input->post('filter'));
 		}
 		$pdf = new Pdf('P','mm','A4');
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
-        $pdf->setFooterData(array(0,64,0), array(0,64,128));
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        $pdf->setFontSubsetting(true);
-        $pdf->SetFont('thsarabun', '', 16, '', true);
+      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      $pdf->setFooterData(array(0,64,0), array(0,64,128));
+      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      $pdf->setFontSubsetting(true);
+      $pdf->SetFont('thsarabun', '', 16, '', true);
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
@@ -3296,18 +2924,18 @@ class Project_controller extends CI_Controller {
 			}
 		}
 		$pdf = new Pdf('P','mm','A4');
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
-        $pdf->setFooterData(array(0,64,0), array(0,64,128));
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        $pdf->setFontSubsetting(true);
-        $pdf->SetFont('thsarabun', '', 16, '', true);
+   	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+   	$pdf->setFooterData(array(0,64,0), array(0,64,128));
+   	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+   	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+   	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+   	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+   	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+   	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+   	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+   	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+   	$pdf->setFontSubsetting(true);
+   	$pdf->SetFont('thsarabun', '', 16, '', true);
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
@@ -3675,16 +3303,6 @@ class Project_controller extends CI_Controller {
 		echo $result;
 	}
 	public function report_deposit_per_day(){
-		function DateThai($strDate)
-      	{ 
-			$strYear = date("Y",strtotime($strDate))+543;
-			 $thaiyear = $strYear;
-      	  	$strMonth= date("n",strtotime($strDate));
-      	  	$strDay= date("j",strtotime($strDate));
-      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-      	  	$strMonthThai=$strMonthCut[$strMonth];
-      	  	return "$strDay $strMonthThai $thaiyear";
-      	} 
 		$sumofmonth=0.0;
 		$result='<div class="row">
 					<div class="col-4"></div>
@@ -3702,7 +3320,7 @@ class Project_controller extends CI_Controller {
 			foreach ($this->User_model->select_sum_deposit_day($row->tran_date)->result() as $row2) {
 				$sumofmonth+=floatval($row2->sum );
 				$result.='<tr>
-				<th id="count"  scope="row">'.DateThai($row->tran_date).'</th>
+				<th id="count"  scope="row">'.$this->DateThai($row->tran_date).'</th>
 				<td align="right" id="ac_code">'.number_format($row2->sum,2)." บาท".'</td>
 						</tr>';
 			}
@@ -3715,16 +3333,6 @@ class Project_controller extends CI_Controller {
 		echo $result;
 	}
 	public function report_withdraw_per_day(){
-		function DateThai($strDate)
-      	{ 
-			$strYear = date("Y",strtotime($strDate))+543;
-			 $thaiyear = $strYear;
-      	  	$strMonth= date("n",strtotime($strDate));
-      	  	$strDay= date("j",strtotime($strDate));
-      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-      	  	$strMonthThai=$strMonthCut[$strMonth];
-      	  	return "$strDay $strMonthThai $thaiyear";
-      	} 
 		$sumofmonth=0.0;
 		$result='<div class="row">
 					<div class="col-4"></div>
@@ -3742,7 +3350,7 @@ class Project_controller extends CI_Controller {
 			foreach ($this->User_model->select_sum_withdraw_day($row->tran_date)->result() as $row2) {
 				$sumofmonth+=floatval($row2->sum );
 				$result.='<tr>
-				<th id="count"  scope="row">'.DateThai($row->tran_date).'</th>
+				<th id="count"  scope="row">'.$this->DateThai($row->tran_date).'</th>
 				<td align="right" id="ac_code">'.number_format($row2->sum,2)." บาท".'</td>
 						</tr>';
 			}
@@ -3761,33 +3369,23 @@ class Project_controller extends CI_Controller {
 		elseif($this->uri->segment(4) === "month"){$action_name = "รายเดือน";$action_name2="เดือน";}
 		else{$action_name = "รายวัน";$action_name2="วันที่";}
 		$pdf = new Pdf('P','mm','A4');
-      	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
-      	$pdf->setFooterData(array(0,64,0), array(0,64,128));
-      	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-      	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-      	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-      	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-      	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-      	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-      	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-      	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-      	$pdf->setFontSubsetting(true);
-      	$pdf->SetFont('thsarabun', '', 16, '', true);
+      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      $pdf->setFooterData(array(0,64,0), array(0,64,128));
+      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      $pdf->setFontSubsetting(true);
+      $pdf->SetFont('thsarabun', '', 16, '', true);
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
 		$pdf->SetTitle("รายงานสรุปยอด".$tran_name." ".$action_name);
 		$pdf->AddPage();
-		function DateThai($strDate)
-      	{ 
-			$strYear = date("Y",strtotime($strDate))+543;
-			 $thaiyear = $strYear;
-      	  	$strMonth= date("n",strtotime($strDate));
-      	  	$strDay= date("j",strtotime($strDate));
-      	  	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-      	  	$strMonthThai=$strMonthCut[$strMonth];
-      	  	return "$strDay $strMonthThai $thaiyear";
-      	} 
 		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
 		$pdf->Ln(8);
 		$content = '<h3>รายงานสรุปยอด'.$tran_name." ".$action_name.'</h3><span>ธนาคารโรงเรียน โรงเรียนดอนคาวิทยา ต.ดอนคา อ.อู่ทอง จ.สุพรรณบุรี 72160</span>
@@ -3866,7 +3464,7 @@ class Project_controller extends CI_Controller {
 						$sum+=floatval($row2->sum);
 						//echo $row->year." ".$row2->sum_year."<br>";
 						$table.='<tr>
-						<th style="border:1px solid black" id="count"  scope="row">'.DateThai($row->tran_date).'</th>
+						<th style="border:1px solid black" id="count"  scope="row">'.$this->DateThai($row->tran_date).'</th>
 						<td style="border:1px solid black" align="right" id="ac_code">'.number_format($row2->sum,2)." บาท".'</td>
 								</tr>';
 					}
@@ -3878,7 +3476,7 @@ class Project_controller extends CI_Controller {
 						$sum+=floatval($row2->sum);
 						//echo $row->year." ".$row2->sum_year."<br>";
 						$table.='<tr>
-						<th style="border:1px solid black" id="count"  scope="row">'.DateThai($row->tran_date).'</th>
+						<th style="border:1px solid black" id="count"  scope="row">'.$this->DateThai($row->tran_date).'</th>
 						<td style="border:1px solid black" align="right" id="ac_code">'.number_format($row2->sum,2)." บาท".'</td>
 								</tr>';
 					}
@@ -3887,7 +3485,7 @@ class Project_controller extends CI_Controller {
 		}
 		$table.='</table>';
 		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
-		$count.="<span>รวมยอดเงิน ".number_format($sum,2)." บาท"."</span><br><span>วันที่ออกรายงาน ".DateThai(date('Y-m-d'))."</span>";
+		$count.="<span>รวมยอดเงิน ".number_format($sum,2)." บาท"."</span><br><span>วันที่ออกรายงาน ".$this->DateThai(date('Y-m-d'))."</span>";
 		$pdf->writeHTMLCell(0,0,'','',$count,0,1,0,true,'R',true);
 		ob_clean();
 		$pdf->Output('example_001.pdf', 'I');
