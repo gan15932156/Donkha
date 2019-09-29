@@ -259,5 +259,46 @@ class Service_app extends CI_Controller {
 		}
 		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
 	}
+	public function get_member_detail(){
+		$this->response = null ;
+		//$member_id = $this->input->post("member_id");
+		$member_id = "17";
+		if($data['member']=$this->Service_App_Model->select_member_detail($member_id)){
+			foreach ($data['member']->result() as $row) {
+				$member_array = array(
+					'member_id'=>$row->member_id,
+					'level_id'=>$row->level_id,
+					'edu_id'=>$row->edu_id,
+					'std_code'=>$row->std_code,
+					'member_id_card'=>$row->member_id_card,
+					'member_name'=>$row->member_name,
+					'member_birth_date'=>$row->member_birth_date,
+					'member_yofadmis'=>$row->member_yofadmis,
+					'address'=>$row->address,
+					'phone_number'=>$row->phone_number,
+					'member_pic'=>$row->member_pic,
+					'member_signa_pic'=>$row->member_signa_pic,
+					'member_regis_date'=>$row->member_regis_date,
+					'member_title'=>$row->member_title,
+					'zipcode'=>$row->zipcode,
+					'DISTRICT_NAME'=>$row->DISTRICT_NAME,
+					'AMPHUR_NAME'=>$row->AMPHUR_NAME,
+					'PROVINCE_NAME'=>$row->PROVINCE_NAME,
+					'job_name'=>$row->job_name,
+				);
+			}
+			$this->response['error'] = false; 
+			$this->response['message'] = 'พบสมาชิก'; 
+			$this->response['member'] = $member_array;    
+		}
+		else{
+			$this->response['error'] = true;
+			$this->response['message'] = 'ไม่พบสมาชิก';
+		}
+
+
+
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
+	}
 
 }

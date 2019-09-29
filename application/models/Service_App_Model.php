@@ -114,6 +114,24 @@ class Service_App_Model extends CI_Model {
 		return $query=$this->db->get('');
 		
 	}
+	public function select_member_detail($member_id){
+		$this->db->from('member');
+		$this->db->join('zipcodes', 'zipcodes.DISTRICT_CODE = member.DISTRICT_CODE','inner');
+		$this->db->join('districts', 'member.DISTRICT_CODE = districts.DISTRICT_CODE','inner');
+		$this->db->join('amphures', 'amphures.AMPHUR_ID = districts.AMPHUR_ID','inner');
+		$this->db->join('provinces', 'provinces.PROVINCE_ID = amphures.PROVINCE_ID','inner');
+		$this->db->join('job', 'job.job_id = member.job_id','inner');
+		$this->db->where('member_id',$member_id);
+		$this->db->where('member_status','1');		
+		return $query=$this->db->get('');
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+		
+	}
 	public function fotgot_password_app($forgot,$state,$username){
 		$this->db->from('user');
 		$this->db->join('member', 'user.member_id = member.member_id','inner');
