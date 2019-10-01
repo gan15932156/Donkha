@@ -885,6 +885,55 @@ class Project_controller extends CI_Controller {
 		redirect(base_url()."Project_controller/manage_staff");
 	}
 	public function member_update(){
+		$pic_member = $this->input->post("show_member_signa_pic");
+		$pic_singna = $this->input->post("show_member_pic");
+		$stdid=$this->input->post("std_code");
+		$config['upload_path'] = './picture/';
+		$config['overwrite'] = TRUE;
+		$config['allowed_types'] = '*';
+        $this->load->library('upload', $config);
+		if($stdid == 'ไม่มี'){
+			if(! $this->upload->do_upload("pic_member") && ! $this->upload->do_upload("pic_singna")){
+				echo "if not upload<br>";
+			}
+			else{
+				if($this->upload->do_upload("pic_member")){
+					echo "if upload pic_member<br>";
+					$pic = $this->upload->data();
+					$pic_member = "http://".$this->ip."/Donkha/picture/".$pic['file_name'];
+				}
+				if($this->upload->do_upload("pic_singna")){
+					echo "if upload pic_singna<br>";
+					$pic = $this->upload->data();
+					$pic_singna = "http://".$this->ip."/Donkha/picture/".$pic['file_name'];
+				}
+				
+			}
+			
+			echo $pic_member."<br>".$pic_singna;
+		}
+		else{
+			if(! $this->upload->do_upload("pic_member") && ! $this->upload->do_upload("pic_singna")){
+				echo "if not upload<br>";
+			}
+			else{
+				if($this->upload->do_upload("pic_member")){
+					echo "if upload pic_member<br>";
+					$pic = $this->upload->data();
+					$pic_member = "http://".$this->ip."/Donkha/picture/".$pic['file_name'];
+				}
+				if($this->upload->do_upload("pic_singna")){
+					echo "if upload pic_singna<br>";
+					$pic = $this->upload->data();
+					$pic_singna = "http://".$this->ip."/Donkha/picture/".$pic['file_name'];
+				}
+				
+			}
+			
+			echo $pic_member."<br>".$pic_singna;
+		}
+	/*	$pic;
+		$pic2;
 		$member_id=$this->input->post("member_id");
 		$level_id=$this->input->post("permiss");
 		$dist_code=$this->input->post("DISTRICT_CODE");
@@ -919,6 +968,7 @@ class Project_controller extends CI_Controller {
 			}
 			elseif ($this->upload->do_upload('pic_member') && $this->upload->do_upload('pic_singna') == null) {
 				$up_file_name = $this->upload->data();
+				$pic = "http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'];
 				$data_member=array(
 					'level_id'=>$level_id,
 					'DISTRICT_CODE'=>$dist_code,
@@ -929,12 +979,14 @@ class Project_controller extends CI_Controller {
 					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_pic'=>"http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
+					'member_pic'=>$pic,
 					'member_title'=>$title
 				);
+				chmod($up_file_name['full_path'],0755);
 			}
 			elseif ($this->upload->do_upload('pic_singna') && $this->upload->do_upload('pic_member') == null) {
 				$up_file_name = $this->upload->data();
+				$pic = "http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'];
 				$data_member=array(
 					'level_id'=>$level_id,
 					'DISTRICT_CODE'=>$dist_code,
@@ -945,7 +997,7 @@ class Project_controller extends CI_Controller {
 					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
+					'member_signa_pic'=>$pic,
 					'member_title'=>$title
 				);
 			}
@@ -954,6 +1006,9 @@ class Project_controller extends CI_Controller {
 				$pic_member = $this->upload->data();
 				$this->upload->do_upload('pic_singna');
 				$pic_singna =$this->upload->data();
+
+				$pic = "http://".$this->ip."/Donkha/picture/".$pic_member['file_name'];
+				$pic2 = "http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'];
 				$data_member=array(
 					'level_id'=>$level_id,
 					'DISTRICT_CODE'=>$dist_code,
@@ -964,8 +1019,8 @@ class Project_controller extends CI_Controller {
 					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_member['file_name'],
-					'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'],
+					'member_pic'=>$pic,
+					'member_signa_pic'=>$pic2,
 					'member_title'=>$title
 				);
 			}
@@ -991,6 +1046,7 @@ class Project_controller extends CI_Controller {
 			}
 			elseif ($this->upload->do_upload('pic_member') && $this->upload->do_upload('pic_singna') == null) {
 				$up_file_name = $this->upload->data();
+				$pic = "http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'];
 				$data_member=array(
 					'std_code'=>$stdid,
 					'level_id'=>$level_id,
@@ -1003,12 +1059,13 @@ class Project_controller extends CI_Controller {
 					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_pic'=>"http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
+					'member_pic'=>$pic,
 					'member_title'=>$title
 				);
 			}
 			elseif ($this->upload->do_upload('pic_singna') && $this->upload->do_upload('pic_member') == null) {
 				$up_file_name = $this->upload->data();
+				$pic = "http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'];
 				$data_member=array(
 					'std_code'=>$stdid,
 					'level_id'=>$level_id,
@@ -1021,7 +1078,7 @@ class Project_controller extends CI_Controller {
 					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$up_file_name['file_name'],
+					'member_signa_pic'=>$pic,
 					'member_title'=>$title
 				);
 			}
@@ -1030,25 +1087,31 @@ class Project_controller extends CI_Controller {
 				$pic_member = $this->upload->data();
 				$this->upload->do_upload('pic_singna');
 				$pic_singna =$this->upload->data();
+
+				$pic = "http://".$this->ip."/Donkha/picture/".$pic_member['file_name'];
+				$pic2 = "http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'];
 				$data_member=array(
 					'std_code'=>$stdid,
 					'level_id'=>$level_id,
 					'DISTRICT_CODE'=>$dist_code,
-					'job_id' => '2','edu_id'=>$edu_id,
+					'job_id' => '2',
+					'edu_id'=>$edu_id,
 					'member_id_card'=>$id_card,
 					'member_name'=>$name,
 					'member_birth_date'=>$b_date,
 					'member_yofadmis'=>$yofadmis,
 					'address'=>$address,
 					'phone_number'=>$phone,
-					'member_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_member['file_name'],
-					'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'],
+					'member_pic'=>$pic,
+					'member_signa_pic'=>$pic2,
 					'member_title'=>$title
 				);
 			}
 		}
-		$this->User_model->update_member($data_member,$member_id);
-		redirect(base_url()."Project_controller/manage_member");
+		
+
+		$this->User_model->update_member($data_member,$member_id);*/
+		//redirect(base_url()."Project_controller/manage_member");
 	}
 	public function member_update_staff(){
 		$member_id=$this->input->post("member_id");
