@@ -202,7 +202,7 @@
                     <label>ปีที่เข้าศึกษา</label>
                   </div>   
                   <div class="form-group col-md-3">
-                    <input id="yofadmis" name="yofadmis" require  class="form-control "  type="number" placeholder="ปปปป" min="<?php echo date('Y',strtotime('-6 year'))+543; ?>" max="<?php echo date('Y')+543; ?>">
+                    <input id="yofadmis" name="yofadmis" require  class="form-control "  type="number" placeholder="ปปปป" min="<?php echo date('Y',strtotime('-6 year'))+543; ?>" max="<?php echo date('Y')+543; ?>" require>
                   </div>                
                   <div class="form-group col-md-1">
                     <label for="name" style="width:50px">ที่อยู่</label>

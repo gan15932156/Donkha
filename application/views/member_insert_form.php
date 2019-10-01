@@ -44,7 +44,26 @@
     })
   } 
   $(document).ready(function()
-  {    
+  {   
+    $("#member_form").submit(function(event) {
+			event.preventDefault();
+			$.ajax({
+		     url: "<?=base_url("index.php/Project_controller/member_insert");?>",
+		     type:"post",
+         data:new FormData(this),
+         processData:false,
+         contentType:false,
+         cache:false,
+         async:false,
+		     success: function(response){
+            alert("Add");
+		       },
+		    error: function()
+		    {
+		     alert("error");
+		    }
+      });
+		});
     $("#std_code").change(function(){
       var stu_code = $(this).val();
       check_std_code(stu_code);  
@@ -140,16 +159,18 @@
       if(career == 'นักเรียน'){
         $('#member_form').show();
         $('#career').remove();
-        $('#job').val("นักเรียน");
+
+        $('#job').val('นักเรียน');
         $('#job option[value=2]').attr('selected','selected');
-        $('#job').prop("disabled", true);
+        $('#job option[value=1]').remove();
+        $('#job option[value=3]').remove();
       }
       else{
         $('#member_form').show();
         $('#career').remove();
         $('#std_code').val("0");
         $('#std_code').prop('readonly', true);
-        $('#yofadmis').val("0");
+        $('#yofadmis').val("2019");
         $('#yofadmis').prop('readonly',true);
         $("#edu_level").val("");
         $('#edu_level').prop('disabled', true);
@@ -179,7 +200,7 @@
           </div>
         </div>                  
         <div class="col-md-12 text-center">
-          <form  method="post" action="<?=base_url("index.php/Project_controller/member_insert");?>" enctype="multipart/form-data" name="member_form" id="member_form">
+          <form enctype="multipart/form-data" name="member_form" id="member_form">
             <div class="row">
               <div class="form-group col-4" align="center"> 
                 <img id="show_image_pic" width="130px" height= "180px" src="<?php  echo base_url()."picture/No_person.jpg"; ?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 

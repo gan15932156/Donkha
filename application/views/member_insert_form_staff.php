@@ -140,9 +140,10 @@
       if(career == 'นักเรียน'){
         $('#member_form').show();
         $('#career').remove();
-        $('#job').val("นักเรียน");
+        $('#job').val('นักเรียน');
         $('#job option[value=2]').attr('selected','selected');
-        $('#job').prop("disabled", true);
+        $('#job option[value=1]').remove();
+        $('#job option[value=3]').remove();
       }
       else{
         $('#member_form').show();
