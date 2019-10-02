@@ -132,6 +132,20 @@ class Service_App_Model extends CI_Model {
         }
 		
 	}
+	public function select_account($account){
+		$this->db->from('account');
+		$this->db->join('member', 'member.member_id = account.member_id','inner');
+		$this->db->where('account_id',$account);
+		$this->db->where('account_status','1');		
+		return $query=$this->db->get('');
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+		
+	}
 	public function fotgot_password_app($forgot,$state,$username){
 		$this->db->from('user');
 		$this->db->join('member', 'user.member_id = member.member_id','inner');

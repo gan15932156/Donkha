@@ -300,5 +300,38 @@ class Service_app extends CI_Controller {
 
 		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
 	}
+	public function select_account(){
+		$this->response = null ;
+		$account_id = $this->input->post('account_id');
+		$account_id = '2019001';
+
+		if($data['account']=$this->Service_App_Model->select_account($account_id)){
+			foreach ($data['account']->result() as $row) {
+				$account_array = array(
+					'account_id'=>$row->account_id,
+					'member_id'=>$row->member_id,
+					'staff_open_id'=>$row->staff_open_id,
+					'staff_close_id'=>$row->staff_close_id,
+					'account_open_date'=>$row->account_open_date,
+					'account_close_date'=>$row->account_close_date,
+					'account_name'=>$row->account_name,
+					'account_status'=>$row->account_status,
+					'account_balance'=>$row->account_balance,
+					'passbook_line'=>$row->passbook_line,
+					'interest_update'=>$row->interest_update,
+					'member_signa_pic'=>$row->member_signa_pic
+				);
+			}
+			$this->response['error'] = false; 
+			$this->response['message'] = 'พบบัญชี'; 
+			$this->response['account'] = $account_array;    
+		}
+		else{
+			$this->response['error'] = true;
+			$this->response['message'] = 'ไม่พบบัญชี';
+		}
+
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
+	}
 
 }
