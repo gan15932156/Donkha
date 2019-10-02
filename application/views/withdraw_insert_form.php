@@ -3,6 +3,23 @@
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
   $(document).ready(function(){
+    $("#withdraw_form").submit(function(event) {
+			event.preventDefault();
+			$.ajax({
+		    url: "<?=base_url("Project_controller/withdraw_insert/");?>",
+		    type:"post",
+        data:new FormData(this),
+        processData:false,
+        contentType:false,
+        cache:false,
+        async:false,
+		    success: function(response){
+          alert("บันทึกข้อมูลสำเร็จ");
+			    window.open("<?=base_url("Project_controller/noti_wd");?>", "_self");    		
+		    },
+		    error: function(){ alert("error"); }
+      });
+		});
     var acc_balance = 0 ;
     function search_data(account){
       $.ajax({
@@ -82,7 +99,7 @@
           </div>
         </div>
         <div class="col-5">
-          <form  method="post" action="<?=base_url("index.php/Project_controller/withdraw_insert");?>" enctype="multipart/form-data" name="member_form" id="member_form">
+          <form enctype="multipart/form-data" name="withdraw_form" id="withdraw_form">
           <div class="row">
                   <div class="form-group col-4"><label>วันที่ทำรายการ</label></div>
                   <div class="form-group col-6">

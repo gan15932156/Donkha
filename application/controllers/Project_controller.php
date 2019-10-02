@@ -1,7 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Project_controller extends CI_Controller {
-	public $ip = '127.0.0.1';
+	public $ip = "127.0.0.1";
+	public $picture_path = "picture/"/*"/opt/lampp/htdocs/Donkha/picture/"*/;
 	public function __construct(){
 		parent::__construct();
 		$this->load->helper('url');
@@ -382,16 +383,18 @@ class Project_controller extends CI_Controller {
 		date_default_timezone_set('Asia/Bangkok');
 		$username=$this->input->post("username");
 		$password=base64_encode($this->input->post("password"));
-
-		if(file_exists($_FILES['pic']['tmp_name']) || is_uploaded_file($_FILES['pic']['tmp_name'])) {
+		$temp;
+		$newfilename;
+		if(file_exists($_FILES['pic']['tmp_name']) && is_uploaded_file($_FILES['pic']['tmp_name'])) {
+			$temp = null;
+			$newfilename = null;
 			$temp = explode(".", $_FILES["pic"]["name"]);
 			$newfilename = time()."-staff_picture".'.'.end($temp);
-			if(move_uploaded_file($_FILES["pic"]["tmp_name"], "picture/" .$newfilename)){
+			if(move_uploaded_file($_FILES["pic"]["tmp_name"],$this->picture_path.$newfilename)){
 				$pic = "http://".$this->ip."/Donkha/picture/".$newfilename ;
-				chmod("picture/".$newfilename,0755);
-			} ///opt/lampp/htdocs/Donkha/picture/
+				chmod($this->picture_path.$newfilename,0755);
+			}
 		}
-
 		$data_staff=array(
 			'edu_id'=>$this->input->post("edu_level"),
 			'level_id'=>$this->input->post("permiss"),
@@ -420,7 +423,6 @@ class Project_controller extends CI_Controller {
 			'password'=>$password
 		);
 		$this->User_model->insert_user($data_user);
-		redirect(base_url()."Project_controller/manage_staff");
 	}
 	public function member_insert(){
 		date_default_timezone_set('Asia/Bangkok');
@@ -428,21 +430,27 @@ class Project_controller extends CI_Controller {
 		$password=base64_encode($this->input->post("password"));
 		$pic_member;
 		$pic_singna;
-		if(file_exists($_FILES['pic_member']['tmp_name']) || is_uploaded_file($_FILES['pic_member']['tmp_name'])) {
+		$temp;
+		$newfilename;
+		if(file_exists($_FILES['pic_member']['tmp_name']) && is_uploaded_file($_FILES['pic_member']['tmp_name'])) {
+			$temp = null;
+			$newfilename = null;
 			$temp = explode(".", $_FILES["pic_member"]["name"]);
 			$newfilename = time()."-member_picture".'.'.end($temp);
-			if(move_uploaded_file($_FILES["pic_member"]["tmp_name"], "picture/" .$newfilename)){
+			if(move_uploaded_file($_FILES["pic_member"]["tmp_name"],$this->picture_path.$newfilename)){
 				$pic_member = "http://".$this->ip."/Donkha/picture/".$newfilename ;
-				chmod("picture/".$newfilename,0755);
-			} ///opt/lampp/htdocs/Donkha/picture/
+				chmod($this->picture_path.$newfilename,0755);
+			}
 		}
-		if(file_exists($_FILES['pic_singna']['tmp_name']) || is_uploaded_file($_FILES['pic_singna']['tmp_name'])) {
+		if(file_exists($_FILES['pic_singna']['tmp_name']) && is_uploaded_file($_FILES['pic_singna']['tmp_name'])) {
+			$temp = null;
+			$newfilename = null;
 			$temp = explode(".", $_FILES["pic_singna"]["name"]);
-			$newfilename = time()."-member_picture".'.'.end($temp);
-			if(move_uploaded_file($_FILES["pic_singna"]["tmp_name"], "picture/" .$newfilename)){
+			$newfilename = time()."-member_singature".'.'.end($temp);
+			if(move_uploaded_file($_FILES["pic_singna"]["tmp_name"],$this->picture_path.$newfilename)){
 				$pic_singna = "http://".$this->ip."/Donkha/picture/".$newfilename ;
-				chmod("picture/".$newfilename,0755);
-			} ///opt/lampp/htdocs/Donkha/picture/
+				chmod($this->picture_path.$newfilename,0755);
+			} 
 		}	
 		$data_member=array(
 			'level_id'=>$this->input->post("permiss"),
@@ -484,120 +492,75 @@ class Project_controller extends CI_Controller {
         		else{ window.open("'.$url2.'", "_self"); }
         	</script>
         	';
-		
-
-
-		
 	}
 	public function member_insert_staff(){
 		date_default_timezone_set('Asia/Bangkok');
-		$level_id=$this->input->post("permiss");
-		$dist_code=$this->input->post("DISTRICT_CODE");
-		$id_card=$this->input->post("id_card");
-		$name=$this->input->post("name");
-		$b_date=$this->input->post("b_date");
-		$yofadmis=intval($this->input->post('yofadmis'))-543;
-		$address=$this->input->post("address");
-		$phone=$this->input->post("phone_number");
-		$title=$this->input->post("title");
-		$stdid=$this->input->post("std_code");
 		$username=$this->input->post("username");
 		$password=base64_encode($this->input->post("password"));
-		$regis_date = date('Y-m-d');
-		$config['upload_path'] = './picture/';
-		$config['allowed_types'] = '*';
-		$config['overwrite'] = TRUE;
-		$this->load->library('upload',$config);
-		$this->upload->do_upload('pic_member');
-		$pic_member = $this->upload->data();
-		$this->upload->do_upload('pic_singna');
-		$pic_singna = $this->upload->data();
-		if($stdid == '0'){
-			 //บุคลากร
-			$job=$this->input->post("job");
-			$data_member=array(
-				'level_id'=>$level_id,
-				'DISTRICT_CODE'=>$dist_code,
-				'job_id'=>$job,'edu_id'=>'0',
-				'std_code'=>'0',
-				'member_id_card'=>$id_card,
-				'member_name'=>$name,
-				'member_birth_date'=>$b_date,
-				'member_yofadmis'=>$yofadmis,
-				'address'=>$address,
-				'phone_number'=>$phone,
-				'member_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_member['file_name'],
-				'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'],
-				'member_regis_date'=>$regis_date,
-				'member_title'=>$title,
-				'member_status' => "1"
-			);
-			$this->User_model->insert_member($data_member);
-			$data['member'] = $this->User_model->select_member_latest();
-			$member=$data['member']->result();
-			foreach ($member as $row) {
-				$member_id=$row->member_id;
+		$pic_member;
+		$pic_singna;
+		$temp;
+		$newfilename;
+		if(file_exists($_FILES['pic_member']['tmp_name']) && is_uploaded_file($_FILES['pic_member']['tmp_name'])) {
+			$temp = null;
+			$newfilename = null;
+			$temp = explode(".", $_FILES["pic_member"]["name"]);
+			$newfilename = time()."-member_picture".'.'.end($temp);
+			if(move_uploaded_file($_FILES["pic_member"]["tmp_name"],$this->picture_path.$newfilename)){
+				$pic_member = "http://".$this->ip."/Donkha/picture/".$newfilename ;
+				chmod($this->picture_path.$newfilename,0755);
 			}
-			$data_user=array(
-				'staff_id'=>'0',
-				'member_id'=>$member_id,
-				'username'=>$username,
-				'password'=>$password
-			);
-			$this->User_model->insert_user($data_user);
-			$url1 = base_url('Project_controller/account_insert_form_continue_staff/').$member_id;
-			$url2 = base_url('Project_controller/manage_member/');
-			echo '
+		}
+		if(file_exists($_FILES['pic_singna']['tmp_name']) && is_uploaded_file($_FILES['pic_singna']['tmp_name'])) {
+			$temp = null;
+			$newfilename = null;
+			$temp = explode(".", $_FILES["pic_singna"]["name"]);
+			$newfilename = time()."-member_singature".'.'.end($temp);
+			if(move_uploaded_file($_FILES["pic_singna"]["tmp_name"],$this->picture_path.$newfilename)){
+				$pic_singna = "http://".$this->ip."/Donkha/picture/".$newfilename ;
+				chmod($this->picture_path.$newfilename,0755);
+			} 
+		}	
+		$data_member=array(
+			'level_id'=>$this->input->post("permiss"),
+			'DISTRICT_CODE'=>$this->input->post("DISTRICT_CODE"),
+			'job_id'=>$this->input->post("job"),
+			'edu_id'=>($this->input->post("edu_level") == "" ? "0" : $this->input->post("edu_level")),
+			'std_code'=>$this->input->post("std_code"),
+			'member_id_card'=>$this->input->post("id_card"),
+			'member_name'=>$this->input->post("name"),
+			'member_birth_date'=>$this->input->post("b_date"),
+			'member_yofadmis'=>intval($this->input->post('yofadmis'))-543,
+			'address'=>$this->input->post("address"),
+			'phone_number'=>$this->input->post("phone_number"),
+			'member_pic'=>$pic_member,
+			'member_signa_pic'=>$pic_singna,
+			'member_regis_date'=>date('Y-m-d'),
+			'member_title'=>$this->input->post("title"),
+			'member_status' => "1"
+		);
+		$this->User_model->insert_member($data_member);
+		$data['member'] = $this->User_model->select_member_latest();
+		$member=$data['member']->result();
+		foreach ($member as $row) {
+			$member_id=$row->member_id;
+		}
+		$data_user=array(
+			'staff_id'=>'0',
+			'member_id'=>$member_id,
+			'username'=>$username,
+			'password'=>$password
+		);
+		$this->User_model->insert_user($data_user);
+		$url1 = base_url('Project_controller/account_insert_form_continue_staff/').$member_id;
+		$url2 = base_url('Project_controller/manage_member_staff/');
+		echo '
             	<script type="text/javascript">
             		var confirn =  confirm("ต้องการเปิดบัญชีหรือไม่");
             		if(confirn == true){ window.open("'.$url1.'", "_self");}
             		else{ window.open("'.$url2.'", "_self"); }
             	</script>
-            	';
-		}
-		else{
-			$edu_id=$this->input->post("edu_level");
-			$std_code=$this->input->post("std_code");    //นร
-			$data_member=array(
-				'level_id'=>$level_id,
-				'DISTRICT_CODE'=>$dist_code,
-				'job_id'=>'2',
-				'edu_id'=>$edu_id,
-				'std_code'=>$std_code,
-				'member_id_card'=>$id_card,
-				'member_name'=>$name,
-				'member_birth_date'=>$b_date,
-				'member_yofadmis'=>$yofadmis,
-				'address'=>$address,
-				'phone_number'=>$phone,
-				'member_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_member['file_name'],
-				'member_signa_pic'=>"http://".$this->ip."/Donkha/picture/".$pic_singna['file_name'],
-				'member_regis_date'=>$regis_date,
-				'member_title'=>$title,
-				'member_status' => "1"
-			);
-			$this->User_model->insert_member($data_member);
-			$data['member'] = $this->User_model->select_member_latest();
-			$member=$data['member']->result();
-			foreach ($member as $row) {
-				$member_id=$row->member_id;
-			}
-			$data_user=array(
-				'staff_id'=>'0',
-				'member_id'=>$member_id,
-				'username'=>$username,
-				'password'=>$password);
-			$this->User_model->insert_user($data_user);
-			$url1 = base_url('Project_controller/account_insert_form_continue_staff/').$member_id;
-			$url2 = base_url('Project_controller/manage_member/');
-			echo '
-            	<script type="text/javascript">
-            		var confirn =  confirm("ต้องการเปิดบัญชีหรือไม่");
-            		if(confirn == true){ window.open("'.$url1.'", "_self");}
-            		else{ window.open("'.$url2.'", "_self"); }
-            	</script>
-            	';
-		}
+            	';	
 	}
 	public function account_insert(){
 		date_default_timezone_set('Asia/Bangkok');
@@ -630,7 +593,6 @@ class Project_controller extends CI_Controller {
 			'account_detail_confirm'=>'0',
 		);
 		$this->User_model->insert_account_details($data_account_detail);
-		redirect(base_url()."Project_controller/index_admin");
 	}
 	public function account_insert_staff(){
  		date_default_timezone_set('Asia/Bangkok');
@@ -663,7 +625,6 @@ class Project_controller extends CI_Controller {
 			'account_detail_confirm'=>'0',
 		);
 		$this->User_model->insert_account_details($data_account_detail);
-		redirect(base_url()."Project_controller/noti_dep");
 	}
 	public function deposit_insert(){
 		date_default_timezone_set('Asia/Bangkok');
@@ -687,7 +648,6 @@ class Project_controller extends CI_Controller {
 			'account_detail_confirm'=>'0',
 		);
 		$this->User_model->insert_account_details($data_account_detail);
-		redirect(base_url()."Project_controller/noti_dep");
 	}
 	public function withdraw_insert(){
 		date_default_timezone_set('Asia/Bangkok');
@@ -711,7 +671,6 @@ class Project_controller extends CI_Controller {
 			'account_detail_confirm'=>'0',
 		);
 		$this->User_model->insert_account_details($data_account_detail);
-		redirect(base_url()."Project_controller/noti_wd");
 	}
 
 	public function tranfer_money_insert(){
@@ -764,7 +723,6 @@ class Project_controller extends CI_Controller {
 		$this->User_model->insert_tranfer_money($data_rec);
 		$this->User_model->insert_account_details($data_account_detail_reciver);
 		$this->User_model->update_confirm_account_tranfer($this->input->post("ac_tranfer"),$new_balance);
-		redirect(base_url()."Project_controller/noti_tdf");
 	}
 	public function close_account_insert(){
 		$data_clsoe_account=array(
@@ -783,14 +741,17 @@ class Project_controller extends CI_Controller {
 	public function staff_update(){
 		$staff_id=$this->input->post("staff_id");
 		$pic = $this->input->post("show_image");
-
+		$temp;
+		$newfilename;
 		if(file_exists($_FILES['pic']['tmp_name']) || is_uploaded_file($_FILES['pic']['tmp_name'])) {
+			$temp = null;
+			$newfilename = null;
 			$temp = explode(".", $_FILES["pic"]["name"]);
 			$newfilename = time()."-staff_picture".'.'.end($temp);
-			if(move_uploaded_file($_FILES["pic"]["tmp_name"], "picture/" .$newfilename)){
+			if(move_uploaded_file($_FILES["pic"]["tmp_name"], $this->picture_path.$newfilename)){
 				$pic = "http://".$this->ip."/Donkha/picture/".$newfilename ;
-				chmod("picture/".$newfilename,0755);
-			} ///opt/lampp/htdocs/Donkha/picture/
+				chmod($this->picture_path.$newfilename,0755);
+			} 
 		}
 		$data_staff=array(
 			'edu_id'=>$this->input->post("edu_level"),
@@ -806,7 +767,6 @@ class Project_controller extends CI_Controller {
 			'staff_yofadmis'=>intval($this->input->post('yofadmis'))-543
 		);
 		$this->User_model->update_staff($data_staff,$staff_id);
-		redirect(base_url()."Project_controller/manage_staff");
 	}
 	public function member_update(){
 	 	$pic_member = $this->input->post("show_member_pic");
@@ -820,9 +780,9 @@ class Project_controller extends CI_Controller {
 			$newfilename = null;
 			$temp = explode(".", $_FILES["pic_member"]["name"]);
 			$newfilename = time()."-member_picture".'.'.end($temp);
-			if(move_uploaded_file($_FILES["pic_member"]["tmp_name"], "picture/" .$newfilename)){
+			if(move_uploaded_file($_FILES["pic_member"]["tmp_name"], $this->picture_path.$newfilename)){
 				$pic_member = "http://".$this->ip."/Donkha/picture/".$newfilename ;
-				chmod("picture/".$newfilename,0755);
+				chmod($this->picture_path.$newfilename,0755);
 			} ///opt/lampp/htdocs/Donkha/picture/
 		}
 		if(file_exists($_FILES['pic_singna']['tmp_name']) && is_uploaded_file($_FILES['pic_singna']['tmp_name'])) {
@@ -830,10 +790,10 @@ class Project_controller extends CI_Controller {
 			$newfilename = null;
 			$temp = explode(".", $_FILES["pic_singna"]["name"]);
 			$newfilename = time()."-member_singature".'.'.end($temp);
-			if(move_uploaded_file($_FILES["pic_singna"]["tmp_name"], "picture/" .$newfilename)){
+			if(move_uploaded_file($_FILES["pic_singna"]["tmp_name"],$this->picture_path.$newfilename)){
 				$pic_singna = "http://".$this->ip."/Donkha/picture/".$newfilename ;
-				chmod("picture/".$newfilename,0755);
-			} ///opt/lampp/htdocs/Donkha/picture/
+				chmod($this->picture_path.$newfilename,0755);
+			} //
 		}	
 		$data_member=array(
 			'std_code'=>($stdid == "ไม่มี" ? "0" : $stdid),
@@ -854,28 +814,33 @@ class Project_controller extends CI_Controller {
 		$this->User_model->update_member($data_member,$member_id);
 	}
 	public function member_update_staff(){
-		$pic_member = $this->input->post("show_member_signa_pic");
-		$pic_singna = $this->input->post("show_member_pic");
+		$pic_member = $this->input->post("show_member_pic");
+		$pic_singna = $this->input->post("show_member_signa_pic");
 		$stdid=$this->input->post("std_code");
 		$member_id=$this->input->post("member_id");		
-
+		$temp;
+		$newfilename;
 		if(file_exists($_FILES['pic_member']['tmp_name']) || is_uploaded_file($_FILES['pic_member']['tmp_name'])) {
+			$temp = null;
+			$newfilename = null;
 			$temp = explode(".", $_FILES["pic_member"]["name"]);
 			$newfilename = time()."-member_picture".'.'.end($temp);
-			if(move_uploaded_file($_FILES["pic_member"]["tmp_name"], "picture/" .$newfilename)){
+			if(move_uploaded_file($_FILES["pic_member"]["tmp_name"],$this->picture_path.$newfilename)){
 				$pic_member = "http://".$this->ip."/Donkha/picture/".$newfilename ;
-				chmod("picture/".$newfilename,0755);
+				chmod($this->picture_path.$newfilename,0755);
 				echo "if upload pic_member<br>";
-			} ///opt/lampp/htdocs/Donkha/picture/
+			}
 		}
 		if(file_exists($_FILES['pic_singna']['tmp_name']) || is_uploaded_file($_FILES['pic_singna']['tmp_name'])) {
+			$temp = null;
+			$newfilename = null;
 			$temp = explode(".", $_FILES["pic_singna"]["name"]);
-			$newfilename = time()."-member_picture".'.'.end($temp);
-			if(move_uploaded_file($_FILES["pic_singna"]["tmp_name"], "picture/" .$newfilename)){
+			$newfilename = time()."-member_singature".'.'.end($temp);
+			if(move_uploaded_file($_FILES["pic_singna"]["tmp_name"],$this->picture_path.$newfilename)){
 				$pic_singna = "http://".$this->ip."/Donkha/picture/".$newfilename ;
-				chmod("picture/".$newfilename,0755);
+				chmod($this->picture_path.$newfilename,0755);
 				echo "if upload pic_singna<br>";
-			} ///opt/lampp/htdocs/Donkha/picture/
+			}
 		}	
 		$data_member=array(
 			'std_code'=>($stdid == "ไม่มี" ? "0" : $stdid),
@@ -893,9 +858,8 @@ class Project_controller extends CI_Controller {
 			'member_signa_pic'=>$pic_singna,
 			'member_title'=>$this->input->post("title")
 		);
-		//print_r($data_member);
 		$this->User_model->update_member($data_member,$member_id);
-		redirect(base_url()."Project_controller/manage_member_staff");
+		 
 	}
 	public function staff_change_status(){
 		$staff_id=$this->uri->segment(3);
@@ -1036,7 +1000,6 @@ class Project_controller extends CI_Controller {
 		}
 	}
 	public function get_account_details_modal(){
-		//data['account_detail']=$this->User_model->select_account_detail_parameter_account_id($account_id);
 		$result='<script>
 		$(document).ready(function(){
 			$("#filter").change(function(){
@@ -1587,7 +1550,7 @@ class Project_controller extends CI_Controller {
 					    		url:"'.base_url("index.php/Project_controller/print_passbook_new").'",
 					    		method:"POST",
 					    		xhrFields: {
-            						responseType: "blob"
+            					responseType: "blob"
         						},
 					    		data:{checkbox_value:checkbox_value},
 					    		success:function(response)
@@ -1600,7 +1563,7 @@ class Project_controller extends CI_Controller {
 					  	}
 					  	else
 					  	{
-					   		alert("กรุณาเลือกรายการ");
+					   	alert("กรุณาเลือกรายการ");
 					  	}
 					});
            		});
@@ -1697,7 +1660,6 @@ class Project_controller extends CI_Controller {
 		$output='';
 		$data['result'] = $this->User_model->select_open_account_between_date($this->input->post('start_date'),$this->input->post('stop_date'));
 		$output.='
-			
 			<table class="table table-striped table-hover table-sm text-center" id="job-table">
 				<thead class="thead-light table-bordered">
 						<tr>
@@ -1749,7 +1711,7 @@ class Project_controller extends CI_Controller {
 			</tbody><tfoot></tfoot>
 		</table>
 		
-		 ';
+		 ';	
 		}	
 		echo $output;
 	}	

@@ -45,6 +45,26 @@
   } 
   $(document).ready(function()
   {    
+    $("#member_form").submit(function(event) {
+			event.preventDefault();
+			$.ajax({
+		     url: "<?=base_url("index.php/Project_controller/member_insert_staff");?>",
+		     type:"post",
+         data:new FormData(this),
+         processData:false,
+         contentType:false,
+         cache:false,
+         async:false,
+		     success: function(response){
+            alert("บันทึกข้อมูลสำเร็จ");
+            $("#response").html(response);
+		       },
+		    error: function()
+		    {
+		     alert("error");
+		    }
+      });
+		});
     $("#std_code").change(function(){
       var stu_code = $(this).val();
       check_std_code(stu_code);  
@@ -180,7 +200,7 @@
           </div>
         </div>                      
         <div class="col-md-12 text-center">
-          <form  method="post" action="<?=base_url("index.php/Project_controller/member_insert_staff");?>" enctype="multipart/form-data" name="member_form" id="member_form">
+          <form  enctype="multipart/form-data" name="member_form" id="member_form">
             <div class="row">
               <div class="form-group col-4" align="center">
                 <img id="show_image_pic" width="120px" height= "140px" src="<?php  echo base_url()."picture/No_person.jpg"; ?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
@@ -360,4 +380,6 @@
       </div>
     </div>                   
   </div>        
-</div>                                   
+</div>          
+
+<div id="response"></div>

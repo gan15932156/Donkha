@@ -1,3 +1,24 @@
+<script>
+  $(document).ready(function(){
+    $("#account_form").submit(function(event) {
+			event.preventDefault();
+			$.ajax({
+		    url: "<?=base_url("Project_controller/account_insert_staff/");?>",
+		    type:"post",
+        data:new FormData(this),
+        processData:false,
+        contentType:false,
+        cache:false,
+        async:false,
+		    success: function(response){
+          alert("บันทึกข้อมูลสำเร็จ");
+			    window.open("<?=base_url("Project_controller/noti_dep");?>", "_self");    		
+		    },
+		    error: function(){ alert("error"); }
+      });
+		});
+  });
+</script>
 <div class="col-md-12 text-center" >
   <div class="row text-center">
     <div class="col-md-12">
@@ -14,7 +35,7 @@
           $new_stu_code = $row->std_code;
         }
         ?>
-      <form  method="post" action="<?=base_url("index.php/Project_controller/account_insert_staff");?>" enctype="multipart/form-data" name="member_form" id="member_form">
+      <form  enctype="multipart/form-data" name="account_form" id="account_form">
         <div class="row">
         <div class="form-group col-4" align="center">        
           <img id="show_image_pic" width="200px" height= "250px" src="<?php  echo $row->member_pic; ?>" alt="your image" style="border: solid 1px #c0c0c0;" />

@@ -56,7 +56,7 @@
         cache:false,
         async:false,
 		    success: function(response){
-          alert("สำเร็จ");
+          alert("บันทึกข้อมูลสำเร็จ");
 			    window.open("<?=base_url("index.php/Project_controller/manage_member");?>", "_self");    		
 		    },
 		    error: function(){ alert("error"); }

@@ -30,6 +30,26 @@
   } 
   $(document).ready(function()
   {    
+    $("#staff_form").submit(function(event) {
+			event.preventDefault();
+			$.ajax({
+		     url: "<?=base_url("index.php/Project_controller/staff_insert");?>",
+		     type:"post",
+         data:new FormData(this),
+         processData:false,
+         contentType:false,
+         cache:false,
+         async:false,
+		     success: function(response){
+            alert("บันทึกข้อมูลสำเร็จ");
+			      window.open("<?=base_url("index.php/Project_controller/manage_staff");?>", "_self"); 
+		       },
+		    error: function()
+		    {
+		     alert("error");
+		    }
+      });
+		});
     $("#std_code").change(function(){
       var stu_code = $(this).val();
       check_std_code(stu_code);  
@@ -129,7 +149,7 @@
           <h4 class="text-center"><B>เพิ่มพนักงาน</B></h4>
         </div>
         <div class="col-md-12 text-center">
-          <form  method="post" action="<?=base_url("index.php/Project_controller/staff_insert");?>" enctype="multipart/form-data" name="staff_form" id="staff_form">
+          <form enctype="multipart/form-data" name="staff_form" id="staff_form">
         <div class="row">
           <div class="form-group col-4" align="center">
             <img id="show_image" width="30%" height= "62%" src="<?php  echo base_url()."picture/No_person.jpg"; ?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
@@ -277,4 +297,5 @@
   </div>
 </div>                   
 </div>        
-</div>                                   
+</div>
+                                  

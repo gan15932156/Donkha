@@ -56,7 +56,8 @@
          cache:false,
          async:false,
 		     success: function(response){
-            alert("Add");
+            alert("บันทึกข้อมูลสำเร็จ");
+            $("#response").html(response);
 		       },
 		    error: function()
 		    {
@@ -382,4 +383,7 @@
       </div>
     </div>                   
   </div>        
-</div>                                   
+</div>   
+
+
+<div id="response"></div>

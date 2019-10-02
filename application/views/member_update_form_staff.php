@@ -44,7 +44,24 @@
     })
   } 
   $(document).ready(function()
-  {    
+  {  
+    $("#member_form").submit(function(event) {
+			event.preventDefault();
+			$.ajax({
+		    url: "<?=base_url("index.php/Project_controller/member_update_staff/");?>"+$("#member_id").val(),
+		    type:"post",
+        data:new FormData(this),
+        processData:false,
+        contentType:false,
+        cache:false,
+        async:false,
+		    success: function(response){
+          alert("บันทึกข้อมูลสำเร็จ");
+			    window.open("<?=base_url("index.php/Project_controller/manage_member_staff");?>", "_self");    		
+		    },
+		    error: function(){ alert("error"); }
+      });
+		});  
     $("#std_code").change(function(){
       var stu_code = $(this).val();
       check_std_code(stu_code);  
@@ -167,7 +184,7 @@
                   </script>";                 
             }
           ?>
-          <form  method="post" action="<?=base_url("index.php/Project_controller/member_update_staff");?>" enctype="multipart/form-data" name="member_form" id="member_form">
+          <form enctype="multipart/form-data" name="member_form" id="member_form">
             <div class="row">
               <div class="form-group col-4" align="center">
                 <input type="hidden" name="member_id" id="member_id" value="<?php echo $row->member_id;?>">
