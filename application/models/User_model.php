@@ -89,6 +89,22 @@ class User_model extends CI_Model {
             return '<script type="text/javascript">alert("ใช้ Username นี้ได้");</script>';  // 1 ได้
         }
 	}
+	public function check_staff_name($name){
+		$this->db->where('staff_name',$name);
+		$query=$this->db->get('staff');
+		if($query->num_rows() > 0){
+            return '<script type="text/javascript">
+            			alert("ชื่อพนักงานซ้ำ");
+            			$(document).ready(function(){
+            				$("#name").val("");
+            			});
+            		</script>
+            '; // 0 =ไม่ได้
+        }
+        else{
+            return '<script type="text/javascript">alert("ใช้ชื่อนี้ได้");</script>';  // 1 ได้
+        }
+	}
 
 	////////////////////////////////////////////////////////////
 	/////////////////////  INSERT    //////////////////////////

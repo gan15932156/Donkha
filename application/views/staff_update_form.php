@@ -28,6 +28,16 @@
       }
     })
   } 
+  function check_name(name){
+    $.ajax({
+      url:"<?php echo base_url("index.php/Project_controller/check_staff_name"); ?>",
+      method:"POST",
+      data:{name:name},
+      success:function(data){
+        $('#result_staff_name').html(data);
+      }
+    })
+  } 
   $(document).ready(function()
   {   
     $("#staff_form").submit(function(event) {
@@ -54,6 +64,10 @@
     $("#username").change(function(){
       var username = $(this).val();
       check_username(username);  
+    });
+    $("#name").change(function(){
+      var name = $(this).val();
+      check_name(name);  
     });
     $('#PROVINCE_ID').change(function(){
       var prov_id=$(this).val();
@@ -180,6 +194,7 @@
                           <label for="name">ชื่อ-นามสกุล</label></div>
                         <div class="form-group col-4">
                           <input type="text" class="form-control " id="name" name="name" required="" value="<?php echo $row->staff_name; ?>">     
+                          <div id="result_staff_name"></div>
                         </div>
                         <div class="form-group col-md-3">
                           <label for="name">ระดับการศึกษา</label>

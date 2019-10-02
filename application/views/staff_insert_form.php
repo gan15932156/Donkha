@@ -28,6 +28,63 @@
       }
     })
   } 
+  function check_name(name){
+    $.ajax({
+      url:"<?php echo base_url("index.php/Project_controller/check_staff_name"); ?>",
+      method:"POST",
+      data:{name:name},
+      success:function(data){
+        $('#result_staff_name').html(data);
+      }
+    })
+  }
+  function check_id_card(obj){
+      var pid = obj.value;
+      pid = pid.toString().replace(/\D/g,'');
+      if(pid.length == 13)
+      {
+        var sum = 0;
+        for(var i = 0; i < pid.length-1; i++)
+        {
+           sum += Number(pid.charAt(i))*(pid.length-i);
+        }
+        var last_digit = (11 - sum % 11) % 10;
+        $("#id_card").val(pid);
+        if(pid.charAt(12) != last_digit)
+        {
+          $("#id_card").val('');
+          $("#idcard").val("");
+          alert("กรอกไม่ถูกต้อง");
+        }
+      }
+      else
+      {
+        $("#id_card").val('');
+        $("#idcard").val('');
+        alert("กรอกไม่ครบ");
+      }
+  }
+  function autoTab2(obj,typeCheck){
+    if(typeCheck==1){
+        var pattern=new String("_-____-_____-__-_"); // กำหนดรูปแบบในนี้
+        var pattern_ex=new String("-"); // กำหนดสัญลักษณ์หรือเครื่องหมายที่ใช้แบ่งในนี้     
+    }else{
+        var pattern=new String("__-____-____"); // กำหนดรูปแบบในนี้
+        var pattern_ex=new String("-"); // กำหนดสัญลักษณ์หรือเครื่องหมายที่ใช้แบ่งในนี้                 
+    }
+    var returnText=new String("");
+    var obj_l=obj.value.length;
+    var obj_l2=obj_l-1;
+    for(i=0;i<pattern.length;i++){           
+        if(obj_l2==i && pattern.charAt(i+1)==pattern_ex){
+            returnText+=obj.value+pattern_ex;
+            obj.value=returnText;
+        }
+    }
+    if(obj_l>=pattern.length){
+        obj.value=obj.value.substr(0,pattern.length);           
+    }
+  } 
   $(document).ready(function()
   {    
     $("#staff_form").submit(function(event) {
@@ -57,6 +114,10 @@
     $("#username").change(function(){
       var username = $(this).val();
       check_username(username);  
+    });
+    $("#name").change(function(){
+      var name = $(this).val();
+      check_name(name);  
     });
     $('#PROVINCE_ID').change(function(){
       var prov_id=$(this).val();
@@ -117,28 +178,7 @@
         $('#zipcode').val('asdasd');
       }
     }); 
-    $("#id_card").blur(function()
-    {
-      var pid = $(this).val();
-      pid = pid.toString().replace(/\D/g,'');
-      if(pid.length == 13)
-      {
-        var sum = 0;
-        for(var i = 0; i < pid.length-1; i++)
-        {
-           sum += Number(pid.charAt(i))*(pid.length-i);
-        }
-        var last_digit = (11 - sum % 11) % 10;
-        if(pid.charAt(12) != last_digit)
-        {
-          $("#id_card").val("กรอกไม่ถูกต้อง");
-        }
-      }
-      else
-      {
-        $("#id_card").val('กรอกไม่ครบ');
-      }
-    });
+   
   });
 </script> 
 <div class="col-md-12 text-center" >
@@ -183,6 +223,7 @@
                     <label for="name">ชื่อ-นามสกุล</label></div>
                   <div class="form-group col-4">
                     <input type="text" class="form-control " id="name" name="name" required="" placeholder="ชื่อ นามสกุล">
+                    <div id="result_staff_name"></div>
                   </div>
                   <div class="form-group col-md-3">
                     <label for="name">ระดับการศึกษา</label>
@@ -202,7 +243,8 @@
                     <label for="name">เลขบัตรประชาชน</label>
                   </div>
                   <div class="form-group col-md-4">
-                    <input type="text" class="form-control " name="id_card" id="id_card" required="" placeholder="เลขบัตรประชาชน">
+                    <input type="text" class="form-control " name="idcard" id="idcard" required="" onchange="check_id_card(this)" onkeyup="autoTab2(this,1)" placeholder="เลขบัตรประชาชน">
+                    <input type="hidden" name="id_card" id="id_card">
                   </div>
                   <div class="form-group col-md-2">
                     <label for="name">ตำแหน่ง</label>
