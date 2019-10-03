@@ -1125,8 +1125,11 @@ class User_model extends CI_Model {
 			$this->db->update("member",$data);
 		}
 	}
-	public function update_confirm_deposit($account_detail_id,$trans_id){
-		$data_account_detail = array('account_detail_confirm' => '1');
+	public function update_confirm_deposit($account_detail_id,$trans_id,$staff_id){
+		$data_account_detail = array(
+			'account_detail_confirm' => '1',
+			'staff_record_id' => $staff_id
+		);
 		$this->db->where("account_detail_id",$account_detail_id);
 		$this->db->where("action","deposit");
 		$this->db->or_where("action","open_account");

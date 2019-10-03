@@ -333,5 +333,28 @@ class Service_app extends CI_Controller {
 
 		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
 	}
+	public function receive_deposit_insert(){
+		date_default_timezone_set('Asia/Bangkok');
+		$now_time= date('H:i:s');
+		$dep_code = $this->User_model->auto_generate_deposit_code();
+		$data_dep=array(
+			'deposit_id'=>$dep_code,
+			'account_id'=>$this->input->post("acc_code"),
+			'money_deposit'=>$this->input->post("deposit_money")
+		);
+		$this->User_model->insert_deposit($data_dep);
+		$data_account_detail=array(
+			'trans_id'=>$dep_code,
+			'account_id'=>$this->input->post("acc_code"),
+			'staff_record_id'=>'',
+			'action'=>'deposit',
+			'record_date'=>$this->input->post("date"),
+			'record_time'=>$now_time,
+			'account_detail_balance'=>$this->input->post("new_balance"),
+			'trans_money'=>$this->input->post("deposit_money"),
+			'account_detail_confirm'=>'0',
+		);
+		$this->User_model->insert_account_details($data_account_detail);
+	}
 
 }

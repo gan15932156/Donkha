@@ -4,45 +4,9 @@
     overflow:auto;
   }                                 
 </style>
+<script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/select_information.js"></script>  
+<script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/check_information.js"></script>  
 <script type="text/javascript">
-  function readURL_profile(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        $('#show_image_pic').attr('src', e.target.result);
-      }
-      reader.readAsDataURL(input.files[0]);
-    }
-  }
-  function readURL_singa(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        $('#show_image_signa').attr('src', e.target.result);
-      }
-      reader.readAsDataURL(input.files[0]);
-    }
-  }
-  function check_std_code(query){
-    $.ajax({
-      url:"<?php echo base_url("index.php/Project_controller/check_std_code_member"); ?>",
-      method:"POST",
-      data:{query:query},
-      success:function(data){
-        $('#result_std_code').html(data);
-      }
-    })
-  }
-  function check_username(username){
-    $.ajax({
-      url:"<?php echo base_url("index.php/Project_controller/check_username"); ?>",
-      method:"POST",
-      data:{username:username},
-      success:function(data){
-        $('#result_username').html(data);
-      }
-    })
-  } 
   $(document).ready(function()
   {    
     $("#member_form").submit(function(event) {
@@ -65,95 +29,6 @@
 		    }
       });
 		});
-    $("#std_code").change(function(){
-      var stu_code = $(this).val();
-      check_std_code(stu_code);  
-    });
-    $("#username").change(function(){
-      var username = $(this).val();
-      check_username(username);  
-    });
-    $('#PROVINCE_ID').change(function(){
-      var prov_id=$(this).val();
-      $.ajax({
-        url:'<?=base_url("index.php/Project_controller/getAmphur/")?>',
-        method:'post',
-        data:{prov_id: prov_id},
-        dataType:'json',
-        success: function(response)
-        {
-          $('#AMPHUR_ID').empty();
-          $('#DISTRICT_CODE').empty();
-          $('#zipcode').val("");
-          $('#AMPHUR_ID').find('option').not(':first').remove();
-          $.each(response,function(index,data)
-          {
-            $('#AMPHUR_ID').append('<option value="'+data['AMPHUR_ID']+'">'+data['AMPHUR_NAME']+'</option>');
-          });
-        }
-      });
-    });
-    $('#AMPHUR_ID').change(function(){
-      var amp_id=$(this).val();
-      $.ajax({
-        url:'<?=base_url("index.php/Project_controller/getDist/")?>',
-        method:'post',
-        data:{amp_id: amp_id},
-        dataType:'json',
-        success: function(response)
-        {
-          $('#DISTRICT_CODE').empty();      
-          $('#zipcode').val("");
-          $('#DISTRICT_CODE').find('option').not(':first').remove();
-          $.each(response,function(index,data)
-          {
-            $('#DISTRICT_CODE').append('<option value="'+data['DISTRICT_CODE']+'">'+data['DISTRICT_NAME']+'</option>');
-          });
-        }
-      });
-    });
-    $('#DISTRICT_CODE').change(function(){
-      var dist_id=$(this).val();
-      if(dist_id != '')
-      {
-        $.ajax({
-          url:"<?=base_url()?>index.php/Project_controller/getZip/",
-          method:"POST",
-          data:{dist_id:dist_id},
-          success:function(data)
-          {
-            $('#zipcode').val("");
-            $('#zipcode').val(data);
-          }
-        });
-      }
-      else
-      {
-        $('#zipcode').val('asdasd');
-      }
-    }); 
-    $("#id_card").blur(function()
-    {
-      var pid = $(this).val();
-      pid = pid.toString().replace(/\D/g,'');
-      if(pid.length == 13)
-      {
-        var sum = 0;
-        for(var i = 0; i < pid.length-1; i++)
-        {
-           sum += Number(pid.charAt(i))*(pid.length-i);
-        }
-        var last_digit = (11 - sum % 11) % 10;
-        if(pid.charAt(12) != last_digit)
-        {
-          $("#id_card").val("กรอกไม่ถูกต้อง");
-        }
-      }
-      else
-      {
-        $("#id_card").val('กรอกไม่ครบ');
-      }
-    });
     $('#member_form').hide();
     $('#career').change(function(){
       var career = $(this).val();
@@ -237,7 +112,8 @@
                         <label for="name">ชื่อ-นามสกุล</label>
                       </div>
                       <div class="form-group col-4">
-                        <input type="text" class="form-control " id="name" name="name" required="" placeholder="ชื่อ นามสกุล">
+                        <input type="text" class="form-control " id="name" name="name" required="" placeholder="ชื่อ นามสกุล" onchange="check_name(this,'2')">     
+                        <div id="result_member_name"></div>
                       </div>
                       <div class="form-group col-md-3">
                         <label for="name">ระดับการศึกษา</label>
@@ -256,7 +132,8 @@
                         <label for="name">เลขบัตรประชาชน</label>
                       </div>
                       <div class="form-group col-md-4">
-                        <input type="text" class="form-control " name="id_card" id="id_card" required="" placeholder="เลขบัตรประชาชน">
+                        <input type="text" class="form-control " name="idcard" id="idcard" required="" onchange="check_id_card(this)" onkeyup="autoTab2(this,1)" placeholder="เลขบัตรประชาชน">
+                        <input type="hidden" name="id_card" id="id_card">
                       </div>
                       <div class="form-group col-md-2">
                         <label for="name">ตำแหน่ง</label>
@@ -290,7 +167,8 @@
                         <label >เบอร์โทรศัพท์</label>
                       </div>   
                       <div class="form-group col-md-4">
-                        <input type="text" class="form-control " name="phone_number" id="phone_number" required="" placeholder="เช่น 09xxxxxxxx">
+                        <input onkeyup="autoTab2(this,0)" onchange="set_phone_number(this)" type="text" class="form-control " name="phonenumber" id="phonenumber" required="" placeholder="เช่น 09xxxxxxxx">
+                        <input type="hidden" name="phone_number" id="phone_number">
                       </div>      
                       <div class="form-group col-md-2">
                         <label for="name">อาชีพ</label>

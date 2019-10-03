@@ -85,7 +85,7 @@
                         </div>
                         <div class="form-group col-md-4">
                           <input type="text" class="form-control " name="idcard" id="idcard" required="" onchange="check_id_card(this)" onkeyup="autoTab2(this,1)" placeholder="เลขบัตรประชาชน" value="<?php echo $row->staff_id_card; ?>">
-                          <input type="hidden" name="id_card" id="id_card">
+                          <input type="hidden" name="id_card" id="id_card" value="<?php echo $row->staff_id_card; ?>">
                         </div>
                         <div class="form-group col-md-2">
                           <label for="name">ตำแหน่ง</label>

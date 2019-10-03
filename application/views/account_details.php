@@ -10,8 +10,6 @@
   }
   function onmouseover_foo(ac,action){
     if(action == "recive_money" || action == "tranfer_money"){
-      //$('#exampleModal').modal('show');
-      //alert(ac+" "+action);
       $.ajax({
         url:"<?php echo base_url("index.php/Project_controller/show_modal_tranfer"); ?>",
         method:"POST",

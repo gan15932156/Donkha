@@ -134,8 +134,8 @@
                         <label for="name">เลขบัตรประชาชน</label>
                       </div>
                       <div class="form-group col-md-4">
-                      <input type="text" class="form-control " name="idcard" id="idcard" required="" onchange="check_id_card(this)" onkeyup="autoTab2(this,1)" placeholder="เลขบัตรประชาชน">
-                          <input type="hidden" name="id_card" id="id_card">
+                        <input type="text" class="form-control " name="idcard" id="idcard" required="" onchange="check_id_card(this)" onkeyup="autoTab2(this,1)" placeholder="เลขบัตรประชาชน">
+                        <input type="hidden" name="id_card" id="id_card">
                       </div>
                       <div class="form-group col-md-2">
                         <label for="name">ตำแหน่ง</label>
@@ -169,7 +169,8 @@
                         <label >เบอร์โทรศัพท์</label>
                       </div>   
                       <div class="form-group col-md-4">
-                        <input type="text" class="form-control " name="phone_number" id="phone_number" required="" placeholder="เช่น 09xxxxxxxx">
+                        <input onkeyup="autoTab2(this,0)" onchange="set_phone_number(this)" type="text" class="form-control " name="phonenumber" id="phonenumber" required="" placeholder="เช่น 09xxxxxxxx">
+                        <input type="hidden" name="phone_number" id="phone_number">
                       </div>      
                       <div class="form-group col-md-2">
                         <label for="name">อาชีพ</label>
@@ -261,6 +262,4 @@
     </div>                   
   </div>        
 </div>   
-
-
 <div id="response"></div>

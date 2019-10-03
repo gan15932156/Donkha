@@ -39,8 +39,7 @@ function check_name(name,state){
 		   		$('#result_member_name').html(data);
 		 	}
 		})
-	}
-    
+	} 
 }
 function check_id_card(obj){
     var pid = obj.value;
@@ -58,24 +57,24 @@ function check_id_card(obj){
        	{
          	$("#id_card").val('');
          	$("#idcard").val("");
-         	alert("กรอกไม่ถูกต้อง");
+         	alert("กรอกเลขบัตรประชาชนไม่ถูกต้อง");
        	}
     }
     else
     {
     	$("#id_card").val('');
        	$("#idcard").val('');
-       	alert("กรอกไม่ครบ");
+       	alert("กรอกเลขบัตรประชาชนไม่ครบ");
     }
 }
 function autoTab2(obj,typeCheck){
  	if(typeCheck==1){
-      	var pattern=new String("_-____-_____-__-_"); // กำหนดรูปแบบในนี้
-       var pattern_ex=new String("-"); // กำหนดสัญลักษณ์หรือเครื่องหมายที่ใช้แบ่งในนี้     
+    	var pattern=new String("_-____-_____-__-_"); // กำหนดรูปแบบในนี้
+       	var pattern_ex=new String("-"); // กำหนดสัญลักษณ์หรือเครื่องหมายที่ใช้แบ่งในนี้     
    	}
    	else{
-       var pattern=new String("__-____-____"); // กำหนดรูปแบบในนี้
-       var pattern_ex=new String("-"); // กำหนดสัญลักษณ์หรือเครื่องหมายที่ใช้แบ่งในนี้                 
+       	var pattern=new String("___-___-____"); // กำหนดรูปแบบในนี้
+       	var pattern_ex=new String("-"); // กำหนดสัญลักษณ์หรือเครื่องหมายที่ใช้แบ่งในนี้                 
     }
    	var returnText=new String("");
    	var obj_l=obj.value.length;
@@ -86,7 +85,21 @@ function autoTab2(obj,typeCheck){
    	        obj.value=returnText;
    	    }
    	}
+
    	if(obj_l>=pattern.length){
    	    obj.value=obj.value.substr(0,pattern.length);           
    	}
+   	
 } 
+function set_phone_number(obj){
+	var phone_numer = obj.value;
+	phone_numer = phone_numer.toString().replace(/\D/g,'');
+	if(phone_numer.length == 10){
+		$("#phone_number").val(phone_numer);
+	}
+	else{
+		alert("กรอกเบอร์โทรศัพท์ไม่ครบ");
+		$("#phone_number").val("");
+		$("#phonenumber").val("");	
+	}
+}
