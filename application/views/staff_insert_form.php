@@ -1,186 +1,29 @@
-<script type="text/javascript">
-  function readURL(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        $('#show_image').attr('src', e.target.result);
-      }
-      reader.readAsDataURL(input.files[0]);    
-    }
-  }
-  function check_std_code(query){
-    $.ajax({
-      url:"<?php echo base_url("index.php/Project_controller/check_std_code"); ?>",
-      method:"POST",
-      data:{query:query},
-      success:function(data){
-        $('#result_std_code').html(data);
-      }
-    })
-  }
-  function check_username(username){
-    $.ajax({
-      url:"<?php echo base_url("index.php/Project_controller/check_username"); ?>",
-      method:"POST",
-      data:{username:username},
-      success:function(data){
-        $('#result_username').html(data);
-      }
-    })
-  } 
-  function check_name(name){
-    $.ajax({
-      url:"<?php echo base_url("index.php/Project_controller/check_staff_name"); ?>",
-      method:"POST",
-      data:{name:name},
-      success:function(data){
-        $('#result_staff_name').html(data);
-      }
-    })
-  }
-  function check_id_card(obj){
-      var pid = obj.value;
-      pid = pid.toString().replace(/\D/g,'');
-      if(pid.length == 13)
-      {
-        var sum = 0;
-        for(var i = 0; i < pid.length-1; i++)
-        {
-           sum += Number(pid.charAt(i))*(pid.length-i);
-        }
-        var last_digit = (11 - sum % 11) % 10;
-        $("#id_card").val(pid);
-        if(pid.charAt(12) != last_digit)
-        {
-          $("#id_card").val('');
-          $("#idcard").val("");
-          alert("กรอกไม่ถูกต้อง");
-        }
-      }
-      else
-      {
-        $("#id_card").val('');
-        $("#idcard").val('');
-        alert("กรอกไม่ครบ");
-      }
-  }
-  function autoTab2(obj,typeCheck){
-    if(typeCheck==1){
-        var pattern=new String("_-____-_____-__-_"); // กำหนดรูปแบบในนี้
-        var pattern_ex=new String("-"); // กำหนดสัญลักษณ์หรือเครื่องหมายที่ใช้แบ่งในนี้     
-    }else{
-        var pattern=new String("__-____-____"); // กำหนดรูปแบบในนี้
-        var pattern_ex=new String("-"); // กำหนดสัญลักษณ์หรือเครื่องหมายที่ใช้แบ่งในนี้                 
-    }
-    var returnText=new String("");
-    var obj_l=obj.value.length;
-    var obj_l2=obj_l-1;
-    for(i=0;i<pattern.length;i++){           
-        if(obj_l2==i && pattern.charAt(i+1)==pattern_ex){
-            returnText+=obj.value+pattern_ex;
-            obj.value=returnText;
-        }
-    }
-    if(obj_l>=pattern.length){
-        obj.value=obj.value.substr(0,pattern.length);           
-    }
-  } 
-  $(document).ready(function()
-  {    
+<script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/select_information.js"></script>  
+<script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/check_information.js"></script>  
+<script>
+  $(document).ready(function(){
     $("#staff_form").submit(function(event) {
-			event.preventDefault();
+		  event.preventDefault();
 			$.ajax({
-		     url: "<?=base_url("index.php/Project_controller/staff_insert");?>",
-		     type:"post",
-         data:new FormData(this),
-         processData:false,
-         contentType:false,
-         cache:false,
-         async:false,
-		     success: function(response){
-            alert("บันทึกข้อมูลสำเร็จ");
-			      window.open("<?=base_url("index.php/Project_controller/manage_staff");?>", "_self"); 
-		       },
+		    url:"<?=base_url("index.php/Project_controller/staff_insert/");?>",
+		    type:"post",
+        data:new FormData(this),
+        processData:false,
+        contentType:false,
+        cache:false,
+        async:false,
+		    success: function(response){
+          alert("บันทึกข้อมูลสำเร็จ");
+			    window.open("<?=base_url("index.php/Project_controller/manage_staff");?>", "_self"); 
+		    },
 		    error: function()
 		    {
-		     alert("error");
+		      alert("error");
 		    }
       });
 		});
-    $("#std_code").change(function(){
-      var stu_code = $(this).val();
-      check_std_code(stu_code);  
-    });
-    $("#username").change(function(){
-      var username = $(this).val();
-      check_username(username);  
-    });
-    $("#name").change(function(){
-      var name = $(this).val();
-      check_name(name);  
-    });
-    $('#PROVINCE_ID').change(function(){
-      var prov_id=$(this).val();
-      $.ajax({
-        url:'<?=base_url("index.php/Project_controller/getAmphur/")?>',
-        method:'post',
-        data:{prov_id: prov_id},
-        dataType:'json',
-        success: function(response)
-        {
-          $('#AMPHUR_ID').empty();
-          $('#DISTRICT_CODE').empty();
-          $('#zipcode').val("");
-          $('#AMPHUR_ID').find('option').not(':first').remove();
-          $.each(response,function(index,data)
-          {
-            $('#AMPHUR_ID').append('<option value="'+data['AMPHUR_ID']+'">'+data['AMPHUR_NAME']+'</option>');
-          });
-        }
-      });
-    });
-    $('#AMPHUR_ID').change(function(){
-      var amp_id=$(this).val();
-      $.ajax({
-        url:'<?=base_url("index.php/Project_controller/getDist/")?>',
-        method:'post',
-        data:{amp_id: amp_id},
-        dataType:'json',
-        success: function(response)
-        {
-          $('#DISTRICT_CODE').empty();      
-          $('#zipcode').val("");
-          $('#DISTRICT_CODE').find('option').not(':first').remove();
-          $.each(response,function(index,data)
-          {
-            $('#DISTRICT_CODE').append('<option value="'+data['DISTRICT_CODE']+'">'+data['DISTRICT_NAME']+'</option>');
-          });
-        }
-      });
-    });
-    $('#DISTRICT_CODE').change(function(){
-      var dist_id=$(this).val();
-      if(dist_id != '')
-      {
-        $.ajax({
-          url:"<?=base_url()?>index.php/Project_controller/getZip/",
-          method:"POST",
-          data:{dist_id:dist_id},
-          success:function(data)
-          {
-            $('#zipcode').val("");
-            $('#zipcode').val(data);
-          }
-        });
-      }
-      else
-      {
-        $('#zipcode').val('asdasd');
-      }
-    }); 
-   
   });
-</script> 
+</script>
 <div class="col-md-12 text-center" >
   <div class="row text-center">
     <div class="col-md-12">
@@ -222,7 +65,7 @@
                   <div class="form-group col-3">
                     <label for="name">ชื่อ-นามสกุล</label></div>
                   <div class="form-group col-4">
-                    <input type="text" class="form-control " id="name" name="name" required="" placeholder="ชื่อ นามสกุล">
+                    <input type="text" class="form-control " id="name" name="name" required="" placeholder="ชื่อ นามสกุล" onchange="check_name(this,'1')">
                     <div id="result_staff_name"></div>
                   </div>
                   <div class="form-group col-md-3">

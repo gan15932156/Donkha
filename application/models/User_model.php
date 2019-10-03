@@ -105,6 +105,22 @@ class User_model extends CI_Model {
             return '<script type="text/javascript">alert("ใช้ชื่อนี้ได้");</script>';  // 1 ได้
         }
 	}
+	public function check_member_name($name){
+		$this->db->where('member_name',$name);
+		$query=$this->db->get('member');
+		if($query->num_rows() > 0){
+            return '<script type="text/javascript">
+            			alert("ชื่อสมาชิกซ้ำ");
+            			$(document).ready(function(){
+            				$("#name").val("");
+            			});
+            		</script>
+            '; // 0 =ไม่ได้
+        }
+        else{
+            return '<script type="text/javascript">alert("ใช้ชื่อนี้ได้");</script>';  // 1 ได้
+        }
+	}
 
 	////////////////////////////////////////////////////////////
 	/////////////////////  INSERT    //////////////////////////

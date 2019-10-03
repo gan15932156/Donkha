@@ -1855,6 +1855,14 @@ class Project_controller extends CI_Controller {
 		$result = $this->User_model->check_staff_name($query);
 		echo $result;
 	}
+	public function check_member_name(){
+		$query='';
+		if($this->input->post('name')){
+			$query = $this->input->post('name');
+		}
+		$result = $this->User_model->check_member_name($query);
+		echo $result;
+	}
 	public function confirm_deposit(){
 		$account_detail_id=$this->uri->segment(3);
 		$data['account_detail'] = $this->User_model->select_account_detail_parameter($account_detail_id);
