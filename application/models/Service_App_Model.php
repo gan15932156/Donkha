@@ -165,4 +165,26 @@ class Service_App_Model extends CI_Model {
             return false;
         }
 	}
+	public function deposit_service_insert($data_dep){
+		$this->db->insert('deposit',$data_dep);	
+		if( $this->db->affected_rows() > 0 ) 
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
+	public function account_detail_service_insert($data_account_detail){	
+		$this->db->insert('account_detail',$data_account_detail);
+        if( $this->db->affected_rows() > 0 ) 
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
 }
