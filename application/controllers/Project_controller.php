@@ -1190,7 +1190,59 @@ class Project_controller extends CI_Controller {
 		echo json_encode($this->User_model->get_memberr($this->input->post('member_name')));
 	}
 	public function searchAccount(){
-		echo json_encode($this->User_model->get_search_account_id($this->input->post('account')));
+		$account_id = $this->input->post("account");
+		//$account_id = "2019001";
+		$response = array();
+		if($data['check'] = $this->User_model->check_statement_not_confirm($account_id)){
+			$rel_check;
+			foreach($data['check']->result() as $row1){
+				$rel_check = $row1->account_detail_confirm;
+			}
+			if($rel_check === "0"){ //not confirm
+				$response['result_check'] = '0' ;
+			}
+			else{ //confirm
+				$response['result_check'] = '1' ;
+				foreach($this->User_model->get_search_account_id($account_id)->result() as $row){
+					$response['account_id'] = $row->account_id;
+					$response['member_id'] = $row->member_id;
+					$response['staff_open_id'] = $row->staff_open_id;
+					$response['staff_close_id'] = $row->staff_close_id;
+					$response['account_open_date'] = $row->account_open_date;
+					$response['account_close_date'] = $row->account_close_date;
+					$response['account_name'] = $row->account_name;
+					$response['account_status'] = $row->account_status;
+					$response['account_balance'] = $row->account_balance;
+					$response['passbook_line'] = $row->passbook_line;
+					$response['interest_update'] = $row->interest_update;
+					$response['level_id'] = $row->level_id;
+					$response['DISTRICT_CODE'] = $row->DISTRICT_CODE;
+					$response['job_id'] = $row->job_id;
+					$response['edu_id'] = $row->edu_id;
+					$response['std_code'] = $row->std_code;
+					$response['member_id_card'] = $row->member_id_card;
+					$response['member_name'] = $row->member_name;
+					$response['member_birth_date'] = $row->member_birth_date;
+					$response['member_yofadmis'] = $row->member_yofadmis;
+					$response['address'] = $row->address;
+					$response['phone_number'] = $row->phone_number;
+					$response['member_pic'] = $row->member_pic;
+					$response['member_signa_pic'] = $row->member_signa_pic;
+					$response['member_regis_date'] = $row->member_regis_date;
+					$response['member_title'] = $row->member_title;
+					$response['member_close_date'] = $row->member_close_date;
+					$response['member_status'] = $row->member_status;
+				}
+
+			}	
+			$response['error'] = false;
+			$response['message'] = "พบบัญชี";	
+		}
+		else{
+			$response['error'] = true;
+			$response['message'] = "ไม่พบบัญชี";
+		}
+		echo json_encode($response);
 	}
 	public function searchAccount_passbook(){
 		echo json_encode($this->User_model->get_search_account_id_passbook($this->input->post('account_id')));

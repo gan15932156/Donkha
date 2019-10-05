@@ -46,7 +46,6 @@
           var divv = ' <div class="dropdown">';
               divv+='<button style="font-size:16px;"><i class="fa fa-cog" aria-hidden="true"></i></button><div>';   
               divv+='<a style="color:black;" href="<?php  echo site_url('Project_controller/account_detail/');?>'+row['account_id']+'"><i class="fa fa-address-book" aria-hidden="true"></i> รายละเอียดบัญชี</a>';
-              divv+='<a style="color:black;" href="<?php  echo site_url('Project_controller/account_update_form/');?>'+row['account_id']+'" ><i class="fa fa-pencil" aria-hidden="true"></i> แก้ไขข้อมูล</a>';
               divv+='</div></div>';                                     
           return divv;
         }

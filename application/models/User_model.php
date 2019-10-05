@@ -649,12 +649,26 @@ class User_model extends CI_Model {
 		$this->db->or_where('account_name', $account);
 		$query = $this->db->get();
 	    if($query->num_rows() > 0) {
-	    	$response=$query->result_array();
-			return $response ;
+			return $query ;
 	    }
 	    else {
 	    	return false;
 	    }
+	}
+	public function check_statement_not_confirm($account_id){
+		$this->db->from('account_detail');
+		$this->db->where('account_id',$account_id);	
+		$this->db->limit('1','0');
+		$this->db->order_by('record_date','DESC');
+		$this->db->order_by('record_time','DESC');
+		$query=$this->db->get();
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+		
 	}
 	public function get_search_account_id_passbook($account_id){
 		$response=array();

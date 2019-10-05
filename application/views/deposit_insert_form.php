@@ -29,21 +29,24 @@
         data:{account:account},
         dataType: "JSON",
         success:function(response){
-          if(response == false){
-            alert("ไม่พบบัญชี");
-            $("#account").val("");
+          if(!response.error){
+            if(response.result_check === "0"){
+              alert("ไม่สามารถทำรายการได้ เนื่องจากยังไม่ได้ยืนยันรายการก่อนหน้า");
+              location.reload();
+            }
+            else{
+              acc_balancec = parseFloat(response.account_balance);
+              $('#acc_code').val(response.account_id);
+              $('#acc_name').val(response.account_name);
+              $('#acc_balance').val(new Intl.NumberFormat().format(parseFloat(response.account_balance)));
+              $("#show_image_pic").attr("src",response.member_pic);         
+              $('#acc_code').val(response.account_id);
+            }
           }
-          else
-          {           
-            $.each(response,function(index,data)
-            {
-              acc_balancec = parseFloat(data['account_balance']);
-              $('#acc_code').val(data['account_id']);
-              $('#acc_name').val(data['account_name']);
-              $('#acc_balance').val(new Intl.NumberFormat().format(parseFloat(data['account_balance'])));
-              $("#show_image_pic").attr("src",data['member_pic']);             
-            });
-          }      
+          else{
+            $("#account").val("");
+            alert("ไม่พบบัญชี");
+          }
         },
         error: function( error ){alert( error );}
       });
