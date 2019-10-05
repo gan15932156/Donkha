@@ -262,8 +262,8 @@ class Service_app extends CI_Controller {
 	}
 	public function get_member_detail(){
 		$this->response = null ;
-		//$member_id = $this->input->post("member_id");
-		$member_id = "17";
+		$member_id = $this->input->post("member_id");
+		//$member_id = "17";
 		if($data['member']=$this->Service_App_Model->select_member_detail($member_id)){
 			foreach ($data['member']->result() as $row) {
 				$member_array = array(
@@ -304,7 +304,7 @@ class Service_app extends CI_Controller {
 	public function select_account(){
 		$this->response = null ;
 		$account_id = $this->input->post('account_id');
-		$account_id = '2019001';
+		//$account_id = '2019001';
 
 		if($data['account']=$this->Service_App_Model->select_account($account_id)){
 			foreach ($data['account']->result() as $row) {
@@ -340,12 +340,12 @@ class Service_app extends CI_Controller {
 		$dep_code = $this->User_model->auto_generate_deposit_code();
 		$data_dep=array(
 			'deposit_id'=>$dep_code,
-			'account_id'=>$this->input->post("acc_code"),
+			'account_id'=>$this->input->post("account_id"),
 			'money_deposit'=>$this->input->post("deposit_money")
 		);	
 		$data_account_detail=array(
 			'trans_id'=>$dep_code,
-			'account_id'=>$this->input->post("acc_code"),
+			'account_id'=>$this->input->post("account_id"),
 			'staff_record_id'=>'',
 			'action'=>'deposit',
 			'record_date'=>date('Y-m-d'),
@@ -362,6 +362,38 @@ class Service_app extends CI_Controller {
 			$this->response['error'] = true;
 			$this->response['message'] = 'ไม่สามารถทำรายการได้';
 		}
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);	
+	}
+	public function check_statement_confirm(){
+		$this->response = null ;
+		$account_id = $this->input->post("account_id");
+		//$account_id = "2019001";
+		if($data['account']=$this->Service_App_Model->select_check_statement_confirm($account_id)){
+			$rel;
+			foreach ($data['account']->result() as $row) {
+				$account_array = array(
+					'account_detail_id'=>$row->account_detail_id,
+					'trans_id'=>$row->trans_id,
+					'account_id'=>$row->account_id,
+					'staff_record_id'=>$row->staff_record_id,
+					'action'=>$row->action,
+					'record_date'=>$row->record_date,
+					'record_time'=>$row->record_time,
+					'account_detail_balance'=>$row->account_detail_balance,
+					'trans_money'=>$row->trans_money
+				);
+				$rel = $row->account_detail_confirm;
+			}
+			$this->response['account'] = $account_array;
+			$this->response['relsult_check'] = $rel;
+			$this->response['error'] = true;
+			$this->response['message'] = 'พบ';
+		}
+		else{
+			$this->response['error'] = false;
+			$this->response['message'] = 'ไม่พบ';
+		}
+
 		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);	
 	}
 

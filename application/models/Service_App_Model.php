@@ -187,4 +187,19 @@ class Service_App_Model extends CI_Model {
 			return false;
 		}
 	}
+	public function select_check_statement_confirm($account){
+		$this->db->from('account_detail');
+		$this->db->where('account_id',$account);	
+		$this->db->limit('1','0');
+		$this->db->order_by('record_date','DESC');
+		$this->db->order_by('record_time','DESC');
+		$query=$this->db->get();
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+		
+	}
 }
