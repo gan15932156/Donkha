@@ -29,21 +29,23 @@
         data:{account:account},
         dataType: "JSON",
         success:function(response){
-          if(response == false){
-            alert("ไม่พบบัญชี");
-            $("#account").val("");
+          if(!response.error){
+            if(response.result_check === "0"){
+              alert("ไม่สามารถทำรายการได้ เนื่องจากยังไม่ได้ยืนยันรายการก่อนหน้า");
+              location.reload();
+            }
+            else{
+              acc_balancec = parseFloat(response.account_balance);
+              $('#acc_code').val(response.account_id);
+              $('#acc_name').val(response.account_name);
+              $('#acc_balance').val(new Intl.NumberFormat().format(parseFloat(response.account_balance)));
+              $("#show_image_pic").attr("src",response.member_pic);         
+            }
           }
-          else
-          {           
-            $.each(response,function(index,data)
-            {
-              acc_balancec = parseFloat(data['account_balance']);
-              $('#acc_code').val(data['account_id']);
-              $('#acc_name').val(data['account_name']);
-              $('#acc_balance').val(new Intl.NumberFormat().format(parseFloat(data['account_balance'])));
-              $("#show_image_pic").attr("src",data['member_pic']);             
-            });
-          }      
+          else{
+            $("#account").val("");
+            alert("ไม่พบบัญชี");
+          }
         },
         error: function( error ){alert( error );}
       });
@@ -75,7 +77,13 @@
     });    
     $("#ac_tranfer").autocomplete({
       source: "<?php echo base_url('Project_controller/fetch_account_tranfer'); ?>",
-    });       
+    });    
+    $("#ac_tranfer").change(function(){
+      if($(this).val() == $("#acc_code").val()){
+        $(this).val("");
+        alert("กรุณากรอกหมายเลขบัญชีอื่น");
+      }
+    });
   });
 </script>
 <div class="col-md-12 text-center" >
@@ -152,7 +160,7 @@
                 <div class="row">
                     <div class="form-group col-3"><label>บัญชีที่ต้องการโอน</label></div>
                     <div class="form-group col-3">
-                    <input type="text" class="form-control " id="ac_tranfer" name="ac_tranfer">    
+                    <input type="text" class="form-control " id="ac_tranfer" name="ac_tranfer" required="">    
                     </div>
                   <div class="form-group col-3"><label>ยอดเงินในบัญชี</label></div>
                   <div class="form-group col-2">

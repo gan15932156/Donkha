@@ -1,5 +1,30 @@
 <script type="text/javascript">
   $(document).ready(function(){
+    $("#close_account_form").submit(function(event) {
+			event.preventDefault();
+			$.ajax({
+		    url: "<?=base_url("Project_controller/close_account_insert/");?>",
+		    type:"post",
+        data:new FormData(this),
+        processData:false,
+        contentType:false,
+        cache:false,
+        async:false,
+		    success: function(response){
+          var rel = JSON.parse(response);
+          if(!rel.error){
+            alert("บันทึกข้อมูลสำเร็จ");
+            window.open("<?=base_url("Project_controller/index_staff");?>", "_self");   
+          }	
+          else{
+            alert(rel.message);
+            location.reload();
+          }	
+        
+		    },
+		    error: function(){ alert("error"); }
+      });
+		});
     var balacnce = 0;
     function search_data(account){
       $.ajax({
@@ -9,22 +34,24 @@
         data:{account:account},
         dataType: "JSON",
         success:function(response){
-          if(response == false){
-            alert("ไม่พบบัญชี");
-            $("#account").val("");
+           if(!response.error){
+            if(response.result_check === "0"){
+              alert("ไม่สามารถทำรายการได้ เนื่องจากยังไม่ได้ยืนยันรายการก่อนหน้า");
+              location.reload();
+            }
+            else{
+              acc_balancec = parseFloat(response.account_balance);
+              $('#acc_code').val(response.account_id);
+              $('#acc_name').val(response.account_name);
+              $('#acc_balance').val(new Intl.NumberFormat().format(parseFloat(response.account_balance)));
+              $('#acc_balance_hidden').val(parseFloat(response.account_balance));
+              $("#show_image_pic").attr("src",response.member_pic);         
+            }
           }
-          else
-          {           
-            $.each(response,function(index,data)
-            {
-              balacnce = parseFloat(data['account_balance']);
-              $('#acc_code').val(data['account_id']);
-              $('#acc_name').val(data['account_name']);
-              $('#acc_balance').val(new Intl.NumberFormat().format(parseFloat(data['account_balance'])));
-              $('#acc_balance_hidden').val(parseFloat(data['account_balance']));
-              $("#show_image_pic").attr("src",data['member_pic']);             
-            });
-          }      
+          else{
+            $("#account").val("");
+            alert("ไม่พบบัญชี");
+          }     
         },
         error: function( error ){alert( error );}
       });
@@ -50,17 +77,14 @@
         },
         dataType: "JSON",
         success:function(response){
-          //$("#bonus").val(new Intl.NumberFormat().format(parseFloat(response.interest)));
-          //$("#bonus_hidden").val(response.interest);
-          if(response.interest == "คำนวณผิดพลาด"){
-            $("#new_balance").val("คำนวณผิดพลาด");
-            $("#bonus").val("คำนวณผิดพลาด");
-            //$("#new_balance_hidden").val($('#acc_balance_hidden').val());
-          }else{
+          if(!response.error){
             $("#bonus").val(new Intl.NumberFormat().format(parseFloat(response.interest)));
             $("#bonus_hidden").val(response.interest);
             $("#new_balance").val(new Intl.NumberFormat().format(response.interest+Number($('#acc_balance_hidden').val())));
             $("#new_balance_hidden").val(response.interest+Number($('#acc_balance_hidden').val()));
+          }
+          else{
+            alert("คำนวณผิดพลาด");
           }
         },
         error: function( error ){alert( error );}
@@ -95,7 +119,7 @@
               </div>
             </div>
             <div class="col-5">
-              <form  method="post" action="<?=base_url("index.php/Project_controller/close_account_insert");?>" enctype="multipart/form-data" name="member_form" id="member_form">
+              <form enctype="multipart/form-data" name="close_account_form" id="close_account_form">
                 <div class="row">
                   <div class="form-group col-4"><label>วันที่ปิดบัญชี</label></div>
                   <div class="form-group col-6">
@@ -135,17 +159,17 @@
                     <div class="row">
                       <div class="form-group col-3"><label>หมายเลขบัญชี</label></div>
                       <div class="form-group col-3">
-                        <input type="text" class="form-control " id="acc_code" name="acc_code"  readonly="">
+                        <input type="text" class="form-control " id="acc_code" name="acc_code"  readonly="" required>
                       </div>
                       <div class="form-group col-2"><label>ชื่อบัญชี</label></div>
                       <div class="form-group col-4">
-                        <input  type="text" class="form-control " id="acc_name" name="acc_name" readonly="">
+                        <input  type="text" class="form-control " id="acc_name" name="acc_name" readonly="" required>
                       </div>
                     </div>
                     <div class="row">
                       <div class="form-group col-3"><label>ยอดเงินในบัญชี</label></div>
                       <div class="form-group col-3">
-                        <input type="text" class="form-control " id="acc_balance" name="acc_balance" readonly=""> 
+                        <input type="text" class="form-control " id="acc_balance" name="acc_balance" readonly="" required> 
                          <input type="hidden" class="form-control " id="acc_balance_hidden" name="acc_balance_hidden" readonly="">   
                       </div>
                       <div class="form-group col-1"><label>บาท</label></div>
@@ -155,8 +179,8 @@
                         <label for="name">ผลตอบแทน</label>
                       </div>
                       <div class="form-group col-md-3">
-                        <input  type="text" class="form-control " name="bonus" id="bonus" required="" readonly="">
-                        <input  type="hidden" class="form-control " name="bonus_hidden" id="bonus_hidden" required="" readonly="">
+                        <input type="text" class="form-control " name="bonus" id="bonus" required="" readonly="" required>
+                        <input type="hidden" class="form-control " name="bonus_hidden" id="bonus_hidden" required="" readonly="">
                       </div>
                       <div class="form-group col-1"><label>บาท</label></div>
                       <div class="form-group col-md-3">
@@ -166,7 +190,7 @@
                     <div class="row">
                       <div class="form-group col-3"><label>ยอดเงินสุทธิ</label></div>
                       <div class="form-group col-3">
-                        <input type="text" class="form-control " id="new_balance" name="new_balance" readonly="" placeholder="0">    
+                        <input type="text" class="form-control " id="new_balance" name="new_balance" readonly="" placeholder="0" required>    
                          <input type="hidden" class="form-control " id="new_balance_hidden" name="new_balance_hidden" readonly="" placeholder="0">   
                       </div>
                       <div class="form-group col-1"><label>บาท</label></div>

@@ -725,13 +725,70 @@ class Project_controller extends CI_Controller {
 		$this->User_model->update_confirm_account_tranfer($this->input->post("ac_tranfer"),$new_balance);
 	}
 	public function close_account_insert(){
-		$data_clsoe_account=array(
-			'account_id'=>$this->input->post("acc_code"),
-			'account_balance'=>$this->input->post("acc_balance_hidden"),
-			'interest'=>$this->input->post("bonus_hidden"),
-			'new_balance'=>round(floatval($this->input->post("new_balance_hidden")),2),
-		);
-		print_r($data_clsoe_account);
+		date_default_timezone_set('Asia/Bangkok');
+		$account_id = $this->input->post("acc_code");
+		$acc_balance_hidden = $this->input->post("acc_balance_hidden");
+		$bonus_hidden = $this->input->post("bonus_hidden");
+		$staff = $this->input->post("staff_id");
+		$new_balance_hidden = round(floatval($this->input->post("new_balance_hidden")),2);
+
+		$response = array();
+
+		if($account_id != ''){
+			if($acc_balance_hidden != '' && $bonus_hidden != '' && $new_balance_hidden != ''){
+				$data_clsoe_account=array(
+					'account_id'=>$account_id,
+					'account_balance'=>$acc_balance_hidden,
+					'interest'=>$bonus_hidden,
+					'new_balance'=>$new_balance_hidden,
+				);
+				$response['account_id'] = $account_id;
+				$response['account_balance'] = $acc_balance_hidden;
+				$response['interest'] = $bonus_hidden;
+				$response['new_balance'] = $new_balance_hidden;
+				$response['error'] = false;
+				$response['message'] = "สำเร็จ";
+				
+				$interest_code = $this->User_model->auto_generate_interest_code();
+				$data_account_detail_add_interest=array(
+					'trans_id'=>$interest_code,
+					'account_id'=>$account_id,
+					'staff_record_id'=>$staff,
+					'action'=>'add_interest',
+					'record_date'=>date('Y-m-d'),
+					'record_time'=>date('H:i:s'),
+					'account_detail_balance'=>$new_balance_hidden,
+					'trans_money'=>round($bonus_hidden,2),
+					'account_detail_confirm'=>'1',
+					'passbook_row_status'=>'0',
+					'end_day'=>'0',
+				);
+				$data_interest_history=array(
+					'ih_id'=>$interest_code,
+					'account_id'=>$account_id,
+					'interest_money'=>round($bonus_hidden,2),
+					'interest_date'=>date('Y-m-d')
+				);
+				$data_account=array(
+					'interest_update'=>date('Y-m-d'),
+					'account_balance'=>$new_balance_hidden,
+					'account_status'=>'0'
+				);
+			    $this->User_model->insert_account_details($data_account_detail_add_interest);
+				$this->User_model->insert_interest_history($data_interest_history);
+				$this->User_model->update_interest_account($account_id,$data_account);
+			}
+			else{
+				$response['error'] = true;
+				$response['message'] = "ไม่สามารถทำรายการได้";
+			}
+		}
+		else{
+			$response['error'] = true;
+			$response['message'] = "ไม่สามารถทำรายการได้";
+		}
+		
+		echo json_encode($response);
 	}
 
 
@@ -2335,10 +2392,12 @@ class Project_controller extends CI_Controller {
 		static $year = 365; # จำนวนวันของปี
 		static $per_100 = 100; # ร้อยละ
 		#--------------------------------------------------#
+		$response = array();
 		foreach ($this->User_model->select_account_with_parameter($account_id)->result() as $row123) {$account_balance = $row123->account_balance;}
-
 		$data['account_detail'] = $this->User_model->select_account_detail_end_day_close_account($account_id,$start_date,$stop_date);
-		if($data['account_detail'] == null){echo json_encode(array("interest"=>"คำนวณผิดพลาด"));}
+		if($data['account_detail'] == null){
+			$response['error'] = true; 
+		}
 		else{
 			foreach ($data['account_detail']->result() as $row) {
 				$result = $this->check_last_day_close_account($account_id,$row->account_detail_id,$start_date,$stop_date,$row->record_date);
@@ -2354,12 +2413,18 @@ class Project_controller extends CI_Controller {
 				}
 				$result_int = (floatval($row->account_detail_balance)*$interest_rate*intval($date_diff))/($per_100*$year);
 				$result_all_int+=$result_int;
-				$total_balance = floatval($account_balance) + $result_all_int;
+				//$total_balance = floatval($account_balance) + $result_all_int;
 				//echo "total_สะสม:".$result_all_int."<br>";
+				//$das[] = "interest="."(".$row->account_detail_balance."*".$interest_rate."*".$date_diff.")/(".$per_100."*".$year.")=".$result_int."<br>";
 				//echo "interest="."(".$row->account_detail_balance."*".$interest_rate."*".$date_diff.")/(".$per_100."*".$year.")=".$result_int."<br>";
 			}
-			echo json_encode(array("interest"=>round($result_all_int,2)));
+			$response['error'] = false; 
+			$response['interest'] = $result_all_int;
+			//$response['cal_interest'] = $das;
+			//echo json_encode(array("interest"=>round($result_all_int,2)));
+			//echo "total_สะสม=".$result_all_int."<br><br>";
 			//echo "total_balance=".$total_balance."<br><br>";
+			
 			/*$data_account_detail_add_interest=array(
 				'trans_id'=>'0',
 				'account_id'=>$account_id,
@@ -2386,7 +2451,7 @@ class Project_controller extends CI_Controller {
 			$this->User_model->insert_interest_history($data_interest_history);
 			$this->User_model->update_interest_account($account_id,$data_account);*/
 		}
-
+		echo json_encode($response);
 	}
 	public function check_last_day_close_account($account_id,$account_detail_id,$start_date,$stop_date,$condition_date){
 		foreach ($this->User_model->check_next_date_clsoe_account($account_id,$start_date,$stop_date)->result() as $row) {

@@ -487,7 +487,7 @@ class User_model extends CI_Model {
 	        $num = 1;
 	    }
 	    $wdcode = $year . str_pad($num, 3, 0, STR_PAD_LEFT);
-	    $real_code = "TDF". $wdcode;
+	    $real_code = "INT". $wdcode;
 	    return $real_code;
 	}
 	public function auto_generate_recive_money_code()
@@ -573,7 +573,6 @@ class User_model extends CI_Model {
 		$this->db->from('account');
 		$this->db->join('member', 'member.member_id = account.member_id','inner');
 		$this->db->where('account_id',$account_id);
-		$this->db->where('account_status','1');
 		$query=$this->db->get();
 		return $query;
 	}
@@ -657,7 +656,9 @@ class User_model extends CI_Model {
 	}
 	public function check_statement_not_confirm($account_id){
 		$this->db->from('account_detail');
-		$this->db->where('account_id',$account_id);	
+		$this->db->join('account', 'account.account_id = account_detail.account_id','inner');
+		$this->db->where('account_status','1');	
+		$this->db->where('account_detail.account_id',$account_id);	
 		$this->db->limit('1','0');
 		$this->db->order_by('record_date','DESC');
 		$this->db->order_by('record_time','DESC');
@@ -916,9 +917,8 @@ class User_model extends CI_Model {
 		$this->db->select('*');
 		$this->db->from('account');
 		$this->db->where('account_status','1');
-		$this->db->like('account_name',$account);
-		$this->db->or_like('account_id',$account);
-		$this->db->order_by('account_name', 'ASC');
+		$this->db->like('account_id',$account);
+		$this->db->order_by('account_id', 'ASC');
 		$query = $this->db->get();
 	   if($query->num_rows() > 0) {
 			return $query->result();

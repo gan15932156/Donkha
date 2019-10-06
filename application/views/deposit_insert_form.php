@@ -40,7 +40,6 @@
               $('#acc_name').val(response.account_name);
               $('#acc_balance').val(new Intl.NumberFormat().format(parseFloat(response.account_balance)));
               $("#show_image_pic").attr("src",response.member_pic);         
-              $('#acc_code').val(response.account_id);
             }
           }
           else{
