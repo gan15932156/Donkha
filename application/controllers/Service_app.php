@@ -386,6 +386,36 @@ class Service_app extends CI_Controller {
 		}
 		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);	
 	}
+	public function receive_withdraw_insert(){
+		$this->response = null ;
+		date_default_timezone_set('Asia/Bangkok');	
+		$wd_code = $this->User_model->auto_generate_withdraw_code();
+		$data_wd=array(
+			'withdraw_id'=>$wd_code,
+			'account_id'=>$this->input->post("account_id"),
+			'money_withdraw'=>$this->input->post("withdraw_money")
+		);	
+		$data_account_detail=array(
+			'trans_id'=>$wd_code,
+			'account_id'=>$this->input->post("account_id"),
+			'staff_record_id'=>'',
+			'action'=>'withdraw',
+			'record_date'=>date('Y-m-d'),
+			'record_time'=>date('H:i:s'),
+			'account_detail_balance'=>$this->input->post("new_balance"),
+			'trans_money'=>$this->input->post("withdraw_money"),
+			'account_detail_confirm'=>'0',
+		);
+		if($this->Service_App_Model->withdraw_service_insert($data_wd) && $this->Service_App_Model->account_detail_service_insert($data_account_detail)){
+			$this->response['error'] = false;
+			$this->response['message'] = 'ทำรายการสำเร็จ กรุณารอการยืนยันจากพนักงาน';
+		}
+		else{
+			$this->response['error'] = true;
+			$this->response['message'] = 'ไม่สามารถทำรายการได้';
+		}
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);	
+	}
 	public function check_statement_confirm(){
 		$this->response = null ;
 		$account_id = $this->input->post("account_id");
