@@ -17,7 +17,23 @@ class Service_App_Model extends CI_Model {
         else{
             return false;
         }
-    }
+	}
+	public function check_statement_not_confirm($account_id){
+		$this->db->from('account_detail');
+		$this->db->join('account', 'account.account_id = account_detail.account_id','inner');
+		$this->db->where('account_status','1');	
+		$this->db->where('account_detail.account_id',$account_id);	
+		$this->db->limit('1','0');
+		$this->db->order_by('record_date','DESC');
+		$this->db->order_by('record_time','DESC');
+		$query=$this->db->get();
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+	}
     public function get_statement($account_id){
       $this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);

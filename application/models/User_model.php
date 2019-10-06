@@ -669,7 +669,6 @@ class User_model extends CI_Model {
         else{
             return false;
         }
-		
 	}
 	public function get_search_account_id_passbook($account_id){
 		$response=array();
