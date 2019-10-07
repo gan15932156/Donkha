@@ -76,6 +76,7 @@ class Service_app extends CI_Controller {
 				$account_balance = array(
 					'account_id'=>$row->account_id, 
 					'balance'=>$row->account_balance, 
+					'account_name'=>$row->account_name
 				);	
 			}  
 			$this->response['error'] = false; 
