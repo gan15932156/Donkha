@@ -449,5 +449,198 @@ class Service_app extends CI_Controller {
 
 		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);	
 	}
+	public function select_statement_today(){
+		date_default_timezone_set('Asia/Bangkok');
+		$this->response = null; 
+		$account_id = $this->input->post("account_id");
+		//$account_id = "2019001";
 
+		if($data['statement']=$this->Service_App_Model->select_st_today($account_id,date('Y-m-d')))  {
+			foreach ($data['statement']->result() as $row2) {
+				$account_detail_id = $row2->account_detail_id;
+				$acccc = $row2->action;
+				if($acccc == 'deposit' || $acccc == 'open_account' || $acccc == 'add_interest'){
+					foreach ($this->Service_App_Model->select_st_deposit($account_detail_id)->result() as $row3) {
+						$statement_array = array(
+							'account_detail_id'=>$row3->account_detail_id,
+							'trans_id'=>$row3->trans_id,
+							'account_id'=>$row3->account_id,
+							'staff_record_id'=>$row3->staff_record_id,
+							'action'=>$row3->action,
+							'record_date'=>$row3->record_date,
+							'record_time'=>$row3->record_time,
+							'account_detail_balance'=>$row3->account_detail_balance,
+							'trans_money'=>$row3->trans_money,
+							'account_id_tranfer'=>$row3->trans_money
+						);
+						$st[] = $statement_array;	
+					}
+				}
+				else if($acccc == 'withdraw'){
+					foreach ($this->Service_App_Model->select_st_withdraw($account_detail_id)->result() as $row3) {
+						$statement_array = array(
+							'account_detail_id'=>$row3->account_detail_id,
+							'trans_id'=>$row3->trans_id,
+							'account_id'=>$row3->account_id,
+							'staff_record_id'=>$row3->staff_record_id,
+							'action'=>$row3->action,
+							'record_date'=>$row3->record_date,
+							'record_time'=>$row3->record_time,
+							'account_detail_balance'=>$row3->account_detail_balance,
+							'trans_money'=>$row3->trans_money,
+							'account_id_tranfer'=>$row3->trans_money
+						);
+						$st[] = $statement_array;	
+					}
+				}
+				else if($acccc == 'recive_money' || $acccc == 'tranfer_money'){
+					foreach ($this->Service_App_Model->select_st_tranfer($account_detail_id)->result() as $row3) {
+						$statement_array = array(
+							'account_detail_id'=>$row3->account_detail_id,
+							'trans_id'=>$row3->trans_id,
+							'account_id'=>$row3->account_id,
+							'staff_record_id'=>$row3->staff_record_id,
+							'action'=>$row3->action,
+							'record_date'=>$row3->record_date,
+							'record_time'=>$row3->record_time,
+							'account_detail_balance'=>$row3->account_detail_balance,
+							'trans_money'=>$row3->trans_money,
+							'account_id_tranfer'=>$row3->account_id_tranfer
+						);
+						$st[] = $statement_array;	
+					}
+				}		
+			}
+			$this->response['error'] = false; 
+			$this->response['message'] = 'พบข้อมูล'; 
+			$this->response['statement'] = $st;    
+			
+		}
+		else{
+			$this->response['error'] = true; 
+			$this->response['message'] = 'ไม่พบข้อมูล';
+		}
+		
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
+	}
+	public function select_deposit_today(){
+		date_default_timezone_set('Asia/Bangkok');
+		$this->response = null; 
+		$account_id = $this->input->post("account_id");
+		//$account_id = "2019001";
+
+		if($data['statement']=$this->Service_App_Model->select_deposit_today($account_id,date('Y-m-d')))  {
+			foreach ($data['statement']->result() as $row2) {
+				$account_detail_id = $row2->account_detail_id;
+				$acccc = $row2->action;
+				if($acccc == 'deposit' || $acccc == 'open_account' || $acccc == 'add_interest'){
+					foreach ($this->Service_App_Model->select_st_deposit($account_detail_id)->result() as $row3) {
+						$statement_array = array(
+							'account_detail_id'=>$row3->account_detail_id,
+							'trans_id'=>$row3->trans_id,
+							'account_id'=>$row3->account_id,
+							'staff_record_id'=>$row3->staff_record_id,
+							'action'=>$row3->action,
+							'record_date'=>$row3->record_date,
+							'record_time'=>$row3->record_time,
+							'account_detail_balance'=>$row3->account_detail_balance,
+							'trans_money'=>$row3->trans_money,
+							'account_id_tranfer'=>$row3->trans_money
+						);
+						$st[] = $statement_array;	
+					}
+				}
+			}
+			$this->response['error'] = false; 
+			$this->response['message'] = 'พบข้อมูล'; 
+			$this->response['statement'] = $st;    
+			
+		}
+		else{
+			$this->response['error'] = true; 
+			$this->response['message'] = 'ไม่พบข้อมูล';
+		}
+		
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
+	}
+	public function select_withdraw_today(){
+		date_default_timezone_set('Asia/Bangkok');
+		$this->response = null; 
+		$account_id = $this->input->post("account_id");
+		//$account_id = "2019001";
+
+		if($data['statement']=$this->Service_App_Model->select_withdraw_today($account_id,date('Y-m-d')))  {
+			foreach ($data['statement']->result() as $row2) {
+				$account_detail_id = $row2->account_detail_id;
+				$acccc = $row2->action;
+				if($acccc == 'withdraw'){
+					foreach ($this->Service_App_Model->select_st_withdraw($account_detail_id)->result() as $row3) {
+						$statement_array = array(
+							'account_detail_id'=>$row3->account_detail_id,
+							'trans_id'=>$row3->trans_id,
+							'account_id'=>$row3->account_id,
+							'staff_record_id'=>$row3->staff_record_id,
+							'action'=>$row3->action,
+							'record_date'=>$row3->record_date,
+							'record_time'=>$row3->record_time,
+							'account_detail_balance'=>$row3->account_detail_balance,
+							'trans_money'=>$row3->trans_money,
+							'account_id_tranfer'=>$row3->trans_money
+						);
+						$st[] = $statement_array;	
+					}
+				}
+			}
+			$this->response['error'] = false; 
+			$this->response['message'] = 'พบข้อมูล'; 
+			$this->response['statement'] = $st;    
+			
+		}
+		else{
+			$this->response['error'] = true; 
+			$this->response['message'] = 'ไม่พบข้อมูล';
+		}
+		
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
+	}
+	public function select_tranfer_today(){
+		date_default_timezone_set('Asia/Bangkok');
+		$this->response = null; 
+		$account_id = $this->input->post("account_id");
+		//$account_id = "2019001";
+
+		if($data['statement']=$this->Service_App_Model->select_tranfer_today($account_id,date('Y-m-d')))  {
+			foreach ($data['statement']->result() as $row2) {
+				$account_detail_id = $row2->account_detail_id;
+				$acccc = $row2->action;
+				if($acccc == 'recive_money' || $acccc == 'tranfer_money'){
+					foreach ($this->Service_App_Model->select_st_tranfer($account_detail_id)->result() as $row3) {
+						$statement_array = array(
+							'account_detail_id'=>$row3->account_detail_id,
+							'trans_id'=>$row3->trans_id,
+							'account_id'=>$row3->account_id,
+							'staff_record_id'=>$row3->staff_record_id,
+							'action'=>$row3->action,
+							'record_date'=>$row3->record_date,
+							'record_time'=>$row3->record_time,
+							'account_detail_balance'=>$row3->account_detail_balance,
+							'trans_money'=>$row3->trans_money,
+							'account_id_tranfer'=>$row3->account_id_tranfer
+						);
+						$st[] = $statement_array;	
+					}
+				}
+			}
+			$this->response['error'] = false; 
+			$this->response['message'] = 'พบข้อมูล'; 
+			$this->response['statement'] = $st;    
+			
+		}
+		else{
+			$this->response['error'] = true; 
+			$this->response['message'] = 'ไม่พบข้อมูล';
+		}
+		
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
+	}
 }
