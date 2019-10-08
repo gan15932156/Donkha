@@ -317,7 +317,7 @@ class Service_app extends CI_Controller {
 	public function select_account(){
 		$this->response = null ;
 		$account_id = $this->input->post('account_id');
-		$account_id = '2019001';
+		//$account_id = '2019001';
 		$rel_check;
 		if($data['check']=$this->Service_App_Model->check_statement_not_confirm($account_id)){
 			foreach($data['check']->result() as $row1){
