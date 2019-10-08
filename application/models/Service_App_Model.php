@@ -99,7 +99,7 @@ class Service_App_Model extends CI_Model {
         }
 	}
 	public function select_st_today($account_id,$date){
-		$this->db->from('account_detail');
+		$this->db->from('ccount_detail');
 		$this->db->where('account_id',$account_id);
 		$this->db->where('record_date',$date);
 		$this->db->where('account_detail_confirm','1');	

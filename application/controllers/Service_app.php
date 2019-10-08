@@ -453,7 +453,7 @@ class Service_app extends CI_Controller {
 		date_default_timezone_set('Asia/Bangkok');
 		$this->response = null; 
 		$account_id = $this->input->post("account_id");
-		//$account_id = "2019001";
+		$account_id = "2019001";
 
 		if($data['statement']=$this->Service_App_Model->select_st_today($account_id,date('Y-m-d')))  {
 			foreach ($data['statement']->result() as $row2) {
