@@ -1995,6 +1995,7 @@ class Project_controller extends CI_Controller {
             ';
 	}
 	public function confirm_withdraw(){
+		$staff_id = $this->uri->segment(4);
 		$account_detail_id=$this->uri->segment(3);
 		$data['account_detail'] = $this->User_model->select_account_detail_parameter($account_detail_id);
 		$account_detail=$data['account_detail']->result();
@@ -2003,7 +2004,7 @@ class Project_controller extends CI_Controller {
 			$trans_id=$row->trans_id;
 			$account_detail_balance=$row->account_detail_balance;
 		}
-		$this->User_model->update_confirm_withdraw($account_detail_id,$trans_id);
+		$this->User_model->update_confirm_withdraw($account_detail_id,$trans_id,$staff_id);
 		$this->User_model->update_confirm_account_withdraw($account_id,$account_detail_balance);
 		$url1 = base_url('Project_controller/check_next_passbook_page_accountdetail_id/').$account_detail_id;
 		$url2 = base_url('Project_controller/noti_wd/');
@@ -2016,6 +2017,7 @@ class Project_controller extends CI_Controller {
             ';
 	}
 	public function confirm_tranfer_money(){
+		$staff_id = $this->uri->segment(4);
 		$account_detail_id=$this->uri->segment(3);
 		$data['account_detail'] = $this->User_model->select_account_detail_parameter($account_detail_id);
 		$account_detail=$data['account_detail']->result();
@@ -2024,7 +2026,7 @@ class Project_controller extends CI_Controller {
 			$trans_id=$row->trans_id;
 			$account_detail_balance=$row->account_detail_balance;
 		}
-		$this->User_model->update_confirm_tranfer_money($account_detail_id,$trans_id);
+		$this->User_model->update_confirm_tranfer_money($account_detail_id,$trans_id,$staff_id);
 		$this->User_model->update_confirm_account_tranfer($account_id,$account_detail_balance);
 		$url1 = base_url('Project_controller/check_next_passbook_page_accountdetail_id/').$account_detail_id;
 		$url2 = base_url('Project_controller/noti_tdf/');

@@ -1149,15 +1149,21 @@ class User_model extends CI_Model {
 		$this->db->where("trans_id",$trans_id);
 		$this->db->update("account_detail",$data_account_detail);
 	}
-	public function update_confirm_withdraw($account_detail_id,$trans_id){
-		$data_account_detail = array('account_detail_confirm' => '1');
+	public function update_confirm_withdraw($account_detail_id,$trans_id,$staff_id){
+		$data_account_detail = array(
+			'account_detail_confirm' => '1',
+			'staff_record_id' => $staff_id
+	);
 		$this->db->where("account_detail_id",$account_detail_id);
 		$this->db->where("action","withdraw");
 		$this->db->where("trans_id",$trans_id);
 		$this->db->update("account_detail",$data_account_detail);
 	}
-	public function update_confirm_tranfer_money($account_detail_id,$trans_id){
-		$data_account_detail = array('account_detail_confirm' => '1');
+	public function update_confirm_tranfer_money($account_detail_id,$trans_id,$staff_id){
+		$data_account_detail = array(
+			'account_detail_confirm' => '1',
+			'staff_record_id' => $staff_id
+		);
 		$this->db->where("account_detail_id",$account_detail_id);
 		$this->db->where("action","tranfer_money");
 		$this->db->where("trans_id",$trans_id);

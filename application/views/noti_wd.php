@@ -66,7 +66,7 @@
                   <td><?php echo $row->account_name; ?></td>
                   <td title="ดับเบิ้ลคลิกเพื่อแก้ไขและกดปุ่ม Enter เพื่อบันทึก" ondblclick="this.contentEditable=true;" onblur="this.contentEditable=false;" onkeypress="saveData(event,'<?php echo $row->account_detail_id; ?>','<?php echo $row->trans_id; ?>',$(this).html() )"><?php echo number_format($row->trans_money,2); ?></td>
                   <td>
-                    <a onclick="return confirm('ยืนยันรายการหรือไม่');" href="<?php  echo base_url('Project_controller/confirm_withdraw/'.$row->account_detail_id); ?>" >ยืนยันรายการ</a>
+                    <a onclick="return confirm('ยืนยันรายการหรือไม่');" href="<?php  echo base_url('Project_controller/confirm_withdraw/'.$row->account_detail_id)."/".$this->session->userdata('id'); ?>" >ยืนยันรายการ</a>
                   </td><div id="result"></div>
                 </tr>
               <?php $i++; }  ?>

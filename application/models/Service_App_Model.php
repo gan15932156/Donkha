@@ -99,12 +99,10 @@ class Service_App_Model extends CI_Model {
         }
 	}
 	public function select_st_today($account_id,$date){
-		$this->db->from('ccount_detail');
+		$this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);
 		$this->db->where('record_date',$date);
 		$this->db->where('account_detail_confirm','1');	
-		$this->db->order_by('record_date','DESC');
-		$this->db->order_by('record_time','DESC');
 		$query=$this->db->get('');
 		if($query->num_rows() > 0){
             return $query;
@@ -119,8 +117,6 @@ class Service_App_Model extends CI_Model {
 		$this->db->where('record_date',$date);
 		$this->db->where("action = 'withdraw'");
 		$this->db->where('account_detail_confirm','1');	
-		$this->db->order_by('record_date','DESC');
-		$this->db->order_by('record_time','DESC');
 		$query=$this->db->get('');
 		if($query->num_rows() > 0){
             return $query;
@@ -135,8 +131,6 @@ class Service_App_Model extends CI_Model {
 		$this->db->where('record_date',$date);
 		$this->db->where("action = 'tranfer_money'");
 		$this->db->where('account_detail_confirm','1');	
-		$this->db->order_by('record_date','DESC');
-		$this->db->order_by('record_time','DESC');
 		$query=$this->db->get('');
 		if($query->num_rows() > 0){
             return $query;
@@ -151,8 +145,6 @@ class Service_App_Model extends CI_Model {
 		$this->db->where('record_date',$date);
 		$this->db->where("(action = 'recive_money' OR action = 'add_interest' OR action = 'deposit' OR action = 'open_account')");
 		$this->db->where('account_detail_confirm','1');	
-		$this->db->order_by('record_date','DESC');
-		$this->db->order_by('record_time','DESC');
 		$query=$this->db->get('');
 		if($query->num_rows() > 0){
             return $query;

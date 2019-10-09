@@ -68,11 +68,14 @@
            <div class="row">
           <?php 
             foreach($account->result() as $row){ 
-          ?>
-              <div class="form-group col-6"><label><B>หมายเลขบัญชี : </B><?php echo $row->account_id; ?></label>
+          ?>  
+          <div class="form-group col-4"><label><B>ชื่อเจ้าของบัญชี : </B><?php echo $row->member_name; ?></label>
+                
+              </div>
+              <div class="form-group col-4"><label><B>หมายเลขบัญชี : </B><?php echo $row->account_id; ?></label>
                 <input type="hidden" name="ac_id" id="ac_id" value="<?php echo $row->account_id; ?>">
               </div>
-              <div class="form-group col-6"><label><B>ชื่อบัญชี : </B><?php echo $row->account_name; ?></label>
+              <div class="form-group col-4"><label><B>ชื่อบัญชี : </B><?php echo $row->account_name; ?></label>
               </div>                       
         </div>  
         </div>
