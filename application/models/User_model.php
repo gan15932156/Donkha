@@ -721,7 +721,7 @@ class User_model extends CI_Model {
 			$this->db->where("(action = 'recive_money' OR action = 'add_interest' OR action = 'deposit' OR action = 'open_account')"); 
 		}
 		else if($filter == "withdraw"){
-			$this->db->where("action = 'withdraw'"); 
+			$this->db->where("(action = 'withdraw' OR action = 'close_account')"); 
 		}
 		else if($filter == "tranfer_money"){
 			$this->db->where('action','tranfer_money');	
@@ -742,7 +742,7 @@ class User_model extends CI_Model {
 				$this->db->where("(action = 'recive_money' OR action = 'add_interest' OR action = 'deposit' OR action = 'open_account')"); 
 			}
 			else if($transaction == "withdraw"){
-				$this->db->where("action = 'withdraw'"); 
+				$this->db->where("(action = 'withdraw' OR action = 'close_account')"); 
 			}
 			else{
 				$this->db->where("action = 'tranfer_money'"); 
@@ -954,7 +954,25 @@ class User_model extends CI_Model {
 		$query=$this->db->get();
 		return $query;
 	}
+	public function select_close_account_between_date($start_date,$stop_date){
+		$this->db->from('account');
+		$this->db->join('member', 'member.member_id = account.member_id','inner');
+		$this->db->join('staff', 'staff.staff_id = account.staff_close_id','inner');
+		$this->db->where('account_close_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"');
+		$this->db->where('staff.staff_id = account.staff_close_id');
+		$query=$this->db->get();
+		return $query;
+	}
 	public function select_account_detail_open($account_id,$record_date){
+		$this->db->from('account_detail');
+		$this->db->where('account_id',$account_id);
+		$this->db->where('record_date',$record_date);
+		$this->db->order_by('record_date ASC, record_time ASC');
+		$this->db->limit(1,0);
+		$query=$this->db->get();
+		return $query;
+	}
+	public function select_account_detail_close($account_id,$record_date){
 		$this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);
 		$this->db->where('record_date',$record_date);
@@ -966,6 +984,11 @@ class User_model extends CI_Model {
 	public function count_account_opendate_between($start,$end){
 		$this->db->from('account');
 		$this->db->where('account_open_date BETWEEN "'. $start. '" and "'. $end.'"');
+		return $this->db->count_all_results();
+	}
+	public function count_account_closedate_between($start,$end){
+		$this->db->from('account');
+		$this->db->where('account_close_date BETWEEN "'. $start. '" and "'. $end.'"');
 		return $this->db->count_all_results();
 	}
 	public function fetch_account_datatable($param){
@@ -1053,6 +1076,19 @@ class User_model extends CI_Model {
 		$count = $this->db->from('staff')->count_all_results();
 		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
 		return $result;
+	}
+	public function select_account_detail_lastest($account_id){
+		$this->db->from('account_detail');
+		$this->db->where('account_id',$account_id);
+		$this->db->order_by('record_date DESC, record_time DESC');
+		$this->db->limit(1,0);
+		$query=$this->db->get();
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
 	}
 	public function select_deposit_year(){
 		$this->db->select('substr(record_date, 1, 4) as year from account_detail WHERE (action="deposit" OR action="open_account" OR action="recive_money" OR action="add_interest" ) AND record_date !="0000-00-00" group BY year', FALSE);

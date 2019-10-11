@@ -145,6 +145,7 @@
                 elseif($row->action == "add_interest"){echo "<span class='text-success'>เพิ่มดอกเบี้ย</span>";}
                 elseif($row->action == "tranfer_money"){echo "<span class='text-danger'>โอน</span>";}
                 elseif($row->action == "recive_money"){echo "<span class='text-success'>รับเงินโอน</span>";}
+                elseif($row->action == "close_account"){echo "<span class='text-danger'>ปิดบัญชี</span>";}
                 else{
                   echo "<span class='text-danger'>โอน</span>";
                 }
@@ -157,6 +158,7 @@
                 elseif($row->action == "add_interest"){echo  "<span class='text-success'>+".number_format($row->trans_money,2)."</span>";}
                 elseif($row->action == "tranfer_money"){echo  "<span class='text-danger'>-".number_format($row->trans_money,2)."</span>";}
                 elseif($row->action == "recive_money"){echo  "<span class='text-success'>+".number_format($row->trans_money,2)."</span>";}
+                elseif($row->action == "close_account"){echo  "<span class='text-danger'>-".number_format($row->trans_money,2)."</span>";}
                 else{echo  "<span class='text-danger'>-".number_format($row->trans_money,2)."</span>";}
                 ?>  
               </td>

@@ -8,7 +8,7 @@
             <button style="font-size:20px;" class="btn btn-primary">รายงานบัญชี</button>
             <div>
               <a href="<?php  echo base_url()."Project_controller/test_report/"; ?>">รายงานเปิดบัญชี</a>
-              <a href="<?php  echo base_url('Project_controller/account_insert_form/'); ?>">รายงานปิดบัญชี</a>
+              <a href="<?php  echo base_url('Project_controller/manager_close_account/'); ?>">รายงานปิดบัญชี</a>
               <a href="<?php  echo base_url()."Project_controller/manager_account_report/"; ?>">รายงานการเคลื่อนไหวบัญชี</a>
             </div>
           </div>

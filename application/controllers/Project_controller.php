@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Project_controller extends CI_Controller {
-	public $ip = "127.0.0.1";
-	public $picture_path = "picture/"/*"/opt/lampp/htdocs/Donkha/picture/"*/;
+	public $ip = "18.140.49.199";
+	public $picture_path = /*"picture/"*/"/opt/lampp/htdocs/Donkha/picture/";
 	public function __construct(){
 		parent::__construct();
 		$this->load->helper('url');
@@ -148,6 +148,11 @@ class Project_controller extends CI_Controller {
 	public function test_report(){
 		$this->load->view('templates/header');
 		$this->load->view('report_test');
+		$this->load->view('templates/footer');				
+	}
+	public function manager_close_account(){
+		$this->load->view('templates/header');
+		$this->load->view('manager_close_account');
 		$this->load->view('templates/footer');				
 	}
 	public function test_get_data_repost(){
@@ -772,11 +777,43 @@ class Project_controller extends CI_Controller {
 				$data_account=array(
 					'interest_update'=>date('Y-m-d'),
 					'account_balance'=>$new_balance_hidden,
-					'account_status'=>'0'
+					'account_status'=>'0',
+					'staff_close_id'=>$this->input->post("staff_id"),
+					'account_close_date'=>date('Y-m-d')
 				);
 			    $this->User_model->insert_account_details($data_account_detail_add_interest);
 				$this->User_model->insert_interest_history($data_interest_history);
 				$this->User_model->update_interest_account($account_id,$data_account);
+
+				foreach($this->User_model->select_account_with_parameter($account_id)->result() as $row){
+					$account_balance = $row->account_balance;
+				}
+				$wd_code = $this->User_model->auto_generate_withdraw_code();
+				$data_account_Detail=array(
+					'trans_id'=>$wd_code,
+					'account_id'=>$account_id,
+					'staff_record_id'=>$this->input->post("staff_id"),
+					'action'=>'close_account',
+					'record_date'=>date('Y-m-d'),
+					'record_time'=>date('H:i:s'),
+					'account_detail_balance'=>"0",
+					'trans_money'=>$account_balance,
+					'account_detail_confirm'=>'1',
+					'passbook_row_status'=>'0',
+					'end_day'=>'1',
+				);
+				$data_withdraw=array(
+					'withdraw_id'=>$wd_code,
+					'account_id'=>$account_id,
+					'money_withdraw'=>$account_balance,
+				);
+				$data_accounttttttt=array(
+					'account_balance'=>"0",
+				);
+				$this->User_model->insert_account_details($data_account_Detail);
+				$this->User_model->insert_withdraw($data_withdraw);
+				$this->User_model->update_interest_account($account_id,$data_accounttttttt);
+
 			}
 			else{
 				$response['error'] = true;
@@ -790,7 +827,6 @@ class Project_controller extends CI_Controller {
 		
 		echo json_encode($response);
 	}
-
 
 	////////////////////////////////////////////////////////////
 	//////////////////////  UPDATE    //////////////////////////
@@ -1134,6 +1170,10 @@ class Project_controller extends CI_Controller {
 				$action="<span class='text-success'>เปิดบัญชี</span>";
 				$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
 			}
+			elseif($row2->action == "close_account"){
+				$action="<span class='text-danger'>ปิดบัญชี</span>";
+				$trans_money="<span class='text-danger'>-".number_format($row2->trans_money,2)."</span>";
+			}
 			elseif($row2->action == "tranfer_money"){
 				$action="<span class='text-danger'>โอน</span>";
 				$trans_money="<span class='text-danger'>-".number_format($row2->trans_money,2)."</span>";
@@ -1333,6 +1373,10 @@ class Project_controller extends CI_Controller {
 					$action="<span class='text-success'>เปิดบัญชี</span>";
 					$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
 				}
+				elseif($row2->action == "close_account"){
+					$action="<span class='text-danger'>ปิดบัญชี</span>";
+					$trans_money="<span class='text-danger'>-".number_format($row2->trans_money,2)."</span>";
+				}
 				elseif($row2->action == "recive_money"){
 					$action="<span class='text-success'>รับเงินโอน</span>";
 					$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
@@ -1436,11 +1480,17 @@ class Project_controller extends CI_Controller {
 				$i=1;
 				$result=$data['result']->result();
 				foreach ($result as $row) {
+					if($row->action == "withdraw"){
+						$action = 'ถอน';
+					}
+					else if($row->action == "close_account"){
+						$action = 'ปิดบัญชี';
+					}
 					$output.='
 						<tr>
 							<th class="text-center" scope="row">'.$i.'</th>
 		                    <td class="text-center">'.$this->DateThai($row->record_date)." ".$row->record_time.'</td>
-		                    <td class="text-center"><span class="text-danger">ถอน</span></td>
+		                    <td class="text-center"><span class="text-danger">'.$action.'</span></td>
 		                    <td align="right"><span class="text-danger">-'.number_format($row->trans_money,2).'</span></td>
 		                    <td align="right">'.number_format($row->account_detail_balance,2).'</td>
 		                    <td class="text-center">'.$row->staff_title."".$row->staff_name.'</td>
@@ -1537,6 +1587,10 @@ class Project_controller extends CI_Controller {
 					elseif($row->action == "open_account"){
 						$action = '<span class="text-success">เปิดบัญชี</span>';
 						$money = '<span class="text-success">+'.number_format($row->trans_money,2).'</span>';
+					}
+					elseif($row->action == "close_account"){
+						$action = '<span class="text-danger">ปิดบัญชี</span>';
+						$money = '<span class="text-danger">-'.number_format($row->trans_money,2).'</span>';
 					}
 					else{
 						$action = '<span class="text-danger">โอน</span>';
@@ -1824,11 +1878,63 @@ class Project_controller extends CI_Controller {
 		}	
 		echo $output;
 	}	
+	public function fetch_report_close_account(){
+		date_default_timezone_set('Asia/Bangkok');
+		$output='';
+		$data['result'] = $this->User_model->select_close_account_between_date($this->input->post('start_date'),$this->input->post('stop_date'));
+		$output.='
+			<table class="table table-striped table-hover table-sm text-center" id="job-table">
+				<thead class="thead-light table-bordered">
+						<tr>
+								<th width="2%" scope="col">ลำดับ</th>
+								<th width="15%" scope="col">หมายเลขบัญชี</th>
+								<th width="22%" scope="col">ชื่อบัญชี</th>
+								<th width="25%" scope="col">ชื่อ - นามสกุล</th>					
+								<th width="20%" scope="col">วัน-เดือน-ปี ที่ปิด</th>
+								<th width="20%" scope="col">พนักงานปิดบัญชี</th>
+						</tr>
+				</thead>
+				<tbody class="table-bordered" style="background-color: #EFFEFD">
+		';
+		if($data['result']->num_rows() >0){
+			$i=1;
+			$result=$data['result']->result();
+			foreach ($result as $row) {
+				$output.='
+					<tr>
+						<th id="count"  scope="row">'.$i.'</th>
+						<td id="ac_code">'.$row->account_id.'</td>
+						<td id="ac_name" align="left"  >'.$row->account_name.'</td>
+						<td id="ac_ac_nae" align="left" >'.$row->member_title." ".$row->member_name.'</td>
+						<td id="date_open" >'.$this->DateThai($row->account_close_date).'</td>
+						<td id="staff_close_id" >'.$row->staff_title." ".$row->staff_name.'</td>
+					</tr>';
+				$i++;
+			}
+			$link =base_url("index.php/Project_controller/print_report_account_betwwen_date_close")."/".$this->input->post('start_date')."/".$this->input->post('stop_date');
+		$output.='
+			</tbody><tfoot></tfoot>
+		</table>
+		<a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a> 
+		 ';
+		}
+		else{
+			$output.='
+			<tr><th colspan="10" scope="col">ไม่พบข้อมูล</th></tr>
+			';
+		$output.='
+			</tbody><tfoot></tfoot>
+		</table>
+		
+		 ';	
+		}	
+		echo $output;
+	}	
 	public function report_deposit_per_year(){
 		$sumofyear=0.0;
 		$result='<div class="row">
-					<div class="col-4"></div>
-					<div class="col-4">
+					<div class="col-3"></div>
+					<div class="col-6">
 					<table class="table table-striped table-hover text-center" id="job-table">
 					<thead class="thead-light table-bordered">
 							<tr>
@@ -1853,15 +1959,15 @@ class Project_controller extends CI_Controller {
 		$link =base_url("index.php/Project_controller/print_report_transaction")."/"."deposit"."/"."year";
 		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofyear,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
 		</table></div>
-		<div class="col-4"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
+		<div class="col-3"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
 		  </div>';
 		echo $result;
 	}
 	public function report_withdraw_per_year(){
 		$sumofyear=0.0;
 		$result='<div class="row">
-					<div class="col-4"></div>
-					<div class="col-4">
+					<div class="col-3"></div>
+					<div class="col-6">
 					<table class="table table-striped table-hover text-center" id="job-table">
 					<thead class="thead-light table-bordered">
 							<tr>
@@ -1886,7 +1992,7 @@ class Project_controller extends CI_Controller {
 		$link =base_url("index.php/Project_controller/print_report_transaction")."/"."withdraw"."/"."year";
 		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofyear,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
 		</table></div>
-		<div class="col-4"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
+		<div class="col-3"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
 		  </div>';
 		echo $result;
 	}
@@ -2085,18 +2191,18 @@ class Project_controller extends CI_Controller {
 	}
 	public function print_report_account_betwwen_date(){
 		$pdf = new Pdf('P','mm','A4');
-      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
-      $pdf->setFooterData(array(0,64,0), array(0,64,128));
-      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-      $pdf->setFontSubsetting(true);
-      $pdf->SetFont('thsarabun', '', 16, '', true);
+      	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      	$pdf->setFooterData(array(0,64,0), array(0,64,128));
+      	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      	$pdf->setFontSubsetting(true);
+      	$pdf->SetFont('thsarabun', '', 16, '', true);
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
@@ -2104,7 +2210,7 @@ class Project_controller extends CI_Controller {
 		$pdf->AddPage();
 		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
 		$pdf->Ln(8);
-		$content = '<h3>รายงานเปิดบัญชี</h3><span align="center">วันที่'." ".DateThai($this->uri->segment(3))." ถึง ".DateThai($this->uri->segment(4)).'</span><br>
+		$content = '<h3>รายงานเปิดบัญชี</h3><span align="center">วันที่'." ".$this->DateThai($this->uri->segment(3))." ถึง ".$this->DateThai($this->uri->segment(4)).'</span><br>
 			<span>ธนาคารโรงเรียน โรงเรียนดอนคาวิทยา ต.ดอนคา อ.อู่ทอง จ.สุพรรณบุรี 72160</span>
 		';
 		$pdf->writeHTMLCell(0,0,'','',$content,0,1,0,true,'C',true);
@@ -2113,10 +2219,10 @@ class Project_controller extends CI_Controller {
 		$table.='<tr>
 	               <th style="border:1px solid black" width="6%" scope="col">ลําดับ</th>
 	               <th style="border:1px solid black" width="15%" scope="col">หมายเลขบัญชี	</th>
-	               <th style="border:1px solid black" width="18%" scope="col">ชื่อบัญชี</th>
+	               <th style="border:1px solid black" width="25%" scope="col">ชื่อบัญชี</th>
 	               <th style="border:1px solid black" width="25%" scope="col">ชื่อ - นามสกุล</th>
 				   <th style="border:1px solid black" width="17%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
-				   <th style="border:1px solid black" width="19%" scope="col">จำนวนเงินที่เปิดบัญชี</th>
+				   <th style="border:1px solid black" width="12%" scope="col">จำนวนเงิน</th>
     			</tr>';
 		$i=1;
 		$sum_total=0.0;
@@ -2140,6 +2246,63 @@ class Project_controller extends CI_Controller {
 		</tbody><tfoot></tfoot></table>';
 		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
 		$count="<span>จํานวนผูที่เปิดบัญชีทั้งหมด ".$this->User_model->count_account_opendate_between($this->uri->segment(3),$this->uri->segment(4))." คน</span><br>";
+		$count.="<span>วันที่ออกรายงาน ".$this->DateThai(date('Y-m-d'))."</span>";
+		$pdf->writeHTMLCell(0,0,'','',$count,0,1,0,true,'R',true);
+		ob_clean();
+		$pdf->Output('example_001.pdf', 'I');
+		ob_end_clean();
+	}
+	public function print_report_account_betwwen_date_close(){
+		$pdf = new Pdf('P','mm','A4');
+      	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      	$pdf->setFooterData(array(0,64,0), array(0,64,128));
+      	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      	$pdf->setFontSubsetting(true);
+      	$pdf->SetFont('thsarabun', '', 16, '', true);
+		$pdf->setPrintHeader(false);
+		$pdf->setCellPadding(1,1,1,1);
+		$pdf->setCellmargins(1,1,1,1);
+		$pdf->SetTitle("รายงานบัญชี");
+		$pdf->AddPage();
+		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
+		$pdf->Ln(8);
+		$content = '<h3>รายงานเปิดบัญชี</h3><span align="center">วันที่'." ".$this->DateThai($this->uri->segment(3))." ถึง ".$this->DateThai($this->uri->segment(4)).'</span><br>
+			<span>ธนาคารโรงเรียน โรงเรียนดอนคาวิทยา ต.ดอนคา อ.อู่ทอง จ.สุพรรณบุรี 72160</span>
+		';
+		$pdf->writeHTMLCell(0,0,'','',$content,0,1,0,true,'C',true);
+		$pdf->Ln(5);
+		$table='<table style="border:1px solid black">';
+		$table.='<tr>
+	               <th style="border:1px solid black" width="6%" scope="col">ลําดับ</th>
+	               <th style="border:1px solid black" width="15%" scope="col">หมายเลขบัญชี</th>
+	               <th style="border:1px solid black" width="20%" scope="col">ชื่อบัญชี</th>
+	               <th style="border:1px solid black" width="20%" scope="col">ชื่อ - นามสกุล</th>
+				   <th style="border:1px solid black" width="16%" scope="col">วัน-เดือน-ปี ที่ปิด</th>
+				   <th style="border:1px solid black" width="24%" scope="col">พนักงานปิดบัญชี</th>
+    			</tr>';
+		$i=1;
+		foreach ($this->User_model->select_close_account_between_date($this->uri->segment(3),$this->uri->segment(4))->result() as $row) {			
+			$table.='<tr>
+				<td style="border:1px solid black">'.$i.'</td>
+				<td style="border:1px solid black">'.$row->account_id.'</td>
+				<td align="left" style="border:1px solid black">'.$row->account_name.'</td>
+				<td align="left" style="border:1px solid black">'.$row->member_title."".$row->member_name.'</td>
+				<td style="border:1px solid black">'.$this->DateThai($row->account_close_date).'</td>
+				<td align="left" style="border:1px solid black">'.$row->staff_title."".$row->staff_name.'</td>
+			</tr>';		
+			$i++;
+		}
+		$table.='<tr><th colspan="4" scope="col"></th><th style="border-right:1px solid black" colspan="1" scope="col">รวมจำนวนเงิน</th><td align="right" colspan="1" scope="col">'.number_format($sum_total,2).'</td></tr>
+		</tbody><tfoot></tfoot></table>';
+		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
+		$count="<span>จํานวนผูที่ปิดบัญชีทั้งหมด ".$this->User_model->count_account_closedate_between($this->uri->segment(3),$this->uri->segment(4))." คน</span><br>";
 		$count.="<span>วันที่ออกรายงาน ".$this->DateThai(date('Y-m-d'))."</span>";
 		$pdf->writeHTMLCell(0,0,'','',$count,0,1,0,true,'R',true);
 		ob_clean();
@@ -2610,18 +2773,18 @@ class Project_controller extends CI_Controller {
 			$data['statement'] = $this->User_model->select_account_detail_parameter_account_id_filter($this->input->post('account_id'),$this->input->post('filter'));
 		}
 		$pdf = new Pdf('P','mm','A4');
-      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
-      $pdf->setFooterData(array(0,64,0), array(0,64,128));
-      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-      $pdf->setFontSubsetting(true);
-      $pdf->SetFont('thsarabun', '', 16, '', true);
+      	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      	$pdf->setFooterData(array(0,64,0), array(0,64,128));
+      	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      	$pdf->setFontSubsetting(true);
+      	$pdf->SetFont('thsarabun', '', 16, '', true);
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
@@ -2660,6 +2823,7 @@ class Project_controller extends CI_Controller {
 			elseif($row->action == "add_interest"){$action = "เพิ่มดอกเบี้ย";}
 			elseif($row->action == "recive_money"){$action = "รับเงินโอน";}
 			elseif($row->action == "open_account"){$action = "เปิดบัญชี";}
+			elseif($row->action == "close_account"){$action = "ปิดบัญชี";}
 			elseif($row->action == "tranfer_money"){$action = "โอนเงิน";}
 			else{$action = "ถอน";}
 			$table.='<tr>
@@ -2937,8 +3101,8 @@ class Project_controller extends CI_Controller {
 		$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
 		$sumofmonth=0.0;
 		$result='<div class="row">
-					<div class="col-4"></div>
-					<div class="col-4">
+					<div class="col-3"></div>
+					<div class="col-6">
 					<table class="table table-striped table-hover text-center" id="job-table">
 					<thead class="thead-light table-bordered">
 							<tr>
@@ -2963,7 +3127,7 @@ class Project_controller extends CI_Controller {
 		$link =base_url("index.php/Project_controller/print_report_transaction")."/deposit"."/month"."/".$this->input->post('year');
 		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofmonth,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
 		</table></div>
-		<div class="col-4"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
+		<div class="col-3"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
 		</div>';
 		echo $result;
 	}
@@ -2971,8 +3135,8 @@ class Project_controller extends CI_Controller {
 		$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
 		$sumofmonth=0.0;
 		$result='<div class="row">
-					<div class="col-4"></div>
-					<div class="col-4">
+					<div class="col-3"></div>
+					<div class="col-6">
 					<table class="table table-striped table-hover text-center" id="job-table">
 					<thead class="thead-light table-bordered">
 							<tr>
@@ -2997,7 +3161,7 @@ class Project_controller extends CI_Controller {
 		$link =base_url("index.php/Project_controller/print_report_transaction")."/withdraw"."/month"."/".$this->input->post('year');
 		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofmonth,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
 		</table></div>
-		<div class="col-4"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
+		<div class="col-3"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
 		</div>';
 		echo $result;
 	}
@@ -3082,8 +3246,8 @@ class Project_controller extends CI_Controller {
 	public function report_deposit_per_day(){
 		$sumofmonth=0.0;
 		$result='<div class="row">
-					<div class="col-4"></div>
-					<div class="col-4">
+					<div class="col-3"></div>
+					<div class="col-6">
 					<table class="table table-striped table-hover text-center" id="job-table">
 					<thead class="thead-light table-bordered">
 							<tr>
@@ -3105,15 +3269,15 @@ class Project_controller extends CI_Controller {
 		$link =base_url("index.php/Project_controller/print_report_transaction")."/deposit"."/day"."/".$this->input->post('year')."/".$this->input->post('month');
 		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofmonth,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
 		</table></div>
-		<div class="col-4"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
+		<div class="col-3"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
 		</div>';
 		echo $result;
 	}
 	public function report_withdraw_per_day(){
 		$sumofmonth=0.0;
 		$result='<div class="row">
-					<div class="col-4"></div>
-					<div class="col-4">
+					<div class="col-3"></div>
+					<div class="col-6">
 					<table class="table table-striped table-hover text-center" id="job-table">
 					<thead class="thead-light table-bordered">
 							<tr>
@@ -3135,7 +3299,7 @@ class Project_controller extends CI_Controller {
 		$link =base_url("index.php/Project_controller/print_report_transaction")."/withdraw"."/day"."/".$this->input->post('year')."/".$this->input->post('month');
 		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofmonth,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
 		</table></div>
-		<div class="col-4"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
+		<div class="col-3"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
 		</div>';
 		echo $result;
 	}
