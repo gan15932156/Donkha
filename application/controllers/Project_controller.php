@@ -189,7 +189,7 @@ class Project_controller extends CI_Controller {
 
 	public function index(){
 		$this->cal_end_day();
-		//$this->cal_interest_auto();
+		$this->cal_interest_auto();
 		$this->cal_edu_level_auto();
 		$this->load->view('index');
     }
@@ -2515,23 +2515,24 @@ class Project_controller extends CI_Controller {
 		date_default_timezone_set('Asia/Bangkok');
  		$data["account"] = $this->User_model->select_all_account_never_cal();
  		foreach ($data["account"]->result() as $row) {
- 			if($row->interest_update == "0000-00-00" && date('Y-m-d')/*"2019-04-01"*/ == date('Y-04-01') && $row->account_open_date < date('Y-04-01')){
- 				$this->cal_interest_phase1($row->account_id);
+ 			if($row->interest_update == "0000-00-00" && date('Y-m-d')/*"2019-04-01"*/ >= date('Y-04-01') && $row->account_open_date < date('Y-04-01')){
+				$this->cal_interest_phase1($row->account_id);
  			}
- 			elseif($row->interest_update == "0000-00-00" && date('Y-m-d')/*"2019-10-01"*/ == date('Y-10-01') && $row->account_open_date >= date('Y-04-01') && $row->account_open_date < date('Y-10-01')) {
- 				$this->cal_interest_phase2($row->account_id);
+ 			elseif($row->interest_update == "0000-00-00" && date('Y-m-d')/*"2019-10-01"*/ >= date('Y-10-01') && $row->account_open_date > date('Y-04-01') && $row->account_open_date < date('Y-10-01')) {
+				$this->cal_interest_phase2($row->account_id);
  			}
- 			elseif($row->interest_update == "0000-00-00" && date('Y-m-d') /*"2019-04-01"*/ == date('Y-04-01') && $row->account_open_date > date('Y-10-01',strtotime('-1 year')) && $row->account_open_date < date('Y-04-01')) {
- 				$this->cal_interest_phase1($row->account_id);
+ 			elseif($row->interest_update == "0000-00-00" && date('Y-m-d') /*"2019-04-01"*/ >= date('Y-04-01') && $row->account_open_date > date('Y-10-01',strtotime('-1 year')) && $row->account_open_date < date('Y-04-01')) {
+				$this->cal_interest_phase1($row->account_id);
+				
  			}
- 			elseif($row->interest_update == date('Y-04-01') && date('Y-m-d') /*"2019-10-01"*/ == date('Y-10-01')){
- 				$this->cal_interest_phase2($row->account_id);
+ 			elseif($row->interest_update == date('Y-04-01') && date('Y-m-d') /*"2019-10-01"*/ >= date('Y-10-01')){
+				$this->cal_interest_phase2($row->account_id);
  			}
- 			elseif($row->interest_update == substr($row->interest_update,0,4)."-10-01" && date('Y-m-d') /*"2019-04-01"*/ == date('Y-04-01')){
- 				$this->cal_interest_phase1($row->account_id);
+ 			elseif($row->interest_update == substr($row->interest_update,0,4)."-10-01" && date('Y-m-d') /*"2019-04-01"*/ >= date('Y-04-01')){
+				$this->cal_interest_phase1($row->account_id);
  			}
- 			elseif($row->interest_update == substr($row->interest_update,0,4)."-04-01" && date('Y-m-d') /*"2019-10-01"*/ == date('Y-10-01')){
- 				$this->cal_interest_phase2($row->account_id);
+ 			elseif($row->interest_update == substr($row->interest_update,0,4)."-04-01" && date('Y-m-d') /*"2019-10-01"*/ >= date('Y-10-01')){
+				$this->cal_interest_phase2($row->account_id);
  			}
  		}
 	}
@@ -2635,7 +2636,7 @@ class Project_controller extends CI_Controller {
 		static $per_100 = 100; # ร้อยละ
 		#--------------------------------------------------#
 		$data['account_detail'] = $this->User_model->select_account_detail_end_day_phase_1($account_id);
-		if($data['account_detail'] == null){}
+		if($data['account_detail'] == null){echo "adsad";}
 		else{
 			foreach ($data['account_detail']->result() as $row) {
 				$result = $this->check_last_day_phase1($account_id,$row->record_date,$row->account_detail_id);
@@ -2656,6 +2657,7 @@ class Project_controller extends CI_Controller {
 				$total_balance = floatval($account_balance) + $result_all_int;
 				//echo "interest="."(".$row->account_detail_balance."*".$interest_rate."*".$date_diff.")/(".$per_100."*".$year.")<br>";
 			}//echo "total:".$result_all_int."<br>";
+			
 			$ir_code = $this->User_model->auto_generate_interest_code();
 			$data_account_detail=array(
 				'trans_id'=>$ir_code,
