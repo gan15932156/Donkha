@@ -13,15 +13,15 @@ class Project_controller extends CI_Controller {
 		$this->load->library('Pdf');
 	}
 	public function DateThai($strDate)
-   { 
+   	{ 
 		$strYear = date("Y",strtotime($strDate))+543;
 		$thaiyear = $strYear;
-      $strMonth= date("n",strtotime($strDate));
-      $strDay= date("j",strtotime($strDate));
-      $strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
-      $strMonthThai=$strMonthCut[$strMonth];
-      return "$strDay $strMonthThai $thaiyear";
-   } 
+      	$strMonth= date("n",strtotime($strDate));
+     	$strDay= date("j",strtotime($strDate));
+      	$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+      	$strMonthThai=$strMonthCut[$strMonth];
+      	return "$strDay $strMonthThai $thaiyear";
+   	} 
 
 	////////////////////////////////////////////////////////////
 	//////////////////////  PAGE    //////////////////////////
@@ -372,6 +372,11 @@ class Project_controller extends CI_Controller {
 	public function manager_withdraw_report(){
 		$this->load->view('templates/header');
 		$this->load->view('manager_withdraw_report');
+		$this->load->view('templates/footer');
+	}
+	public function manager_tranfer_report(){
+		$this->load->view('templates/header');
+		$this->load->view('manager_tranfer_report');
 		$this->load->view('templates/footer');
 	}
 	public function manager_account_report(){
@@ -1950,7 +1955,7 @@ class Project_controller extends CI_Controller {
 				$thaiyear= intval($row->year)+543;
 				//echo $row->year." ".$row2->sum_year."<br>";
 				$result.='<tr>
-				<th id="count"  scope="row">'.$thaiyear.'</th>
+				<td id="count"  scope="row">'.$thaiyear.'</td>
 				<td align="right" id="ac_code">'.number_format($row2->sum_year,2)." บาท".'</td>
 						</tr>';
 			}
@@ -1983,13 +1988,46 @@ class Project_controller extends CI_Controller {
 				$thaiyear= intval($row->year)+543;
 				//echo $row->year." ".$row2->sum_year."<br>";
 				$result.='<tr>
-				<th id="count"  scope="row">'.$thaiyear.'</th>
+				<td id="count"  scope="row">'.$thaiyear.'</td>
 				<td align="right" id="ac_code">'.number_format($row2->sum_year,2)." บาท".'</td>
 						</tr>';
 			}
 		}
 		//echo $sumofyear;
 		$link =base_url("index.php/Project_controller/print_report_transaction")."/"."withdraw"."/"."year";
+		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofyear,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
+		</table></div>
+		<div class="col-3"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
+		  </div>';
+		echo $result;
+	}
+	public function report_tranfer_per_year(){
+		$sumofyear=0.0;
+		$result='<div class="row">
+					<div class="col-3"></div>
+					<div class="col-6">
+					<table class="table table-striped table-hover text-center" id="job-table">
+					<thead class="thead-light table-bordered">
+							<tr>
+									<th width="20%" scope="col">ปี</th>
+									<th width="50%" scope="col">จำนวนเงิน</th>
+							</tr>
+					</thead>
+					<tbody class="table-bordered" style="background-color: #EFFEFD">
+					';
+		foreach ($this->User_model->select_tranfer_year()->result() as $row) {
+			foreach ($this->User_model->select_sum_tranfer_year($row->year)->result() as $row2) {
+				$sumofyear+=floatval($row2->sum_year);
+				$thaiyear= intval($row->year)+543;
+				//echo $row->year." ".$row2->sum_year."<br>";
+				$result.='<tr>
+				<td id="count"  scope="row">'.$thaiyear.'</td>
+				<td align="right" id="ac_code">'.number_format($row2->sum_year,2)." บาท".'</td>
+						</tr>';
+			}
+		}
+		//echo $sumofyear;
+		$link =base_url("index.php/Project_controller/print_report_transaction")."/"."tranfer"."/"."year";
 		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofyear,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
 		</table></div>
 		<div class="col-3"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
@@ -3099,6 +3137,59 @@ class Project_controller extends CI_Controller {
 		$result.='</div>';
 		echo $result;
 	}
+	public function fetch_tranfer_year(){
+		$result='<script>
+		$(document).ready(function(){
+			$("#year").change(function(){
+				if($(this).val() == ""){$(".table-responsiv").empty();$(".third").empty();}
+				else{
+					if('.$this->input->post('type').' == "2"){
+						$.ajax({
+							type: "POST",
+							url: "'.site_url("/Project_controller/report_tranfer_per_month").'",
+							method:"POST",
+							data:{
+							  year:$(this).val()
+							},
+							success:function(response){
+								$(".table-responsiv").html(response);
+							},
+							error: function( error ){alert( error );}
+						});
+					}else{
+						$.ajax({
+							type: "POST",
+							url: "'.site_url("/Project_controller/fetch_tranfer_month").'",
+							method:"POST",
+							data:{
+							  year:$(this).val()
+							},
+							success:function(response){
+								$(".table-responsiv").empty();
+								$(".third").html(response);
+							},
+							error: function( error ){alert( error );}
+						});
+					}	
+				}		
+			});
+		});
+	 	</script>';
+		$result.='<div class="row">';
+		$result.='<div class="col-4">เลือกปี:</div>';
+		$result.='<div class="col-5">';
+		$result.='<select class="form-control" name="year" id="year">';
+		$result.='<option value="">เลือกปี</option>';
+		foreach ($this->User_model->select_tranfer_year()->result() as $row) {
+			$thaiyear = intval($row->year)+543;
+			$result.='<option value="'.$row->year.'">'.$thaiyear.'</option>';
+		}
+		$result.='</select>';
+		$result.='</div>';
+		$result.='<div class="col-3"></div>';
+		$result.='</div>';
+		echo $result;
+	}
 	public function report_deposit_per_month(){
 		$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
 		$sumofmonth=0.0;
@@ -3120,7 +3211,7 @@ class Project_controller extends CI_Controller {
 				$thaimonth= $strMonthCut[intval($row->month)];
 				//echo $row->year." ".$row2->sum_year."<br>";
 				$result.='<tr>
-				<th id="count"  scope="row">'.$thaimonth.'</th>
+				<td id="count"  scope="row">'.$thaimonth.'</td>
 				<td align="right" id="ac_code">'.number_format($row2->summonth,2)." บาท".'</td>
 						</tr>';
 			}
@@ -3154,13 +3245,47 @@ class Project_controller extends CI_Controller {
 				$thaimonth= $strMonthCut[intval($row->month)];
 				//echo $row->year." ".$row2->sum_year."<br>";
 				$result.='<tr>
-				<th id="count"  scope="row">'.$thaimonth.'</th>
+				<td id="count"  scope="row">'.$thaimonth.'</td>
 				<td align="right" id="ac_code">'.number_format($row2->summonth,2)." บาท".'</td>
 						</tr>';
 			}
 		}
 		//echo $sumofyear;
 		$link =base_url("index.php/Project_controller/print_report_transaction")."/withdraw"."/month"."/".$this->input->post('year');
+		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofmonth,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
+		</table></div>
+		<div class="col-3"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
+		</div>';
+		echo $result;
+	}
+	public function report_tranfer_per_month(){
+		$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+		$sumofmonth=0.0;
+		$result='<div class="row">
+					<div class="col-3"></div>
+					<div class="col-6">
+					<table class="table table-striped table-hover text-center" id="job-table">
+					<thead class="thead-light table-bordered">
+							<tr>
+									<th width="20%" scope="col">เดือน</th>
+									<th width="50%" scope="col">จำนวนเงิน</th>
+							</tr>
+					</thead>
+					<tbody class="table-bordered" style="background-color: #EFFEFD">
+					';
+		foreach ($this->User_model->select_tranfer_month($this->input->post('year'))->result() as $row) {
+			foreach ($this->User_model->select_sum_tranfer_month($this->input->post('year'),$row->month)->result() as $row2) {
+				$sumofmonth+=floatval($row2->summonth );
+				$thaimonth= $strMonthCut[intval($row->month)];
+				//echo $row->year." ".$row2->sum_year."<br>";
+				$result.='<tr>
+				<td id="count"  scope="row">'.$thaimonth.'</td>
+				<td align="right" id="ac_code">'.number_format($row2->summonth,2)." บาท".'</td>
+						</tr>';
+			}
+		}
+		//echo $sumofyear;
+		$link =base_url("index.php/Project_controller/print_report_transaction")."/tranfer"."/month"."/".$this->input->post('year');
 		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofmonth,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
 		</table></div>
 		<div class="col-3"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
@@ -3245,6 +3370,45 @@ class Project_controller extends CI_Controller {
 		$result.='</div>';
 		echo $result;
 	}
+	public function fetch_tranfer_month(){
+		$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+		$result='<script>
+		$(document).ready(function(){
+			$("#month").change(function(){
+				if($(this).val() == ""){$(".table-responsiv").empty();}
+				else{				
+					$.ajax({
+						type: "POST",
+						url: "'.site_url("/Project_controller/report_tranfer_per_day").'",
+						method:"POST",
+						data:{
+							month:$(this).val(),
+							year:'.$this->input->post('year').'
+						},
+						success:function(response){
+							$(".table-responsiv").html(response);
+						},
+						error: function( error ){alert( error );}
+					});					
+				}
+				
+			});
+		});
+	 	</script>';
+		$result.='<div class="row">';
+		$result.='<div class="col-4">เลือกเดือน:</div>';
+		$result.='<div class="col-6">';
+		$result.='<select class="form-control" name="month" id="month">';
+		$result.='<option value="">เลือกเดือน</option>';
+		foreach ($this->User_model->select_tranfer_month($this->input->post('year'))->result() as $row) {
+			$result.='<option value="'.$row->month.'">'.$strMonthCut[intval($row->month)].'</option>';
+		}
+		$result.='</select>';
+		$result.='</div>';
+		$result.='<div class="col-3"></div>';
+		$result.='</div>';
+		echo $result;
+	}
 	public function report_deposit_per_day(){
 		$sumofmonth=0.0;
 		$result='<div class="row">
@@ -3263,7 +3427,7 @@ class Project_controller extends CI_Controller {
 			foreach ($this->User_model->select_sum_deposit_day($row->tran_date)->result() as $row2) {
 				$sumofmonth+=floatval($row2->sum );
 				$result.='<tr>
-				<th id="count"  scope="row">'.$this->DateThai($row->tran_date).'</th>
+				<td id="count"  scope="row">'.$this->DateThai($row->tran_date).'</td>
 				<td align="right" id="ac_code">'.number_format($row2->sum,2)." บาท".'</td>
 						</tr>';
 			}
@@ -3293,7 +3457,7 @@ class Project_controller extends CI_Controller {
 			foreach ($this->User_model->select_sum_withdraw_day($row->tran_date)->result() as $row2) {
 				$sumofmonth+=floatval($row2->sum );
 				$result.='<tr>
-				<th id="count"  scope="row">'.$this->DateThai($row->tran_date).'</th>
+				<td id="count"  scope="row">'.$this->DateThai($row->tran_date).'</td>
 				<td align="right" id="ac_code">'.number_format($row2->sum,2)." บาท".'</td>
 						</tr>';
 			}
@@ -3305,25 +3469,56 @@ class Project_controller extends CI_Controller {
 		</div>';
 		echo $result;
 	}
+	public function report_tranfer_per_day(){
+		$sumofmonth=0.0;
+		$result='<div class="row">
+					<div class="col-3"></div>
+					<div class="col-6">
+					<table class="table table-striped table-hover text-center" id="job-table">
+					<thead class="thead-light table-bordered">
+							<tr>
+									<th width="50%" scope="col">วันที่</th>
+									<th width="40%" scope="col">จำนวนเงิน</th>
+							</tr>
+					</thead>
+					<tbody class="table-bordered" style="background-color: #EFFEFD">
+					';
+		foreach ($this->User_model->select_tranfer_day($this->input->post('year'),$this->input->post('month'))->result() as $row) {
+			foreach ($this->User_model->select_sum_tranfer_day($row->tran_date)->result() as $row2) {
+				$sumofmonth+=floatval($row2->sum );
+				$result.='<tr>
+				<td id="count"  scope="row">'.$this->DateThai($row->tran_date).'</td>
+				<td align="right" id="ac_code">'.number_format($row2->sum,2)." บาท".'</td>
+						</tr>';
+			}
+		}
+		$link =base_url("index.php/Project_controller/print_report_transaction")."/tranfer"."/day"."/".$this->input->post('year')."/".$this->input->post('month');
+		$result.='<tr><th scope="col">รวม</th><td align="right" scope="col">'.number_format($sumofmonth,2)." บาท".'</td></tr></tbody><tfoot></tfoot>
+		</table></div>
+		<div class="col-3"><a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a></div>
+		</div>';
+		echo $result;
+	}
 	public function print_report_transaction(){
 		if($this->uri->segment(3) === "deposit"){$tran_name = "ฝาก";}
-		else{$tran_name = "ถอน";}
+		elseif($this->uri->segment(3) === "withdraw"){$tran_name = "ถอน";}
+		else{$tran_name = "โอน";}
 		if($this->uri->segment(4) === "year"){$action_name = "รายปี";$action_name2="ปี";}
 		elseif($this->uri->segment(4) === "month"){$action_name = "รายเดือน";$action_name2="เดือน";}
 		else{$action_name = "รายวัน";$action_name2="วันที่";}
 		$pdf = new Pdf('P','mm','A4');
-      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
-      $pdf->setFooterData(array(0,64,0), array(0,64,128));
-      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-      $pdf->setFontSubsetting(true);
-      $pdf->SetFont('thsarabun', '', 16, '', true);
+      	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      	$pdf->setFooterData(array(0,64,0), array(0,64,128));
+      	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      	$pdf->setFontSubsetting(true);
+      	$pdf->SetFont('thsarabun', '', 16, '', true);
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
@@ -3371,6 +3566,19 @@ class Project_controller extends CI_Controller {
 					}
 				}
 			}
+			else{
+				foreach ($this->User_model->select_tranfer_year()->result() as $row) {
+					foreach ($this->User_model->select_sum_tranfer_year($row->year)->result() as $row2) {
+						$sum+=floatval($row2->sum_year);
+						$thaiyear= intval($row->year)+543;
+						//echo $row->year." ".$row2->sum_year."<br>";
+						$table.='<tr>
+						<th style="border:1px solid black" id="count"  scope="row">'.$thaiyear.'</th>
+						<td style="border:1px solid black" align="right" id="ac_code">'.number_format($row2->sum_year,2)." บาท".'</td>
+								</tr>';
+					}
+				}
+			}
 		}
 		elseif($action === "month"){
 			if($trans === "deposit"){
@@ -3389,6 +3597,19 @@ class Project_controller extends CI_Controller {
 			elseif($trans === "withdraw"){
 				foreach ($this->User_model->select_withdraw_month($this->uri->segment(5))->result() as $row) {
 					foreach ($this->User_model->select_sum_withdraw_month($this->uri->segment(5),$row->month)->result() as $row2) {
+						$sum+=floatval($row2->summonth);
+						$thaiyear = intval($this->uri->segment(5))+543;
+						//echo $row->year." ".$row2->sum_year."<br>";
+						$table.='<tr>
+						<th style="border:1px solid black" id="count"  scope="row">'.$strMonthCut[intval($row->month)]." พ.ศ. ".$thaiyear.'</th>
+						<td style="border:1px solid black" align="right" id="ac_code">'.number_format($row2->summonth,2)." บาท".'</td>
+								</tr>';
+					}
+				}
+			}
+			else{
+				foreach ($this->User_model->select_tranfer_month($this->uri->segment(5))->result() as $row) {
+					foreach ($this->User_model->select_sum_tranfer_month($this->uri->segment(5),$row->month)->result() as $row2) {
 						$sum+=floatval($row2->summonth);
 						$thaiyear = intval($this->uri->segment(5))+543;
 						//echo $row->year." ".$row2->sum_year."<br>";
@@ -3425,6 +3646,18 @@ class Project_controller extends CI_Controller {
 					}
 				}
 			}
+			else{
+				foreach ($this->User_model->select_tranfer_day($this->uri->segment(5),$this->uri->segment(6))->result() as $row) {
+					foreach ($this->User_model->select_sum_tranfer_day($row->tran_date)->result() as $row2) {
+						$sum+=floatval($row2->sum);
+						//echo $row->year." ".$row2->sum_year."<br>";
+						$table.='<tr>
+						<th style="border:1px solid black" id="count"  scope="row">'.$this->DateThai($row->tran_date).'</th>
+						<td style="border:1px solid black" align="right" id="ac_code">'.number_format($row2->sum,2)." บาท".'</td>
+								</tr>';
+					}
+				}
+			}
 		}
 		$table.='</table>';
 		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
@@ -3435,7 +3668,8 @@ class Project_controller extends CI_Controller {
 		ob_end_clean();
 	}
 	public function cal_edu_level_auto(){
-		//if(วันเปิดเรียน){		
+		date_default_timezone_set('Asia/Bangkok');
+		if(date('Y-m-d') >= date('Y-10-08')) /*เปิด 28 ตุลาคม*/{		
 			foreach ($this->User_model->get_all_member_with_no_edu_6()->result() as $row) {	
 				$year=0;
 				$cal_year=0;
@@ -3483,6 +3717,6 @@ class Project_controller extends CI_Controller {
 				}
 
 			}
-		//}	
+		}	
 	}
 }

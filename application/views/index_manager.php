@@ -17,6 +17,7 @@
             <div>
               <a href="<?php  echo base_url()."Project_controller/manager_deposit_report/"; ?>">รายงานสรุปยอดฝาก</a>
               <a href="<?php  echo base_url('Project_controller/manager_withdraw_report/'); ?>">รายงานสรุปยอดถอน</a>
+              <a href="<?php  echo base_url('Project_controller/manager_tranfer_report/'); ?>">รายงานสรุปยอดโอน</a>
             </div>
           </div>
           <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/manager_member_report/"; ?>">รายงานข้อมูลสมาชิก</a>

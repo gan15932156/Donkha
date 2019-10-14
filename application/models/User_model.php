@@ -305,6 +305,7 @@ class User_model extends CI_Model {
 		$this->db->select('*');
 		$this->db->from('member');
 		$this->db->where('std_code !=', '0');
+		$this->db->where('member_status', '1');
 		$this->db->where('member.edu_id !=', '0');
 		$this->db->order_by('member_id','ASC');
 		$query=$this->db->get();
@@ -314,6 +315,7 @@ class User_model extends CI_Model {
 		$this->db->select('*');
 		$this->db->from('staff');
 		$this->db->where('stu_code !=', '0');
+		$this->db->where('staff_status', '1');
 		$this->db->where('staff.edu_id !=', '0');
 		$this->db->order_by('staff_id','ASC');
 		$query=$this->db->get();
@@ -1095,7 +1097,11 @@ class User_model extends CI_Model {
 		return $this->db->get();
 	}
 	public function select_withdraw_year(){
-		$this->db->select('substr(record_date,1,4) as year from account_detail WHERE action="withdraw" AND record_date !="0000-00-00" group BY year', FALSE);
+		$this->db->select('substr(record_date,1,4) as year from account_detail WHERE (action="withdraw" OR action="close_account") AND record_date !="0000-00-00" group BY year', FALSE);
+		return $this->db->get();
+	}
+	public function select_tranfer_year(){
+		$this->db->select('substr(record_date,1,4) as year from account_detail WHERE action="tranfer_money" AND record_date !="0000-00-00" group BY year', FALSE);
 		return $this->db->get();
 	}
 	public function select_sum_deposit_year($year){
@@ -1103,7 +1109,11 @@ class User_model extends CI_Model {
 		return $this->db->get();
 	}
 	public function select_sum_withdraw_year($year){
-		$this->db->select('SUM(trans_money) as sum_year from account_detail WHERE action="withdraw" AND substr(record_date, 1, 4) ='.$year.' AND record_date !="0000-00-00"');
+		$this->db->select('SUM(trans_money) as sum_year from account_detail WHERE (action="withdraw" OR action="close_account") AND substr(record_date, 1, 4) ='.$year.' AND record_date !="0000-00-00"');
+		return $this->db->get();
+	}
+	public function select_sum_tranfer_year($year){
+		$this->db->select('SUM(trans_money) as sum_year from account_detail WHERE action="tranfer_money" AND substr(record_date, 1, 4) ='.$year.' AND record_date !="0000-00-00"');
 		return $this->db->get();
 	}
 	public function select_deposit_month($year){
@@ -1111,7 +1121,11 @@ class User_model extends CI_Model {
 		return $this->db->get();
 	}
 	public function select_withdraw_month($year){
-		$this->db->select('DISTINCT(SUBSTR(record_date,6,2)) as month FROM account_detail WHERE action="withdraw" AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" ORDER BY record_date');
+		$this->db->select('DISTINCT(SUBSTR(record_date,6,2)) as month FROM account_detail WHERE (action="withdraw" OR action="close_account") AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" ORDER BY record_date');
+		return $this->db->get();
+	}
+	public function select_tranfer_month($year){
+		$this->db->select('DISTINCT(SUBSTR(record_date,6,2)) as month FROM account_detail WHERE action="tranfer_money" AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" ORDER BY record_date');
 		return $this->db->get();
 	}
 	public function select_sum_deposit_month($year,$month){
@@ -1119,15 +1133,23 @@ class User_model extends CI_Model {
 		return $this->db->get();
 	}	
 	public function select_sum_withdraw_month($year,$month){
-		$this->db->select('SUM(trans_money) as summonth FROM `account_detail` WHERE action="withdraw" AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" AND SUBSTR(record_date,6,2) = "'.$month.'"');
+		$this->db->select('SUM(trans_money) as summonth FROM `account_detail` WHERE (action="withdraw" OR action="close_account") AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" AND SUBSTR(record_date,6,2) = "'.$month.'"');
 		return $this->db->get();
 	}	
+	public function select_sum_tranfer_month($year,$month){
+		$this->db->select('SUM(trans_money) as summonth FROM `account_detail` WHERE action="tranfer_money" AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" AND SUBSTR(record_date,6,2) = "'.$month.'"');
+		return $this->db->get();
+	}
 	public function select_deposit_day($year,$month){
 		$this->db->select('DISTINCT(record_date) as tran_date FROM account_detail WHERE (action="deposit" OR action="open_account" OR action="recive_money" OR action="add_interest" ) AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" AND SUBSTR(record_date,6,2) = "'.$month.'" ORDER BY record_date');
 		return $this->db->get();
 	}
 	public function select_withdraw_day($year,$month){
-		$this->db->select('DISTINCT(record_date) as tran_date FROM account_detail WHERE action="withdraw" AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" AND SUBSTR(record_date,6,2) = "'.$month.'" ORDER BY record_date');
+		$this->db->select('DISTINCT(record_date) as tran_date FROM account_detail WHERE (action="withdraw" OR action="close_account") AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" AND SUBSTR(record_date,6,2) = "'.$month.'" ORDER BY record_date');
+		return $this->db->get();
+	}
+	public function select_tranfer_day($year,$month){
+		$this->db->select('DISTINCT(record_date) as tran_date FROM account_detail WHERE action="tranfer_money" AND record_date != "0000-00-00" AND SUBSTR(record_date,1,4) = "'.$year.'" AND SUBSTR(record_date,6,2) = "'.$month.'" ORDER BY record_date');
 		return $this->db->get();
 	}
 	public function select_sum_deposit_day($date){
@@ -1135,7 +1157,11 @@ class User_model extends CI_Model {
 		return $this->db->get();
 	}
 	public function select_sum_withdraw_day($date){
-		$this->db->select('SUM(trans_money) as sum FROM account_detail WHERE action="withdraw" AND record_date != "0000-00-00" AND record_date ="'.$date.'"');
+		$this->db->select('SUM(trans_money) as sum FROM account_detail WHERE (action="withdraw" OR action="close_account") AND record_date != "0000-00-00" AND record_date ="'.$date.'"');
+		return $this->db->get();
+	}
+	public function select_sum_tranfer_day($date){
+		$this->db->select('SUM(trans_money) as sum FROM account_detail WHERE action="tranfer_money" AND record_date != "0000-00-00" AND record_date ="'.$date.'"');
 		return $this->db->get();
 	}
 
