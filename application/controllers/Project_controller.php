@@ -759,7 +759,7 @@ class Project_controller extends CI_Controller {
 				$response['error'] = false;
 				$response['message'] = "สำเร็จ";
 				
-				$interest_code = $this->User_model->auto_generate_interest_code();
+			/*	$interest_code = $this->User_model->auto_generate_interest_code();
 				$data_account_detail_add_interest=array(
 					'trans_id'=>$interest_code,
 					'account_id'=>$account_id,
@@ -817,7 +817,7 @@ class Project_controller extends CI_Controller {
 				);
 				$this->User_model->insert_account_details($data_account_Detail);
 				$this->User_model->insert_withdraw($data_withdraw);
-				$this->User_model->update_interest_account($account_id,$data_accounttttttt);
+				$this->User_model->update_interest_account($account_id,$data_accounttttttt);*/
 
 			}
 			else{

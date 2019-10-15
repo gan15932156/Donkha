@@ -13,7 +13,7 @@
 		    success: function(response){
           var rel = JSON.parse(response);
           if(!rel.error){
-            alert("บันทึกข้อมูลสำเร็จ");
+            alert("บันทึกข้อมูลสำเร็จ\nผลตอบแทน "+new Intl.NumberFormat().format(parseFloat(rel.interest))+" บาท\nจำนวนเงินคงเหลือ "+new Intl.NumberFormat().format(parseFloat(rel.new_balance))+" บาท");
             window.open("<?=base_url("Project_controller/index_staff");?>", "_self");   
           }	
           else{
