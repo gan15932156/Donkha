@@ -53,7 +53,7 @@
                   <td><?php echo $row->account_id_tranfer; ?></td>
                   <td title="ดับเบิ้ลคลิกเพื่อแก้ไขและกดปุ่ม Enter เพื่อบันทึก"><?php echo number_format($row->trans_money,2); ?></td>
                   <td>
-                    <a onclick="return confirm('ยืนยันรายการหรือไม่');" href="<?php  echo base_url('Project_controller/confirm_tranfer_money/'.$row->account_detail_id)."/".$this->session->userdata('id'); ?>" >ยืนยันรายการ</a>
+                    <a onclick="return confirm('ยืนยันรายการหรือไม่');" href="<?php  echo base_url('Project_controller/confirm_tranfer_money/'.$row->account_detail_id)."/".$this->session->userdata('id')."/".$row->account_id_tranfer; ?>" >ยืนยันรายการ</a>
                   </td><div id="result"></div>
                 </tr>
               <?php $i++; }  ?>

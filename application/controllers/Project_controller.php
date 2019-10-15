@@ -2130,13 +2130,18 @@ class Project_controller extends CI_Controller {
 		$this->User_model->update_confirm_account_deposit($account_id,$account_detail_balance);
 		$url1 = base_url('Project_controller/check_next_passbook_page_accountdetail_id/').$account_detail_id;
 		$url2 = base_url('Project_controller/noti_dep/');
-		echo '
+		/*echo '
             <script type="text/javascript">
             	var confirn =  confirm("ทำรายการเรียบร้อย\nต้องการพิมพ์สมุดคู่ฝาก หรือไม่");
             	if(confirn == true){ window.open("'.$url1.'", "_self");}
             	else{ window.open("'.$url2.'", "_self"); }
             </script>
-            ';
+			';*/
+		echo '
+        <script type="text/javascript">
+        	window.open("'.$url2.'", "_self");
+        </script>
+        ';
 	}
 	public function confirm_withdraw(){
 		$staff_id = $this->uri->segment(4);
@@ -2152,13 +2157,18 @@ class Project_controller extends CI_Controller {
 		$this->User_model->update_confirm_account_withdraw($account_id,$account_detail_balance);
 		$url1 = base_url('Project_controller/check_next_passbook_page_accountdetail_id/').$account_detail_id;
 		$url2 = base_url('Project_controller/noti_wd/');
-		echo '
+		/*echo '
             <script type="text/javascript">
             	var confirn =  confirm("ทำรายการเรียบร้อย\nต้องการพิมพ์สมุดคู่ฝาก หรือไม่");
             	if(confirn == true){ window.open("'.$url1.'", "_self");}
             	else{ window.open("'.$url2.'", "_self"); }
             </script>
-            ';
+			';*/
+		echo '
+        <script type="text/javascript">	
+        	window.open("'.$url2.'", "_self"); 
+        </script>
+        ';
 	}
 	public function confirm_tranfer_money(){
 		$staff_id = $this->uri->segment(4);
@@ -2172,15 +2182,26 @@ class Project_controller extends CI_Controller {
 		}
 		$this->User_model->update_confirm_tranfer_money($account_detail_id,$trans_id,$staff_id);
 		$this->User_model->update_confirm_account_tranfer($account_id,$account_detail_balance);
+
+		$account_reveive = $this->uri->segment(5);
+		foreach($this->User_model->select_account_detail_lastest($account_reveive)->result() as $row2){
+			$acc_receive_account_detail = $row2->account_detail_id;
+		}
+		$this->User_model->update_staff_confirm_reice_tranfer($acc_receive_account_detail,$staff_id);
 		$url1 = base_url('Project_controller/check_next_passbook_page_accountdetail_id/').$account_detail_id;
 		$url2 = base_url('Project_controller/noti_tdf/');
-		echo '
+		/*echo '
             <script type="text/javascript">
             	var confirn =  confirm("ทำรายการเรียบร้อย\nต้องการพิมพ์สมุดคู่ฝาก หรือไม่");
             	if(confirn == true){ window.open("'.$url1.'", "_self");}
             	else{ window.open("'.$url2.'", "_self"); }
             </script>
-            ';
+			';*/
+		echo '
+        <script type="text/javascript">
+        	window.open("'.$url2.'", "_self"); 
+        </script>
+		';	
 	}
 	public function check_next_passbook_page_accountdetail_id(){
 		$data['account_detail'] = $this->User_model->select_account_detail_parameter($this->uri->segment(3));

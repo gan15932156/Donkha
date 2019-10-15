@@ -417,6 +417,73 @@ class Service_app extends CI_Controller {
 		}
 		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);	
 	}
+	public function receive_tranfer_insert(){
+		$this->response = null ;
+		date_default_timezone_set('Asia/Bangkok');	
+		$tdf_code = $this->User_model->auto_generate_tranfer_money_code();
+		$data_tran=array(
+			'tranfer_money_id'=>$tdf_code,
+			'account_id'=>$this->input->post("account_id"),
+			'account_id_tranfer'=>$this->input->post("account_id_tranfer"),
+			'money_tranfer'=>$this->input->post("tranfer_money")
+		);	
+		$data_account_detail=array(
+			'trans_id'=>$tdf_code,
+			'account_id'=>$this->input->post("account_id"),
+			'staff_record_id'=>'',
+			'action'=>'tranfer_money',
+			'record_date'=>date('Y-m-d'),
+			'record_time'=>date('H:i:s'),
+			'account_detail_balance'=>$this->input->post("new_balance"),
+			'trans_money'=>$this->input->post("tranfer_money"),
+			'account_detail_confirm'=>'0',
+		);
+		if($data["check_account"]=$this->Service_App_Model->check_account_tranfer($this->input->post("account_id_tranfer"))){
+			if($this->Service_App_Model->tranfer_service_insert($data_tran) && $this->Service_App_Model->account_detail_service_insert($data_account_detail)){		
+				$rec_code = $this->User_model->auto_generate_recive_money_code();
+				foreach ($data["check_account"]->result() as $row) {
+					$account_balance=$row->account_balance;
+				}
+				$new_balance = $account_balance+$this->input->post('tranfer_money',true);	
+
+				$data_account_detail_reciver=array(
+					'trans_id'=>$rec_code, //recive tranfer money
+					'account_id'=>$this->input->post("account_id_tranfer"),
+					'staff_record_id'=>'',
+					'action'=>'recive_money',
+					'record_date'=>date('Y-m-d'),
+					'record_time'=>date('H:i:s'),
+					'account_detail_balance'=>$new_balance,
+					'trans_money'=>$this->input->post("tranfer_money"),
+					'account_detail_confirm'=>'1',
+				);
+				$data_rec=array(
+					'tranfer_money_id'=>$rec_code,
+					'account_id'=>$this->input->post("account_id_tranfer"),
+					'account_id_tranfer'=>$this->input->post("account_id"),
+					'money_tranfer'=>$this->input->post("tranfer_money")
+				);
+				if($this->Service_App_Model->tranfer_service_insert($data_rec) && $this->Service_App_Model->account_detail_service_insert($data_account_detail_reciver)){
+					$this->Service_App_Model->update_confirm_account_tranfer_service($this->input->post("account_id_tranfer"),$new_balance);
+					$this->response['error'] = false;
+					$this->response['message'] = 'ทำรายการสำเร็จ กรุณารอการยืนยันจากพนักงาน';
+				}
+				else{
+					$this->response['error'] = true;
+					$this->response['message'] = 'ไม่สามารถทำรายการได้';
+				}		
+			}
+			else{
+				$this->response['error'] = true;
+				$this->response['message'] = 'ไม่สามารถทำรายการได้';
+			}
+		}
+		else{
+			$this->response['error'] = true;
+			$this->response['message'] = 'ไม่พบบัญชีที่โอน';
+		}	
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);	
+	}
 	public function check_statement_confirm(){
 		$this->response = null ;
 		$account_id = $this->input->post("account_id");
@@ -641,6 +708,27 @@ class Service_app extends CI_Controller {
 			$this->response['message'] = 'ไม่พบข้อมูล';
 		}
 		
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
+	}
+	public function select_autocomplete_account_id(){
+		date_default_timezone_set('Asia/Bangkok');
+		$this->response = null; 
+
+		if($data['account_id']=$this->Service_App_Model->select_auto_account($this->input->post("account_id"))){
+			foreach($data['account_id']->result() as $row){
+				$account = array(
+					'account_id'=>$row->account_id,
+				);
+				$accountt[] = $account;	
+			}
+			$this->response['error'] = false; 
+			$this->response['message'] = 'พบข้อมูล'; 
+			$this->response['account_id'] = $accountt;    
+		}
+		else{
+			$this->response['error'] = true; 
+			$this->response['message'] = 'ไม่พบข้อมูล';
+		}
 		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
 	}
 }

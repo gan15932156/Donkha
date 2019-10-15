@@ -611,10 +611,10 @@ class User_model extends CI_Model {
 	}
 	public function select_unconfirm_tranfer_money(){
 		$this->db->from('account_detail');
-		$this->db->join('tranfer_money', 'trans_id = tranfer_money_id','inner');
-		$this->db->join('account', 'account_detail.account_id = account.account_id','inner');
 		$this->db->where('account_detail_confirm',"0");
 		$this->db->where('action', 'tranfer_money');
+		$this->db->join('tranfer_money', 'trans_id = tranfer_money_id','inner');
+		$this->db->join('account', 'account_detail.account_id = account.account_id','inner');
 		$query = $this->db->get();
 		return $query;
 	}
@@ -1229,6 +1229,14 @@ class User_model extends CI_Model {
 		$this->db->where("account_detail_id",$account_detail_id);
 		$this->db->where("action","tranfer_money");
 		$this->db->where("trans_id",$trans_id);
+		$this->db->update("account_detail",$data_account_detail);
+	}
+	public function update_staff_confirm_reice_tranfer($account_detail_id,$staff_id){
+		$data_account_detail = array(
+			'account_detail_confirm' => '1',
+			'staff_record_id' => $staff_id
+		);
+		$this->db->where("account_detail_id",$account_detail_id);
 		$this->db->update("account_detail",$data_account_detail);
 	}
 	public function update_confirm_account_deposit($account_id,$account_balance){

@@ -176,6 +176,20 @@ class Service_App_Model extends CI_Model {
             return false;
         }
 	}
+	public function select_auto_account($account_id){
+		$this->db->select("account_id");
+		$this->db->from('account');
+		$this->db->where('account_id !=',$account_id);
+		$this->db->where('account_status ','1');
+		$this->db->order_by('account_id ASC');
+		$query=$this->db->get();
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+	}
     public function check_login_app($user,$pass){
 		$this->db->from('user');
 		$this->db->join('member', 'user.member_id = member.member_id','inner');
@@ -258,6 +272,17 @@ class Service_App_Model extends CI_Model {
 			return false;
 		}
 	}
+	public function tranfer_service_insert($data_tran){
+		$this->db->insert('tranfer_money',$data_tran);	
+		if( $this->db->affected_rows() > 0 ) 
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}
 	public function account_detail_service_insert($data_account_detail){	
 		$this->db->insert('account_detail',$data_account_detail);
         if( $this->db->affected_rows() > 0 ) 
@@ -283,5 +308,22 @@ class Service_App_Model extends CI_Model {
             return false;
         }
 		
+	}
+	public function check_account_tranfer($account_id){
+		$this->db->from('account');
+		$this->db->where('account_id',$account_id);
+		$this->db->where('account_status','1');		
+		$query=$this->db->get('');
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+	}
+	public function update_confirm_account_tranfer_service($account_id,$account_balance){
+		$data_account = array('account_balance' => $account_balance);
+		$this->db->where("account_id",$account_id);
+		$this->db->update("account",$data_account);
 	}
 }
