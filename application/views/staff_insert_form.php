@@ -44,14 +44,28 @@
               <div class="col-12">
                 <div class="row">
                   <div class="form-group col-3"><label for="name">รหัสนักเรียน</label></div>
-                  <div class="form-group col-4">
+                  <div class="form-group col-3">
                     <input type="text" class="form-control " id="std_code" name="std_code" placeholder="รหัสนักเรียน" required="" onKeyUp="if(this.value*1!=this.value){ alert('กรุณากรอกเฉพาะตัวเลข'); this.value='';}">
                     <div id="result_std_code"></div>
                   </div>
-                  <div class="form-group col-3">
+                  <div class="form-group col-md-3">
+                    <label for="name">ระดับการศึกษา</label>
+                  </div>
+                  <div class="form-group col-md-3"> 
+                    <select  id="edu_level" name="edu_level" class="form-control" >
+                      <?php 
+                        foreach ($edu_level->result() as $row) {
+                      ?>
+                          <option value="<?php echo $row->edu_id; ?>"><?php echo $row->edu_name; ?></option>  
+                      <?php } ?>
+                    </select>
+                  </div> 
+                </div>
+                <div class="row">
+                <div class="form-group col-3">
                     <label for="name">คำนำหน้า</label>
                   </div>
-                  <div class="form-group col-2">
+                  <div class="form-group col-3">
                     <select  id="title" name="title" class="form-control">
                       <option value="ด.ช.">ด.ช.</option>
                       <option value="ด.ญ.">ด.ญ.</option>
@@ -60,25 +74,11 @@
                       <option value="นาง">นาง</option>
                     </select>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="form-group col-3">
+                  <div class="form-group col-2">
                     <label for="name">ชื่อ-นามสกุล</label></div>
                   <div class="form-group col-4">
                     <input type="text" class="form-control " id="name" name="name" required="" placeholder="ชื่อ นามสกุล" onchange="check_name(this,'1')">
                     <div id="result_staff_name"></div>
-                  </div>
-                  <div class="form-group col-md-3">
-                    <label for="name">ระดับการศึกษา</label>
-                  </div>
-                  <div class="form-group col-md-2"> 
-                    <select  id="edu_level" name="edu_level" class="form-control" >
-                      <?php 
-                        foreach ($edu_level->result() as $row) {
-                      ?>
-                          <option value="<?php echo $row->edu_id; ?>"><?php echo $row->edu_name; ?></option>  
-                      <?php } ?>
-                    </select>
                   </div>
                 </div> 
                 <div class="row">

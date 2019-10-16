@@ -595,7 +595,7 @@ class Project_controller extends CI_Controller {
 			'trans_id'=>$dep_code,
 			'account_id'=>$this->input->post("ac_code"),
 			'staff_record_id'=>$this->input->post("staff_id"),
-			'action'=>'deposit',
+			'action'=>'open_account',
 			'record_date'=>$this->input->post("now_date"),
 			'record_time'=>$now_time,
 			'account_detail_balance'=>$this->input->post("money"),
@@ -759,7 +759,7 @@ class Project_controller extends CI_Controller {
 				$response['error'] = false;
 				$response['message'] = "สำเร็จ";
 				
-			/*	$interest_code = $this->User_model->auto_generate_interest_code();
+			   $interest_code = $this->User_model->auto_generate_interest_code();
 				$data_account_detail_add_interest=array(
 					'trans_id'=>$interest_code,
 					'account_id'=>$account_id,
@@ -817,7 +817,7 @@ class Project_controller extends CI_Controller {
 				);
 				$this->User_model->insert_account_details($data_account_Detail);
 				$this->User_model->insert_withdraw($data_withdraw);
-				$this->User_model->update_interest_account($account_id,$data_accounttttttt);*/
+				$this->User_model->update_interest_account($account_id,$data_accounttttttt);
 
 			}
 			else{
@@ -1454,7 +1454,7 @@ class Project_controller extends CI_Controller {
 		                        <td class="text-center"><span class="text-success">'.$action.'</span></td>
 		                        <td align="right"><span class="text-success">+'.number_format($row->trans_money,2).'</span></td>
 		                        <td align="right">'.number_format($row->account_detail_balance,2).'</td>
-		                        <td class="text-center">'.$row->staff_title."".$row->staff_name.'</td>
+		                        <td class="text-left">'.$row->staff_title."".$row->staff_name.'</td>
 		                    </tr>';
 		                $i++;
 					}
@@ -1498,7 +1498,7 @@ class Project_controller extends CI_Controller {
 		                    <td class="text-center"><span class="text-danger">'.$action.'</span></td>
 		                    <td align="right"><span class="text-danger">-'.number_format($row->trans_money,2).'</span></td>
 		                    <td align="right">'.number_format($row->account_detail_balance,2).'</td>
-		                    <td class="text-center">'.$row->staff_title."".$row->staff_name.'</td>
+		                    <td class="text-left">'.$row->staff_title."".$row->staff_name.'</td>
 		                </tr>';
 		            $i++;
 				}
@@ -1536,7 +1536,7 @@ class Project_controller extends CI_Controller {
 		                    <td class="text-center"><span class="text-danger">โอน</span></td>
 		                    <td align="right"><span class="text-danger">-'.number_format($row->trans_money,2).'</span></td>
 		                    <td align="right">'.number_format($row->account_detail_balance,2).'</td>
-		                    <td class="text-center">'.$row->staff_title."".$row->staff_name.'</td>
+		                    <td class="text-left">'.$row->staff_title."".$row->staff_name.'</td>
 		                </tr>';
 		            $i++;
 				}
@@ -1608,7 +1608,7 @@ class Project_controller extends CI_Controller {
 		                    <td class="text-center">'.$action.'</td>
 		                    <td align="right">'.$money.'</td>
 		                    <td align="right">'.number_format($row->account_detail_balance,2).'</td>
-		                    <td class="text-center">'.$row->staff_title."".$row->staff_name.'</td>
+		                    <td class="text-left">'.$row->staff_title."".$row->staff_name.'</td>
 		                </tr>';
 		            $i++;
 				}
@@ -2893,7 +2893,7 @@ class Project_controller extends CI_Controller {
 						<td style="border:1px solid black">'.$action.'</td>
 						<td align="right" style="border:1px solid black">'.number_format($row->trans_money,2).'</td>
 						<td align="right"  style="border:1px solid black">'.number_format($row->account_detail_balance,2).'</td>
-						<td style="border:1px solid black">'.$row->staff_title."".$row->staff_name.'</td>
+						<td align="left" style="border:1px solid black">'.$row->staff_title."".$row->staff_name.'</td>
 					</tr>';
 			$i++;
 		}

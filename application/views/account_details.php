@@ -8,6 +8,11 @@
   function logout(){
     location.replace("<?php  echo base_url()."Project_controller/logout"; ?>");
   }
+  function mouseoverrr(action){
+    if(action == "recive_money" || action == "tranfer_money"){
+      $('tr').css('cursor', 'pointer');
+    }
+  }
   function onmouseover_foo(ac,action){
     if(action == "recive_money" || action == "tranfer_money"){
       $.ajax({
@@ -25,6 +30,7 @@
     }
   }
   $(document).ready(function(){
+    
     $("#filter").change(function(){
       $.ajax({
         url:"<?php echo base_url("index.php/Project_controller/filter_transaction_table"); ?>",
@@ -135,7 +141,7 @@
               } 
               date_default_timezone_set('Asia/Bangkok');
               foreach($account_detail->result() as $row){ ?>
-            <tr onclick="onmouseover_foo('<?php echo $row->account_detail_id; ?>','<?php echo $row->action; ?>')" id="tr_body">
+            <tr onmouseover="mouseoverrr('<?php echo $row->action; ?>')" onclick="onmouseover_foo('<?php echo $row->account_detail_id; ?>','<?php echo $row->action; ?>')" id="tr_body">
               <th class="text-center" scope="row"><?php echo $i; ?></th>
               <td class="text-center"><?php echo DateThai($row->record_date)." ".$row->record_time; ?></td>
               <td class="text-center"><?php 
@@ -166,7 +172,7 @@
                 echo number_format($row->account_detail_balance,2);
                 ?> 
               </td>
-              <td class="text-center"><?php echo $row->staff_title."".$row->staff_name; ?></td>
+              <td class="text-left"><?php echo $row->staff_title."".$row->staff_name; ?></td>
             </tr>
             <?php $i++; }  ?>  
           </tbody>
