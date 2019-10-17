@@ -123,10 +123,20 @@ class Project_controller extends CI_Controller {
 	public function account_detail(){
 		$account_id=$this->uri->segment(3);
 		$data['account']=$this->User_model->select_account_with_parameter($account_id);
-		$data['account_detail']=$this->User_model->select_account_detail_parameter_account_id($account_id);
+		$data['account_id'] = $account_id;
+		//$data['account_detail']=$this->User_model->select_account_detail_parameter_account_id($account_id);
 		$this->load->view('templates/header');
-		$this->load->view('account_details',$data);
+		$this->load->view('account_detailsssssssssss',$data);
 		$this->load->view('templates/footer');									
+	}
+	public function rsadasdasd(){
+		$account_id=$this->uri->segment(3);
+		$data['account']=$this->User_model->select_account_with_parameter($account_id);
+		$data['account_id'] = $account_id;
+		//$data['account_detail']=$this->User_model->select_account_detail_parameter_account_id($account_id);
+		$this->load->view('templates/header');
+		$this->load->view('account_detailsssssssssss',$data);
+		$this->load->view('templates/footer');	
 	}
 	public function noti_wd(){
 		$data['unconfirm_withdraw'] =  $this->User_model->select_unconfirm_withdraw();		
@@ -805,7 +815,7 @@ class Project_controller extends CI_Controller {
 					'staff_record_id'=>$this->input->post("staff_id"),
 					'action'=>'close_account',
 					'record_date'=>date('Y-m-d'),
-					'record_time'=>date('H:i:s'),
+					'record_time'=>date('H:i:s', strtotime("+1 seconds")),
 					'account_detail_balance'=>"0",
 					'trans_money'=>$account_balance,
 					'account_detail_confirm'=>'1',
@@ -1418,6 +1428,29 @@ class Project_controller extends CI_Controller {
 		}
 	  	$result.='</tbody></table>';
 		echo $result;
+	}
+	public function filter_account_detil_datatable(){
+		$sccount_id = $this->uri->segment(3);
+		$action = $this->uri->segment(4);
+		$order_index = $this->input->get('order[0][column]');
+        $param['page_size'] = $this->input->get('length');
+        $param['start'] = $this->input->get('start');
+        $param['draw'] = $this->input->get('draw');
+        $param['keyword'] = trim($this->input->get('search[value]'));
+        $param['column'] = $this->input->get("columns[{$order_index}][data]");
+        $param['dir'] = $this->input->get('order[0][dir]');
+ 
+        $results = $this->User_model->fetch_filter_account_detail_datatable($param,$sccount_id,$action);
+ 
+        $data['draw'] = $param['draw'];
+        $data['recordsTotal'] = $results['count'];
+        $data['recordsFiltered'] = $results['count_condition'];
+        $data['data'] = $results['data'];
+        $data['error'] = $results['error_message'];
+ 
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+
+
 	}
 	public function filter_transaction_table(){
 		$output='';
@@ -3005,6 +3038,26 @@ class Project_controller extends CI_Controller {
         $param['dir'] = $this->input->get('order[0][dir]');
  
         $results = $this->User_model->fetch_account_datatable($param);
+ 
+        $data['draw'] = $param['draw'];
+        $data['recordsTotal'] = $results['count'];
+        $data['recordsFiltered'] = $results['count_condition'];
+        $data['data'] = $results['data'];
+        $data['error'] = $results['error_message'];
+ 
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+	}
+	public function fetch_account_detail(){
+		$sccount_id = $this->uri->segment(3);
+		$order_index = $this->input->get('order[0][column]');
+        $param['page_size'] = $this->input->get('length');
+        $param['start'] = $this->input->get('start');
+        $param['draw'] = $this->input->get('draw');
+        $param['keyword'] = trim($this->input->get('search[value]'));
+        $param['column'] = $this->input->get("columns[{$order_index}][data]");
+        $param['dir'] = $this->input->get('order[0][dir]');
+ 
+        $results = $this->User_model->fetch_account_detail_datatable($param,$sccount_id);
  
         $data['draw'] = $param['draw'];
         $data['recordsTotal'] = $results['count'];

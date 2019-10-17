@@ -2,7 +2,8 @@
   $(document).ready(function(){
     var table = $('#data_table').DataTable({
       columnDefs: [
-        {targets: '_all',className: 'dt-body-center'}
+        {targets: [0,2,3],className: 'dt-body-center'},
+        {targets: [1],className: 'dt-body-left'}
       ],
       pageLength: 8,
       serverSide: true,
