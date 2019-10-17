@@ -90,7 +90,7 @@
                     <input type="hidden" name="id_card" id="id_card">
                   </div>
                   <div class="form-group col-md-2">
-                    <label for="name">ตำแหน่ง</label>
+                    <label for="name">สถานะ</label>
                   </div> 
                   <div class="form-group col-md-3">
                     <select  id="permiss" name="permiss" class="form-control" >

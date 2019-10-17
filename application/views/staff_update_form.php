@@ -88,7 +88,7 @@
                           <input type="hidden" name="id_card" id="id_card" value="<?php echo $row->staff_id_card; ?>">
                         </div>
                         <div class="form-group col-md-2">
-                          <label for="name">ตำแหน่ง</label>
+                          <label for="name">สถานะ</label>
                         </div> 
                         <div class="form-group col-md-3">
                           <select  id="permiss" name="permiss" class="form-control" >
@@ -163,12 +163,7 @@
                     <div class="form-group col-md-2">
                       <input type="text" class="form-control " name="zipcode" id="zipcode" value="<?php echo $row->zipcode; ?>">
                     </div>                                  
-                    <div class="form-group col-md-1">
-                      <label style="width:100px">รูปประจำตัว</label>
-                    </div> 
-                    <div class="form-group col-md-7">
-                      <input type="text" id="show_image" name="show_image" class="form-control" readonly="" value="<?php echo $row->staff_pic; ?>">
-                    </div>   
+                  
                   </div>
                   <div class="row">
                     <div class="form-group col-md-12 text-center"><br>

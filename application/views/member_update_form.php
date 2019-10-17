@@ -1,14 +1,14 @@
-<style type="text/css"> 
-  .scroller{
-    height:80vh;
-    overflow:auto;
-  }                                 
-</style>
 <script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/select_information.js"></script>  
 <script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/check_information.js"></script>  
 <script type="text/javascript">
   $(document).ready(function()
-  {    
+  { 
+    $("#show_image_pic").click(function() {
+      $("input[id='pic_member']").click();   
+    });
+    $("#show_image_signa").click(function() {
+      $("input[id='pic_singna']").click();   
+    });      
     $("#member_form").submit(function(event) {
 			event.preventDefault();
 			$.ajax({
@@ -38,7 +38,7 @@
         <div class="col-md-12 text-center">
           <?php foreach($member_after->result() as $row){ 
             if($row->std_code == '0'){
-              $std_code = 'ไม่มี';
+              $std_code = '-';
               echo "<script type='text/javascript'>
                 $(document).ready(function(){
                 $('#edu_level').val('');
@@ -63,49 +63,29 @@
             <div class="row">
               <div class="form-group col-4" align="center">
                 <input type="hidden" name="member_id" id="member_id" value="<?php echo $row->member_id;?>">
-                <img id="show_image_pic" width="120px" height= "140px" src="<?php echo $row->member_pic;?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
+                <img onmouseover="this.style.cursor = 'pointer'" id="show_image_pic" name="show_image_pic" width="40%" height= "40%" src="<?php echo $row->member_pic;?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
                 <figcaption>รูปประจำตัว</figcaption>
                 <input type="hidden" id="show_member_pic" name="show_member_pic" class="form-control" readonly="" value="<?php echo $row->member_pic; ?>">
-                <input onchange="readURL_profile(this);" type="file" class="form-control " name="pic_member" id="pic_member" ><br>   
-                <img id="show_image_signa" width="120px" height= "140px" src="<?php echo $row->member_signa_pic;?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
+                <input style="display: none;" onchange="readURL_profile(this);" type="file" class="form-control " name="pic_member" id="pic_member" >    
+                <img onmouseover="this.style.cursor = 'pointer'" id="show_image_signa" width="40%" height= "40%" src="<?php echo $row->member_signa_pic;?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
                 <figcaption>รูปลายเซ็น</figcaption>
                 <input type="hidden" id="show_member_signa_pic" name="show_member_signa_pic" class="form-control" readonly="" value="<?php echo $row->member_signa_pic; ?>">
-                <input onchange="readURL_singa(this);" type="file" class="form-control " name="pic_singna" id="pic_singna" > 
+                <input style="display: none;" onchange="readURL_singa(this);" type="file" class="form-control " name="pic_singna" id="pic_singna" > 
               </div>  
               <div class="form-group col-8" align="left">
                 <div class="row">
                   <div class="col-12">
                     <div class="row">
                       <div class="form-group col-3"><label for="name">รหัสนักเรียน</label></div>
-                      <div class="form-group col-4">
+                      <div class="form-group col-3">
                         <input type="text" class="form-control " id="std_code" name="std_code" placeholder="รหัสนักเรียน" required="" readonly value="<?php echo $std_code; ?>">
                         <div id="result_std_code"></div>
                       </div>
-                      <div class="form-group col-3">
-                        <label for="name">คำนำหน้า</label>
-                      </div>
-                      <div class="form-group col-2">
-                        <select  id="title" name="title" class="form-control">
-                          <option <?php if($row->member_title=="ด.ช."){echo "selected";}?>>ด.ช.</option>
-                          <option <?php if($row->member_title=="ด.ญ."){echo "selected";}?>>ด.ญ.</option>
-                          <option <?php if($row->member_title=="นาย"){echo "selected";}?>>นาย</option>
-                          <option <?php if($row->member_title=="น.ส."){echo "selected";}?>>น.ส.</option>
-                          <option <?php if($row->member_title=="นาง"){echo "selected";}?>>นาง</option>   
-                        </select>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="form-group col-3">
-                        <label for="name">ชื่อ-นามสกุล</label>
-                      </div>
-                      <div class="form-group col-4">
-                        <input type="text" class="form-control " id="name" name="name" required="" value="<?php echo $row->member_name;?>" onchange="check_name(this,'2')">    
-                        <div id="result_member_name"></div>
-                      </div>
+                     
                       <div class="form-group col-md-3">
                         <label for="name">ระดับการศึกษา</label>
                       </div>
-                      <div class="form-group col-md-2"> 
+                      <div class="form-group col-md-3"> 
                         <select  id="edu_level" name="edu_level" class="form-control" >
                           <?php 
                             foreach ($base_edu_level->result() as $row_edu) {
@@ -114,6 +94,28 @@
                           <?php } ?>
                         </select>
                       </div>
+                    </div>
+                    <div class="row">
+                    <div class="form-group col-3">
+                        <label for="name">คำนำหน้า</label>
+                      </div>
+                      <div class="form-group col-3">
+                        <select  id="title" name="title" class="form-control">
+                          <option <?php if($row->member_title=="ด.ช."){echo "selected";}?>>ด.ช.</option>
+                          <option <?php if($row->member_title=="ด.ญ."){echo "selected";}?>>ด.ญ.</option>
+                          <option <?php if($row->member_title=="นาย"){echo "selected";}?>>นาย</option>
+                          <option <?php if($row->member_title=="น.ส."){echo "selected";}?>>น.ส.</option>
+                          <option <?php if($row->member_title=="นาง"){echo "selected";}?>>นาง</option>   
+                        </select>
+                      </div>
+                      <div class="form-group col-3">
+                        <label for="name">ชื่อ-นามสกุล</label>
+                      </div>
+                      <div class="form-group col-3">
+                        <input type="text" class="form-control " id="name" name="name" required="" value="<?php echo $row->member_name;?>" onchange="check_name(this,'2')">    
+                        <div id="result_member_name"></div>
+                      </div>
+                     
                     </div> 
                     <div class="row">
                       <div class="form-group col-md-3">
@@ -124,7 +126,7 @@
                         <input type="hidden" name="id_card" id="id_card" value="<?=$row->member_id_card;?>">
                       </div>
                       <div class="form-group col-md-2">
-                        <label for="name">ตำแหน่ง</label>
+                        <label for="name">สถานะ</label>
                       </div> 
                       <div class="form-group col-md-3">
                         <select  id="permiss" name="permiss" class="form-control" >
@@ -175,72 +177,71 @@
                       <div class="form-group col-md-2">
                         <label for="name">ที่อยู่</label>
                       </div>   
-                      <div class="form-group col-md-10">
+                      <div class="form-group col-md-5">
                         <input type="text" class="form-control " name="address" id="address" required="" placeholder="บ้านเลขที่ หมู่ ถนน ซอย" value="<?=$row->address;?>">
-                      </div>                                  
-                    </div>
-                    <div class="row">
-                      <div class="form-group col-md-2">
+                      </div> 
+                      <div class="form-group col-md-1">
                         <label for="name">จังหวัด</label>
                       </div>  
                       <div class="form-group col-md-4">
                         <select  id="PROVINCE_ID" name="PROVINCE_ID" class="form-control" >
-                          <?php 
-                            foreach ($base_province->result() as $row_pro) {
-                          ?>
-                              <option value="<?=$row_pro->PROVINCE_ID;?>" <?php if($row->PROVINCE_ID== $row_pro->PROVINCE_ID){echo "selected";}?>> <?=$row_pro->PROVINCE_NAME;?> </option> 
-                          <?php } ?>  
+                        <?php 
+                          foreach ($base_province->result() as $row_pro) {
+                        ?>
+                          <option value="<?=$row_pro->PROVINCE_ID;?>" <?php if($row->PROVINCE_ID== $row_pro->PROVINCE_ID){echo "selected";}?>> <?=$row_pro->PROVINCE_NAME;?> </option> 
+                        <?php } ?>  
                         </select>
-                      </div>
-                      <div class="form-group col-md-2">
-                         <label for="name">อำเภอ</label>
-                      </div>
-                      <div class="form-group col-md-4">
-                        <select  id="AMPHUR_ID" name="AMPHUR_ID" class="form-control" >
-                          <?php 
-                            foreach ($base_amphures->result() as $row_amp) {         
-                          ?>
-                              <option value="<?=$row_amp->AMPHUR_ID;?>" <?php if($row->AMPHUR_ID== $row_amp->AMPHUR_ID){echo "selected";}?>> <?=$row_amp->AMPHUR_NAME;?> </option>
-                          <?php  } ?>
-                        </select>
-                      </div>                                         
-                    </div> 
-                    <div class="row">
-                      <div class="form-group col-md-2">
-                        <label for="name">ตำบล</label>
-                      </div>
-                      <div class="form-group col-md-4">
-                        <select  id="DISTRICT_CODE" name="DISTRICT_CODE" class="form-control" >
-                          <?php 
-                            foreach ($base_districts->result() as $row_dist) {                
-                          ?>
-                              <option value="<?=$row_dist->DISTRICT_CODE;?>" <?php if($row->DISTRICT_CODE== $row_dist->DISTRICT_CODE){echo "selected";}?>> <?=$row_dist->DISTRICT_NAME;?> </option>
-                          <?php  } ?>
-                        </select>
-                      </div>
-                      <div class="form-group col-md-2">
-                        <label style="width:100px;" for="name">รหัสไปรษณีย์</label>
-                      </div>
-                      <div class="form-group col-md-4">
-                        <input type="text" class="form-control " name="zipcode" id="zipcode" value="<?php echo $row->zipcode; ?>">
-                      </div>    
+                      </div>                                 
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="form-group col-12" align="left">
-                <div class="row">
-                  <div class="form-group col-md-12 text-center">
-                    <a href="<?=base_url("index.php/Project_controller/manage_member");?>" class="btn btn-outline-success">ย้อนกลับ</a>
-                    <button type="submit" class="btn btn-outline-primary" id="submit">ตกลง</button>
+              <div class="form-group col-12">
+                <div class="row">     
+                  <div class="form-group col-md-1">
+                   <label for="name">อำเภอ</label>
                   </div>
+                  <div class="form-group col-md-3">
+                    <select  id="AMPHUR_ID" name="AMPHUR_ID" class="form-control" >
+                      <?php 
+                        foreach ($base_amphures->result() as $row_amp) {         
+                      ?>
+                          <option value="<?=$row_amp->AMPHUR_ID;?>" <?php if($row->AMPHUR_ID== $row_amp->AMPHUR_ID){echo "selected";}?>> <?=$row_amp->AMPHUR_NAME;?> </option>
+                      <?php  } ?>
+                    </select>
+                  </div>                                         
+                  <div class="form-group col-md-2">
+                    <label for="name">ตำบล</label>
+                  </div>
+                  <div class="form-group col-md-2">
+                    <select  id="DISTRICT_CODE" name="DISTRICT_CODE" class="form-control" >
+                      <?php 
+                        foreach ($base_districts->result() as $row_dist) {                
+                      ?>
+                          <option value="<?=$row_dist->DISTRICT_CODE;?>" <?php if($row->DISTRICT_CODE== $row_dist->DISTRICT_CODE){echo "selected";}?>> <?=$row_dist->DISTRICT_NAME;?> </option>
+                      <?php  } ?>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-2">
+                    <label  for="name">ไปรษณีย์</label>
+                  </div>
+                  <div class="form-group col-md-2">
+                    <input type="text" class="form-control " name="zipcode" id="zipcode" value="<?php echo $row->zipcode; ?>">
+                  </div>    
                 </div>
-              </div>                          
-            </div>                                                
-          </form>  
-          <?php  }  ?>                      
+                <div class="form-group col-12" align="left">
+                  <div class="row">
+                    <div class="form-group col-md-12 text-center">
+                      <a href="<?=base_url("index.php/Project_controller/manage_member");?>" class="btn btn-outline-success">ย้อนกลับ</a>
+                      <button type="submit" class="btn btn-outline-primary" id="submit">ตกลง</button>
+                    </div>
+                  </div>
+                </div>                          
+              </div>                                                
+            </form>  
+            <?php  }  ?>                      
+          </div>
         </div>
-      </div>
-    </div>                   
-  </div>        
+      </div>                   
+   </div>        
 </div>                              

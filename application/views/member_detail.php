@@ -8,8 +8,8 @@
         <div class="col-md-12 text-center">
           <?php foreach($member_after->result() as $row){ 
             if($row->std_code == '0'){
-              $std_code = 'ไม่มี';
-              $edu_id = 'ไม่มี';
+              $std_code = '-';
+              $edu_id = '-';
               $job = $row->job_name;
             } 
             else{
@@ -63,7 +63,7 @@
                       <label><B>ระดับการศึกษา : </B><?php echo "".$edu_id;?></label>
                     </div>
                     <div class="form-group col-6">
-                      <label><B>ตำแหน่ง : </B><?php echo "<?php echo $row->level_name;?>".$row->level_name;?></label>
+                      <label><B>สถานะ : </B><?php echo "<?php echo $row->level_name;?>".$row->level_name;?></label>
                     </div> 
                   </div>
                   <div class="row">

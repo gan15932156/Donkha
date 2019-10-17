@@ -2,7 +2,8 @@
   $(document).ready(function(){
     var table = $('#data_table').DataTable({
       columnDefs: [
-        {targets: '_all',className: 'dt-body-center'}
+        {targets: [1,2,3],className: 'dt-body-center'},
+        {targets: [0],className: 'dt-body-left'}
       ],
       pageLength: 8,
       serverSide: true,
@@ -28,7 +29,7 @@
       {
         data:'staff_name',
         render: function(data,type,row){      
-          return row['staff_title']+" "+row['staff_name'];
+          return row['staff_title']+""+row['staff_name'];
         }
       },
       {

@@ -2,20 +2,24 @@
   $(document).ready(function(){
     $("#account_form").submit(function(event) {
 			event.preventDefault();
-			$.ajax({
+
+      var connn =  confirm("ยืนยันการเปิดบัญชีหรือไม่");
+      if(connn){
+        $.ajax({
 		    url: "<?=base_url("Project_controller/account_insert/");?>",
 		    type:"post",
-        data:new FormData(this),
+        data:new FormData($(this)[0]),
         processData:false,
         contentType:false,
         cache:false,
         async:false,
-		    success: function(response){
-          alert("บันทึกข้อมูลสำเร็จ");
-			    window.open("<?=base_url("Project_controller/index_admin");?>", "_self");    		
-		    },
-		    error: function(){ alert("error"); }
-      });
+        dataType: "JSON",		
+        error: function(){ alert("error"); }
+        }).done(function(data){
+          alert(data.message);
+          window.open("<?=base_url("Project_controller/index_admin");?>", "_self");
+        });
+      }
 		});
   });
 </script>

@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Project_controller extends CI_Controller {
 	public $ip = "18.140.49.199";
-	public $picture_path = /*"picture/"*/"/opt/lampp/htdocs/Donkha/picture/";
+	public $picture_path = "picture/"/*"/opt/lampp/htdocs/Donkha/picture/"*/;
 	public function __construct(){
 		parent::__construct();
 		$this->load->helper('url');
@@ -582,6 +582,7 @@ class Project_controller extends CI_Controller {
 			'account_open_date'=>$this->input->post("date"),
 			'account_name'=>$this->input->post("ac_name"),
 			'account_status'=>'1',
+			'account_balance'=>$this->input->post("money")
 		);
 		$this->User_model->insert_account($data_acc);
 		$dep_code = $this->User_model->auto_generate_deposit_code();
@@ -600,9 +601,13 @@ class Project_controller extends CI_Controller {
 			'record_time'=>$now_time,
 			'account_detail_balance'=>$this->input->post("money"),
 			'trans_money'=>$this->input->post("money"),
-			'account_detail_confirm'=>'0',
+			'account_detail_confirm'=>'1',
 		);
 		$this->User_model->insert_account_details($data_account_detail);
+		$response = array();
+		$response["message"] = "บันทึกข้อมูลสำเร็จ";
+		$response["error"] = false;
+		echo json_encode($response);
 	}
 	public function account_insert_staff(){
  		date_default_timezone_set('Asia/Bangkok');
@@ -894,7 +899,7 @@ class Project_controller extends CI_Controller {
 			} //
 		}	
 		$data_member=array(
-			'std_code'=>($stdid == "ไม่มี" ? "0" : $stdid),
+			'std_code'=>($stdid == "-" ? "0" : $stdid),
 			'level_id'=>$this->input->post("permiss"),
 			'DISTRICT_CODE'=>$this->input->post("DISTRICT_CODE"),
 			'job_id' => $this->input->post("job"),
@@ -941,7 +946,7 @@ class Project_controller extends CI_Controller {
 			}
 		}	
 		$data_member=array(
-			'std_code'=>($stdid == "ไม่มี" ? "0" : $stdid),
+			'std_code'=>($stdid == "-" ? "0" : $stdid),
 			'level_id'=>$this->input->post("permiss"),
 			'DISTRICT_CODE'=>$this->input->post("DISTRICT_CODE"),
 			'job_id' => $this->input->post("job"),
@@ -2582,7 +2587,6 @@ class Project_controller extends CI_Controller {
  			}
  			elseif($row->interest_update == "0000-00-00" && date('Y-m-d') /*"2019-04-01"*/ >= date('Y-04-01') && $row->account_open_date > date('Y-10-01',strtotime('-1 year')) && $row->account_open_date < date('Y-04-01')) {
 				$this->cal_interest_phase1($row->account_id);
-				
  			}
  			elseif($row->interest_update == date('Y-04-01') && date('Y-m-d') /*"2019-10-01"*/ >= date('Y-10-01')){
 				$this->cal_interest_phase2($row->account_id);
@@ -2695,7 +2699,7 @@ class Project_controller extends CI_Controller {
 		static $per_100 = 100; # ร้อยละ
 		#--------------------------------------------------#
 		$data['account_detail'] = $this->User_model->select_account_detail_end_day_phase_1($account_id);
-		if($data['account_detail'] == null){echo "adsad";}
+		if($data['account_detail'] == null){}
 		else{
 			foreach ($data['account_detail']->result() as $row) {
 				$result = $this->check_last_day_phase1($account_id,$row->record_date,$row->account_detail_id);

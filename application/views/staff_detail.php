@@ -28,7 +28,7 @@
             ?>
             <div class="row">
               <div class="form-group col-4">                       
-                <img id="show_image" width="50%" height= "40%" src="<?php echo $row->staff_pic;?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
+                <img id="show_image" width="50%" height= "80%" src="<?php echo $row->staff_pic;?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
                 <figcaption><B>รูปประจำตัว</B></figcaption>
               </div>  
               <div class="form-group col-8" align="left">
@@ -58,7 +58,7 @@
                         <label><B>ระดับการศึกษา : </B><?php echo "".$row->edu_name;?></label>
                       </div>
                       <div class="form-group col-md-6">
-                        <label><B>ตำแหน่ง : </B><?php echo "<?php echo $row->level_name;?>".$row->level_name;?></label>
+                        <label><B>สถานะ : </B><?php echo "<?php echo $row->level_name;?>".$row->level_name;?></label>
                       </div>  
                     </div> 
                     <div class="row">

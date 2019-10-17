@@ -44,7 +44,7 @@
                      "><B>หน้าแรก</B></a></h4>
                   <img style="border-radius: 50%;" src="<?php  echo $this->session->userdata('spic'); ?>" width="165px" height="180px">
                   <h5><?php echo $this->session->userdata('sname');  ?></h5>
-                  <h5><?php echo "<B>ตำแหน่ง </B>".$this->session->userdata('slevel');  ?></h5>
+                  <h5><?php echo "<B>สถานะ </B>".$this->session->userdata('slevel');  ?></h5>
                   <button onclick="logout()" type="submit" class="btn btn-outline-danger" id="submit">ออกจากระบบ</button>
                </div>
                <div style="background-color: #EFFEFD;" class="col-10">

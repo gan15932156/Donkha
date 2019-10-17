@@ -1,14 +1,14 @@
-<style type="text/css"> 
-  .scroller{
-    height:80vh;
-    overflow:auto;
-  }                                 
-</style>
 <script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/select_information.js"></script>  
 <script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/check_information.js"></script>  
 <script type="text/javascript">
   $(document).ready(function()
   {   
+    $("#show_image_pic").click(function() {
+      $("input[id='pic_member']").click();   
+    });
+    $("#show_image_signa").click(function() {
+      $("input[id='pic_singna']").click();
+    });      
     $("#member_form").submit(function(event) {
 			event.preventDefault();
 			$.ajax({
@@ -78,48 +78,27 @@
         <div class="col-md-12 text-center">
           <form enctype="multipart/form-data" name="member_form" id="member_form">
             <div class="row">
-              <div class="form-group col-4" align="center"> 
-                <img id="show_image_pic" width="130px" height= "180px" src="<?php  echo base_url()."picture/No_person.jpg"; ?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
+              <div class="form-group col-3" align="center"> 
+                <img onmouseover="this.style.cursor = 'pointer'" id="show_image_pic" width="50%" height= "40%" src="<?php  echo base_url()."picture/No_person.jpg"; ?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
                 <figcaption>รูปประจำตัว</figcaption>
-                <input onchange="readURL_profile(this);" type="file" class="form-control " name="pic_member" id="pic_member" required=""><br>   
-                <img id="show_image_signa" width="130px" height= "180px" src="<?php  echo base_url()."picture/blague-Monsieur-et-Madame-27-300x300.jpg"; ?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
+                <input style="display: none;" onchange="readURL_profile(this);" type="file" class="form-control " name="pic_member" id="pic_member" required=""> 
+                <img onmouseover="this.style.cursor = 'pointer'" id="show_image_signa" width="50%" height= "40%" src="<?php  echo base_url()."picture/blague-Monsieur-et-Madame-27-300x300.jpg"; ?>" alt="your image" style="border: solid 1px #c0c0c0;" /> 
                 <figcaption>รูปลายเซ็น</figcaption>
-                <input onchange="readURL_singa(this);" type="file" class="form-control " name="pic_singna" id="pic_singna" required="">                                                  
+                <input style="display: none;" onchange="readURL_singa(this);" type="file" class="form-control " name="pic_singna" id="pic_singna" required="">                                                  
               </div>  
-              <div class="form-group col-8" align="left">
+              <div class="form-group col-9" align="left">
                 <div class="row">
                   <div class="col-12">
                     <div class="row">
                       <div class="form-group col-3"><label for="name">รหัสนักเรียน</label></div>
-                      <div class="form-group col-4">
+                      <div class="form-group col-3">
                         <input type="text" class="form-control " id="std_code" name="std_code" placeholder="รหัสนักเรียน" required="" onKeyUp="if(this.value*1!=this.value){ alert('กรุณากรอกเฉพาะตัวเลข'); this.value='';}">
                         <div id="result_std_code"></div>
-                      </div>
-                      <div class="form-group col-3">
-                        <label for="name">คำนำหน้า</label>
-                      </div>
-                      <div class="form-group col-2">
-                        <select  id="title" name="title" class="form-control">
-                          <option value="ด.ช.">ด.ช.</option>
-                          <option value="ด.ญ.">ด.ญ.</option>
-                          <option value="นาย">นาย</option>
-                          <option value="น.ส.">น.ส.</option>
-                          <option value="นาง">นาง</option>    
-                        </select>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="form-group col-3">
-                        <label for="name">ชื่อ-นามสกุล</label>
-                      </div>
-                      <div class="form-group col-4">
-                        <input type="text" class="form-control " id="name" name="name" required="" placeholder="ชื่อ นามสกุล" onchange="check_name(this,'2')">     
-                        <div id="result_member_name"></div>
                       </div>
                       <div class="form-group col-md-3">
                         <label for="name">ระดับการศึกษา</label>
                       </div>
-                      <div class="form-group col-md-2"> 
+                      <div class="form-group col-md-3"> 
                         <select  id="edu_level" name="edu_level" class="form-control" >
                           <?php 
                             foreach ($edu_level->result() as $row) {
@@ -128,6 +107,27 @@
                           <?php } ?>
                         </select>
                       </div>
+                    </div>
+                    <div class="row">
+                      <div class="form-group col-3">
+                        <label for="name">คำนำหน้า</label>
+                      </div>
+                      <div class="form-group col-3">
+                        <select  id="title" name="title" class="form-control">
+                          <option value="ด.ช.">ด.ช.</option>
+                          <option value="ด.ญ.">ด.ญ.</option>
+                          <option value="นาย">นาย</option>
+                          <option value="น.ส.">น.ส.</option>
+                          <option value="นาง">นาง</option>    
+                        </select>
+                      </div>
+                      <div class="form-group col-3">
+                        <label for="name">ชื่อ-นามสกุล</label>
+                      </div>
+                      <div class="form-group col-3">
+                        <input type="text" class="form-control " id="name" name="name" required="" placeholder="ชื่อ นามสกุล" onchange="check_name(this,'2')">     
+                        <div id="result_member_name"></div>
+                      </div>                    
                     </div> 
                     <div class="row">
                       <div class="form-group col-md-3">
@@ -138,7 +138,7 @@
                         <input type="hidden" name="id_card" id="id_card">
                       </div>
                       <div class="form-group col-md-2">
-                        <label for="name">ตำแหน่ง</label>
+                        <label for="name">สถานะ</label>
                       </div> 
                       <div class="form-group col-md-3">
                         <select  id="permiss" name="permiss" class="form-control" >
@@ -183,19 +183,16 @@
                               <option value="<?php echo $row->job_id; ?>"><?php echo $row->job_name; ?></option>  
                           <?php } ?>
                         </select>
-                      </div>                        
-                                                         
+                      </div>                                                                                 
                     </div>
                     <div class="row">
                       <div class="form-group col-md-2">
                         <label for="name">ที่อยู่</label>
                       </div>   
-                      <div class="form-group col-md-10">
+                      <div class="form-group col-md-5">
                         <input type="text" class="form-control " name="address" id="address" required="" placeholder="บ้านเลขที่ หมู่ ถนน ซอย">
-                      </div>                                  
-                    </div>
-                    <div class="row">
-                      <div class="form-group col-md-2">
+                      </div>    
+                      <div class="form-group col-md-1">
                         <label for="name">จังหวัด</label>
                       </div>  
                       <div class="form-group col-md-4">
@@ -207,44 +204,44 @@
                                 <option value="<?php echo $row->PROVINCE_ID; ?>"><?php echo $row->PROVINCE_NAME; ?></option>  
                             <?php } ?>
                         </select>
-                      </div>
-                      <div class="form-group col-md-2">
-                        <label for="name">อำเภอ</label>
-                      </div>
-                      <div class="form-group col-md-4">
-                        <select  id="AMPHUR_ID" name="AMPHUR_ID" class="form-control" ></select>
-                      </div>                                         
-                    </div> 
-                    <div class="row">
-                      <div class="form-group col-md-2">
-                        <label for="name">ตำบล</label>
-                      </div>
-                      <div class="form-group col-md-4">
-                        <select  id="DISTRICT_CODE" name="DISTRICT_CODE" class="form-control"></select>
-                      </div>
-                      <div class="form-group col-md-2">
-                        <label style="width:100px" for="name">รหัสไปรษณีย์</label>
-                      </div>
-                      <div class="form-group col-md-4">
-                        <input type="text" class="form-control " name="zipcode" id="zipcode">
-                      </div>    
-                    </div>
-                    <div class="row">
-                      <div class="form-group col-md-2">
-                        <label for="name">ชื่อผู้ใช้</label>
-                      </div>  
-                      <div class="form-group col-md-4">
-                        <input type="text" class="form-control " name="username" id="username" required="" placeholder="ชื่อผู้ใช้">
-                        <div id="result_username"></div>
-                      </div> 
-                      <div class="form-group col-md-2">
-                        <label style="width:100px;" for="name">รหัสผ่าน</label>
-                      </div> 
-                      <div class="form-group col-md-4">
-                        <input type="password" class="form-control " name="password" id="password" required="" placeholder="รหัสผ่าน">
-                      </div>   
+                      </div>                              
                     </div>
                   </div>
+                </div>
+              </div>
+              <div class="form-group col-12">
+                <div class="row">
+                  <div class="form-group  ">
+                    <label style="margin-left:10px;width:30px;" for="name">อำเภอ</label>
+                  </div>
+                  <div class="form-group col-md-2">
+                    <select style="width:180px;" id="AMPHUR_ID" name="AMPHUR_ID" class="form-control" ></select>
+                  </div>  
+                  <div class="form-group">
+                    <label style="margin-left:20px;width:30px;" for="name">ตำบล</label>
+                  </div>
+                  <div class="form-group col-md-2">
+                    <select  id="DISTRICT_CODE" name="DISTRICT_CODE" class="form-control"></select>
+                  </div>   
+                  <div class="form-group">
+                    <label style="margin-left:10px;width:100px;" for="name">รหัสไปรษณีย์</label>
+                  </div>
+                  <div class="form-group">
+                      <input style="width:80px;" type="text" class="form-control " name="zipcode" id="zipcode">
+                  </div>     
+                  <div class="form-group">
+                    <label style="margin-left:20px;width:60px;" for="name">ชื่อผู้ใช้</label>
+                  </div>  
+                  <div class="form-group">
+                    <input style="width:130px;" type="text" class="form-control " name="username" id="username" required="" placeholder="ชื่อผู้ใช้">
+                    <div id="result_username"></div>
+                  </div> 
+                  <div class="form-group">
+                    <label style="margin-left:10px;width:70px;" for="name">รหัสผ่าน</label>
+                  </div> 
+                  <div class="form-group">
+                    <input style="width:130px;" type="password" class="form-control " name="password" id="password" required="" placeholder="รหัสผ่าน">
+                  </div>                                      
                 </div>
               </div>
               <div class="form-group col-12" align="left">
