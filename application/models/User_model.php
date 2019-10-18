@@ -1066,7 +1066,43 @@ class User_model extends CI_Model {
 		}
 		$this->db->where($condition);
 		$this->db->limit($param['page_size'], $param['start']);
-		//$this->db->order_by($param['column'], $param['dir']);
+		$this->db->order_by('record_date DESC, record_time DESC');
+		$query = $this->db->get('account_detail');
+		$data = [];
+		if($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$data[] = $row;
+			}
+		}
+		$count_condition = $this->db->from('account_detail')->where($condition)->where('account_id',$account_id)->count_all_results();
+		$count = $this->db->from('account_detail')->where('account_id',$account_id)->count_all_results();
+		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
+		return $result;
+	}
+	public function fetch_previous_filter_account_detail_datatable($param,$account_id,$action,$previous){
+		date_default_timezone_set('Asia/Bangkok');
+		$keyword = $param['keyword'];
+		$this->db->select('*');
+		$this->db->join('staff', 'staff_id = staff_record_id','inner');
+		$condition = "1=1";
+		if(!empty($keyword)){
+			$condition .= " and (account_detail_id like '%{$keyword}%' or action like '%{$keyword}%')";
+		}
+		$this->db->where('account_id',$account_id);		
+		if($action != "all"){
+			if($action == "deposit"){
+				$condition .= " and (action = 'recive_money' OR action = 'add_interest' OR action = 'deposit' OR action = 'open_account')"; 
+			}
+			else if($action == "withdraw"){
+				$condition .= " and (action = 'withdraw' OR action = 'close_account')"; 
+			}
+			else{
+				$condition .= " and action = 'tranfer_money'"; 
+			}
+		}
+		$condition .= " and (record_date BETWEEN '".date('Y-m-d', strtotime("-".$previous." month"))."' AND '".date('Y-m-d')."')";
+		$this->db->where($condition);
+		$this->db->limit($param['page_size'], $param['start']);
 		$this->db->order_by('record_date DESC, record_time DESC');
 		$query = $this->db->get('account_detail');
 		$data = [];

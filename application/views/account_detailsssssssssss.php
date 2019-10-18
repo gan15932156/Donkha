@@ -13,7 +13,7 @@
         ],     
         "searching": false,
         "lengthChange": false,
-        pageLength: 9,
+        pageLength: 8,
         destroy: true,
         serverSide: true,
         processing: true,
@@ -112,7 +112,7 @@
             {
                 data:'staff_name',
                 render: function(data, type, row){                      
-                    return "<span style='margin-left:10px;'>"+row['staff_title']+" "+row['staff_name']+"</span>";
+                    return "<span style='margin-left:10px;'>"+row['staff_title']+""+row['staff_name']+"</span>";
                 }
             }
         ]
@@ -135,7 +135,7 @@
     }
   }
   $(document).ready(function(){
-    onload_datatable('<?php echo base_url("index.php/Project_controller/fetch_account_detail/").$account_id; ?>');
+    onload_datatable('<?php echo base_url("index.php/Project_controller/fetch_account_detail/").$account_id."/"; ?>'+$("#filter").val()+"/"+$("#previous").val());
     /*table.on( 'order.dt search.dt', function () {
         table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
             cell.innerHTML = i+1;
@@ -152,8 +152,14 @@
         }    
     });
     $("#filter").change(function(){
-        $("tbody").empty();
-        onload_datatable('<?php echo base_url("index.php/Project_controller/filter_account_detil_datatable/").$account_id."/"; ?>'+$(this).val());
+      $("tbody").empty();
+      alert($(this).val()+" "+$("#previous").val());
+      onload_datatable('<?php echo base_url("index.php/Project_controller/filter_previous_account_detail_datatable/").$account_id."/"; ?>'+$(this).val()+"/"+$("#previous").val());
+    });
+    $("#previous").change(function(){
+      $("tbody").empty();
+      alert($("#filter").val()+" "+$(this).val());
+      onload_datatable('<?php echo base_url("index.php/Project_controller/filter_previous_account_detail_datatable/").$account_id."/"; ?>'+$("#filter").val()+"/"+$(this).val());
     });
     $("#print").click(function(){
       $.ajax({
@@ -180,44 +186,38 @@
     <div class="col-md-12">
       <div  class="row">
         <div class="col-md-12 ">
-          <h4 class="text-center"><B>บัญชีธนาคาร</B></h4>
-           <div class="row">
-          <?php 
+          <h5 class="text-center">บัญชีธนาคาร</h5>
+          <div class="row">
+            <?php 
             foreach($account->result() as $row){ 
-          ?>  
-          <div class="form-group col-4"><label><B>ชื่อเจ้าของบัญชี : </B><?php echo $row->member_name; ?></label>
-                
-              </div>
-              <div class="form-group col-4"><label><B>หมายเลขบัญชี : </B><?php echo $row->account_id; ?></label>
+            ?>  
+            <div class="form-group col-3"><label><B>ชื่อเจ้าของบัญชี : </B><?php echo $row->member_name; ?></label></div>
+            <div class="form-group col-3"><label><B>หมายเลขบัญชี : </B><?php echo $row->account_id; ?></label>
                 <input type="hidden" name="ac_id" id="ac_id" value="<?php echo $row->account_id; ?>">
-              </div>
-              <div class="form-group col-4"><label><B>ชื่อบัญชี : </B><?php echo $row->account_name; ?></label>
-              </div>                       
-        </div>  
-        </div>
-        <div class="col-md-12 ">  
-      <h4 class="text-center"><B>รายละเอียดการฝาก - ถอน - โอน</B></h4>
-         
+            </div>
+            <div class="form-group col-2"><label><B>ชื่อบัญชี : </B><?php echo $row->account_name; ?></label></div>                       
+            <div class="form-group col-4"><label  ><B>ยอดเงินคงเหลือ </B><?php echo number_format($row->account_balance,2); ?> บาท</label></div>
+            
+          </div>  
         </div>
         <div class="col-md-12 text-center">
           <div class="row">                                      
-          <div class="form-group col-2">
-            <label><B>การแสดงผล</B></label>
-          </div>
-          <div class="form-group col-2">
-            <select  id="filter" name="filter" class="form-control" >
-              <option value="all">ทั้งหมด</option>
-              <option value="deposit">รายการฝาก</option>
-              <option value="withdraw">รายการถอน</option>
-              <option value="tranfer_money">รายการโอน</option>
-            </select>
-          </div> 
-          <div class="form-group col-2">
-            <label style="width: 120px"><B>ยอดเงินคงเหลือ</B></label>
-          </div>
-          <div class="form-group col-2" align="left">   
-            <label><?php echo number_format($row->account_balance,2); ?> บาท</label>
-          </div> 
+            <div class="form-group col-2"><label><B>การแสดงผล</B></label></div>
+            <div class="form-group col-2">
+              <select  id="filter" name="filter" class="form-control" >
+                <option value="all">ทั้งหมด</option>
+                <option value="deposit">รายการฝาก</option>
+                <option value="withdraw">รายการถอน</option>
+                <option value="tranfer_money">รายการโอน</option>
+              </select>
+            </div> 
+            <div class="form-group col-2"><label><B>ย้อนหลัง</B></label></div>
+            <div class="form-group col-2">
+              <select  id="previous" name="previous" class="form-control" >
+                <option value="3">3 เดือน</option>
+                <option value="6">6 เดือน</option>
+              </select>
+            </div> 
           <div class="form-group col-4">
              <a href="<?=base_url("index.php/Project_controller/manage_account");?>" class="btn btn-warning">ย้อนกลับ</a>
             <button class="btn btn-success" id="print">พิมพ์รายงาน</button> 
@@ -232,12 +232,12 @@
             <tr>
               <th width="15%" scope="col">วันที่</th>
               <th width="10%" scope="col">รายการ</th>
-              <th width="10%" scope="col">จำนวนเงิน(บาท)</th>
-              <th width="10%" scope="col">คงเหลือ(บาท)</th>
-              <th width="35%" scope="col">พนักงานที่ทำรายการ</th>
+              <th width="15%" scope="col">จำนวนเงิน(บาท)</th>
+              <th width="15%" scope="col">คงเหลือ(บาท)</th>
+              <th width="25%" scope="col">พนักงานที่ทำรายการ</th>
             </tr>
           </thead>
-          <tbody class="table-bordered">
+          <tbody class="table-bordered" style="font-size:14px;">
           </tbody>
         </table>
       </div>                                     

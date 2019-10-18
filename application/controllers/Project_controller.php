@@ -11,6 +11,7 @@ class Project_controller extends CI_Controller {
 		$this->load->model('User_model');
 		$this->load->library('pagination');
 		$this->load->library('Pdf');
+		date_default_timezone_set('Asia/Bangkok');
 	}
 	public function DateThai($strDate)
    	{ 
@@ -1433,24 +1434,42 @@ class Project_controller extends CI_Controller {
 		$sccount_id = $this->uri->segment(3);
 		$action = $this->uri->segment(4);
 		$order_index = $this->input->get('order[0][column]');
-        $param['page_size'] = $this->input->get('length');
-        $param['start'] = $this->input->get('start');
-        $param['draw'] = $this->input->get('draw');
-        $param['keyword'] = trim($this->input->get('search[value]'));
-        $param['column'] = $this->input->get("columns[{$order_index}][data]");
-        $param['dir'] = $this->input->get('order[0][dir]');
+      $param['page_size'] = $this->input->get('length');
+      $param['start'] = $this->input->get('start');
+      $param['draw'] = $this->input->get('draw');
+      $param['keyword'] = trim($this->input->get('search[value]'));
+      $param['column'] = $this->input->get("columns[{$order_index}][data]");
+      $param['dir'] = $this->input->get('order[0][dir]');
  
-        $results = $this->User_model->fetch_filter_account_detail_datatable($param,$sccount_id,$action);
+      $results = $this->User_model->fetch_filter_account_detail_datatable($param,$sccount_id,$action);
  
-        $data['draw'] = $param['draw'];
-        $data['recordsTotal'] = $results['count'];
-        $data['recordsFiltered'] = $results['count_condition'];
-        $data['data'] = $results['data'];
-        $data['error'] = $results['error_message'];
+      $data['draw'] = $param['draw'];
+      $data['recordsTotal'] = $results['count'];
+      $data['recordsFiltered'] = $results['count_condition'];
+      $data['data'] = $results['data'];
+      $data['error'] = $results['error_message'];
+      $this->output->set_content_type('application/json')->set_output(json_encode($data));
+	}
+	public function filter_previous_account_detail_datatable(){
+		$sccount_id = $this->uri->segment(3);
+		$action = $this->uri->segment(4);
+		$previous = $this->uri->segment(5);
+		$order_index = $this->input->get('order[0][column]');
+      $param['page_size'] = $this->input->get('length');
+      $param['start'] = $this->input->get('start');
+      $param['draw'] = $this->input->get('draw');
+      $param['keyword'] = trim($this->input->get('search[value]'));
+      $param['column'] = $this->input->get("columns[{$order_index}][data]");
+      $param['dir'] = $this->input->get('order[0][dir]');
  
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-
-
+      $results = $this->User_model->fetch_previous_filter_account_detail_datatable($param,$sccount_id,$action,$previous);
+ 
+      $data['draw'] = $param['draw'];
+      $data['recordsTotal'] = $results['count'];
+      $data['recordsFiltered'] = $results['count_condition'];
+      $data['data'] = $results['data'];
+      $data['error'] = $results['error_message'];
+      $this->output->set_content_type('application/json')->set_output(json_encode($data));
 	}
 	public function filter_transaction_table(){
 		$output='';
