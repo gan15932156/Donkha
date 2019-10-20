@@ -2,8 +2,7 @@
   $(document).ready(function(){
     $("#account_form").submit(function(event) {
 			event.preventDefault();
-
-      var connn =  confirm("ยืนยันการเปิดบัญชีหรือไม่");
+      var connn = confirm("ยืนยันการเปิดบัญชีหรือไม่");
       if(connn){
         $.ajax({
 		    url: "<?=base_url("Project_controller/account_insert/");?>",

@@ -1,24 +1,30 @@
+<script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/helper.js"></script> 
 <script type="text/javascript">
   function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
   $(document).ready(function(){
     $("#deposit_form").submit(function(event) {
-			event.preventDefault();
-			$.ajax({
+      event.preventDefault();
+      var tran_money = parseFloat($("#deposit_money").val());
+      var total_money = parseFloat($("#new_balance").val());
+      var connn = confirm("ยืนยันการฝากหรือไม่\n \nจำนวนเงินฝาก "+formatNumber(tran_money.toFixed(2))+" บาท\nจำนวนเงินสุทธิ "+formatNumber(total_money.toFixed(2))+" บาท");
+      if(connn){
+        $.ajax({
 		    url: "<?=base_url("Project_controller/deposit_insert/");?>",
 		    type:"post",
-        data:new FormData(this),
+        data:new FormData($(this)[0]),
         processData:false,
         contentType:false,
         cache:false,
         async:false,
-		    success: function(response){
-          alert("บันทึกข้อมูลสำเร็จ");
-			    window.open("<?=base_url("Project_controller/noti_dep");?>", "_self");    		
-		    },
-		    error: function(){ alert("error"); }
-      });
+        dataType: "JSON",		
+        error: function(){ alert("error"); }
+        }).done(function(data){
+          alert(data.message);
+          window.open("<?=base_url("Project_controller/account_detail/");?>"+$("#acc_code").val(), "_self");
+        });
+      }
 		});
     var acc_balance = 0 ;
     function search_data(account){

@@ -1,21 +1,24 @@
 <script>
   $(document).ready(function(){
     $("#account_form").submit(function(event) {
-			event.preventDefault();
-			$.ajax({
+      event.preventDefault(); 
+      var connn = confirm("ยืนยันการเปิดบัญชีหรือไม่");
+      if(connn){
+        $.ajax({
 		    url: "<?=base_url("Project_controller/account_insert_staff/");?>",
 		    type:"post",
-        data:new FormData(this),
+        data:new FormData($(this)[0]),
         processData:false,
         contentType:false,
         cache:false,
         async:false,
-		    success: function(response){
-          alert("บันทึกข้อมูลสำเร็จ");
-			    window.open("<?=base_url("Project_controller/noti_dep");?>", "_self");    		
-		    },
-		    error: function(){ alert("error"); }
-      });
+        dataType: "JSON",		
+        error: function(){ alert("error"); }
+        }).done(function(data){
+          alert(data.message);
+          window.open("<?=base_url("Project_controller/account_detail/");?>"+$("#ac_code").val(), "_self");
+        });
+      }
 		});
   });
 </script>

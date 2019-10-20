@@ -648,9 +648,13 @@ class Project_controller extends CI_Controller {
 			'record_time'=>$now_time,
 			'account_detail_balance'=>$this->input->post("money"),
 			'trans_money'=>$this->input->post("money"),
-			'account_detail_confirm'=>'0',
+			'account_detail_confirm'=>'1',
 		);
 		$this->User_model->insert_account_details($data_account_detail);
+		$response = array();
+		$response["message"] = "บันทึกข้อมูลสำเร็จ";
+		$response["error"] = false;
+		echo json_encode($response);
 	}
 	public function deposit_insert(){
 		date_default_timezone_set('Asia/Bangkok');
@@ -671,9 +675,18 @@ class Project_controller extends CI_Controller {
 			'record_time'=>$now_time,
 			'account_detail_balance'=>$this->input->post("new_balance"),
 			'trans_money'=>$this->input->post("deposit_money"),
-			'account_detail_confirm'=>'0',
+			'account_detail_confirm'=>'1',
 		);
 		$this->User_model->insert_account_details($data_account_detail);
+
+		foreach ($this->User_model->select_account_detail_lastest($this->input->post("acc_code"))->result() as $row) {
+			$account_detail_balance=$row->account_detail_balance;
+		}
+		$this->User_model->update_confirm_account_deposit($this->input->post("acc_code"),$account_detail_balance);
+		$response = array();
+		$response["message"] = "บันทึกข้อมูลสำเร็จ";
+		$response["error"] = false;
+		echo json_encode($response);
 	}
 	public function withdraw_insert(){
 		date_default_timezone_set('Asia/Bangkok');
@@ -694,9 +707,18 @@ class Project_controller extends CI_Controller {
 			'record_time'=>$now_time,
 			'account_detail_balance'=>$this->input->post("new_balance"),
 			'trans_money'=>$this->input->post("withdraw_money"),
-			'account_detail_confirm'=>'0',
+			'account_detail_confirm'=>'1',
 		);
 		$this->User_model->insert_account_details($data_account_detail);
+		
+		foreach ($this->User_model->select_account_detail_lastest($this->input->post("acc_code"))->result() as $row) {
+			$account_detail_balance=$row->account_detail_balance;
+		}
+		$this->User_model->update_confirm_account_withdraw($this->input->post("acc_code"),$account_detail_balance);
+		$response = array();
+		$response["message"] = "บันทึกข้อมูลสำเร็จ";
+		$response["error"] = false;
+		echo json_encode($response);
 	}
 
 	public function tranfer_money_insert(){
