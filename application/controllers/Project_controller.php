@@ -1952,7 +1952,7 @@ class Project_controller extends CI_Controller {
 			}
 			$link =base_url("index.php/Project_controller/print_report_account_betwwen_date")."/".$this->input->post('start_date')."/".$this->input->post('stop_date');
 		$output.='
-			<tr><th colspan="4" scope="col"></th><th colspan="1" scope="col">รวมจำนวนเงิน</th><td align="right" colspan="1" scope="col">'.number_format($sum_total,2).'</td></tr>
+			<tr><th colspan="5" scope="col">รวมจำนวนเงิน</th><td align="right" colspan="1" scope="col"><B>'.number_format($sum_total,2).'</B></td></tr>
 			</tbody><tfoot></tfoot>
 		</table>
 		<a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a> 
@@ -2388,7 +2388,7 @@ class Project_controller extends CI_Controller {
 			</tr>';		
 			$i++;
 		}
-		$table.='<tr><th colspan="4" scope="col"></th><th style="border-right:1px solid black" colspan="1" scope="col">รวมจำนวนเงิน</th><td align="right" colspan="1" scope="col">'.number_format($sum_total,2).'</td></tr>
+		$table.='<tr><th style="border-right:1px solid black" colspan="5" scope="col">รวมจำนวนเงิน</th><td align="right" colspan="1" scope="col">'.number_format($sum_total,2).'</td></tr>
 		</tbody><tfoot></tfoot></table>';
 		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
 		$count="<span>จํานวนผูที่เปิดบัญชีทั้งหมด ".$this->User_model->count_account_opendate_between($this->uri->segment(3),$this->uri->segment(4))." คน</span><br>";
