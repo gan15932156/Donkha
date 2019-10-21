@@ -31,9 +31,9 @@
    <div class="container-fluid">
       <div class="row">
          <div class="col-12 ">
-            <div class="top-container"><h5 class="text-right" ><?php echo "<B>ยินดีต้อนรับคุณ </B>".$this->session->userdata('sname'); ?>&nbsp</h5></div>
+            <div align="right" class="top-container"><span><?php echo "<B>ยินดีต้อนรับคุณ </B>".$this->session->userdata('sname'); ?></span></div>
             <div class="row work-container">
-               <div style="background-color: rgb(181, 216, 232);" class="col-2" align="center">
+               <div style="background-color: #F1FCFF  ;border-right: 3px solid #C5C5C5 ;" class="col-2" align="center">
                   <h4><a style="color: black" href="
                      <?php  
                         if($this->session->userdata('lid') == "1"){echo "Not found";}
@@ -45,7 +45,7 @@
                   <img style="border-radius: 50%;" src="<?php  echo $this->session->userdata('spic'); ?>" width="165px" height="180px">
                   <h5><?php echo $this->session->userdata('sname');  ?></h5>
                   <h5><?php echo "<B>สถานะ </B>".$this->session->userdata('slevel');  ?></h5>
-                  <button onclick="logout()" type="submit" class="btn btn-outline-danger" id="submit">ออกจากระบบ</button>
+                  <button onclick="logout()" type="submit" class="btn btn-danger" id="submit">ออกจากระบบ</button>
                </div>
-               <div style="background-color: #EFFEFD;" class="col-10">
+               <div style="background-color: #F1FCFF  ;" class="col-10">
                   <div align="center" class="row right-work-container">

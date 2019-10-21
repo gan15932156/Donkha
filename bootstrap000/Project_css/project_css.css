@@ -1,5 +1,6 @@
 html,body {
-  background-color: coral;
+  /*background-color:#B4F1FF  ;*/
+  background:url("../../picture/4k-wallpaper-blue-sky-blur-281260.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -9,22 +10,17 @@ html,body {
   border: 0;
 }
 .container-fluid{
-  background-color: rgba(199, 223, 255,.9);
-  width:97%;
+  width:100%;
   height:87%;
-  filter: alpha(opacity=40); /* For IE8 and earlier */
 
 }
-.top-container{
-  margin: 0px;
-  background-color: rgb(181, 216, 232);
-}
 .head-container{
+  margin-top:5px;
   height: 12%;
-  margin-bottom: 5px;
 }
 .work-container{
-  height: 82vh;
+  border: 3px solid #C5C5C5 ;
+  height: 84vh;
   margin-left: 1px; 
   margin-right: 1px;
 }

@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style type="text/css">
       html,body {
-        background:url("<?php  echo base_url()."picture/school.jpg"; ?>") no-repeat center center fixed;
+        background:url("<?php  echo base_url()."picture/4k-wallpaper-blue-sky-blur-281260.jpg"; ?>") no-repeat center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
@@ -23,22 +23,17 @@
         border: 0;
       }
       .container-fluid{
-        background-color: rgba(199, 223, 255,.9);
-        width:97%;
-        height:87%;
-        filter: alpha(opacity=40); /* For IE8 and earlier */
-      
-      }
-      .top-container{
-        margin: 0px;
-        background-color: rgb(181, 216, 232);
+        width:100%;
+        height:64%;
+        margin-top:27px;  
       }
       .head-container{
+        margin-top:5px;
         height: 12%;
-        margin-bottom: 5px;
       }
       .work-container{
-        height: 82vh;
+        border: 3px solid #C5C5C5 ;
+        height: 84vh;
         margin-left: 1px; 
         margin-right: 1px;
       }
@@ -58,9 +53,9 @@
         <div class="col-12 ">
           <div class="row work-container">
             <div class="col-12">
-              <div align="center" class="row right-work-container"> 
+              <div style="background-color: #F1FCFF;height:100%;" align="center" class="row right-work-container"> 
                 <div class="col-3"></div>
-                <div style="background-color: #EFFEFD;" class="col-6 login-formm">
+                <div class="col-6 login-formm">
                   <h5 class="text-center"><B>เข้าสู่ระบบ</B></h5>
                   <form method="post" action="<?=base_url();?>index.php/Project_controller/login_check" enctype="multipart/form-data" name="login" id="login">
                     <div class="form-row">
