@@ -64,6 +64,8 @@
       else
       {
         search_data($("#account").val()); 
+        $("#new_balance").val(null);
+        $("#bonus").val(null);
       }     
     });
     $("#cal_interest").click(function(){

@@ -31,7 +31,7 @@
       {
         data:'account_name',
         render: function(data,type,row){       
-            return '<a href="#" onclick="show_modal('+row['account_id']+')"  >'+row['account_name']+'</a>';
+            return '<a href="#" onclick="show_modal_datatable('+row['account_id']+')"  >'+row['account_name']+'</a>';
         }
       },
       {
@@ -46,7 +46,6 @@
       ]
     });
     $('[id="print_report"]').click(function(){
-        //alert($('[id="filter"]').val()+" "+$('[id="ac_id"]').val());
         $.ajax({
         url:"<?php echo base_url("index.php/Project_controller/print_report_statement"); ?>",
         method:"POST",
@@ -65,6 +64,9 @@
       })
     });
   });
+  function show_modal_datatable(){
+    $('#exampleModal').modal('show');
+  }
   function show_modal(account_id){
     $.ajax({
       url:"<?=base_url()?>index.php/Project_controller/get_account_details_modal/",
@@ -120,16 +122,23 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">บัญชีธนาคาร</h5>
+        <h5 class="modal-title" id="exampleModalLabel">บัญชีธนาคาร</h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <h5 class="modal-title" id="modal_title_ac_code">หมายเลขบัญชี 2019009</h5>&nbsp;&nbsp;&nbsp;
+        <h5 class="modal-title" id="modal_title_ac_name">ชื่อบัญชี Pritakpol Damrisil</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="container-fluid body-container">       
-            <div class="row">
+            <div class="row"> 
                 <div class="col-md-12">
                     <div class="result"></div>
+                    <div class="row">
+                      <div class="col-md-3"><label for="txt_ac_code" id="lb_ac_code"><B>ชื่อเจ้าของบัญชี :</B> dsdaddddaddd</label></div>
+                      <div class="col-md-3"><label for="txt_ac_name" id="lb_ac_name"><B>ชื่อบัญชี :</B> dsdaddddaddd</label></div>
+                      <div class="col-md-3"><label for="txt_ac_name" id="lb_ac_name"><B>ยอดเงินคงเหลือ :</B> 2019.00</label></div>
+                    </div>
                 </div>
             </div> 
         </div>

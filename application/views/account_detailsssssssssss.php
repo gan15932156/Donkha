@@ -135,7 +135,7 @@
     }
   }
   $(document).ready(function(){
-    onload_datatable('<?php echo base_url("index.php/Project_controller/fetch_account_detail/").$account_id."/"; ?>'+$("#filter").val()+"/"+$("#previous").val());
+    onload_datatable('<?php echo base_url("index.php/Project_controller/filter_previous_account_detail_datatable/").$account_id."/"; ?>'+$("#filter").val()+"/"+$("#previous").val());
     /*table.on( 'order.dt search.dt', function () {
         table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
             cell.innerHTML = i+1;
@@ -153,12 +153,12 @@
     });
     $("#filter").change(function(){
       $("tbody").empty();
-      alert($(this).val()+" "+$("#previous").val());
+      //alert($(this).val()+" "+$("#previous").val());
       onload_datatable('<?php echo base_url("index.php/Project_controller/filter_previous_account_detail_datatable/").$account_id."/"; ?>'+$(this).val()+"/"+$("#previous").val());
     });
     $("#previous").change(function(){
       $("tbody").empty();
-      alert($("#filter").val()+" "+$(this).val());
+      //alert($("#filter").val()+" "+$(this).val());
       onload_datatable('<?php echo base_url("index.php/Project_controller/filter_previous_account_detail_datatable/").$account_id."/"; ?>'+$("#filter").val()+"/"+$(this).val());
     });
     $("#print").click(function(){
@@ -170,6 +170,7 @@
         },
         data:{
           filter:$("#filter").val(),
+          previous:$("#previous").val(),
           account_id:$("#ac_id").val()
         },
         success:function(response)

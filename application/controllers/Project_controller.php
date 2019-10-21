@@ -395,6 +395,11 @@ class Project_controller extends CI_Controller {
 		$this->load->view('manager_account_report');
 		$this->load->view('templates/footer');
 	}
+/*	public function increase_money(){
+		$this->load->view('templates/header');
+		$this->load->view('increase_money_form');
+		$this->load->view('templates/footer');
+	}*/
 	
 
 	////////////////////////////////////////////////////////////
@@ -869,6 +874,9 @@ class Project_controller extends CI_Controller {
 		}
 		
 		echo json_encode($response);
+	}
+	public function increase_money_insert(){
+		echo "tst";
 	}
 
 	////////////////////////////////////////////////////////////
@@ -2906,24 +2914,24 @@ class Project_controller extends CI_Controller {
 
 	public function print_report_statement(){
 		if($this->input->post('filter') == "all"){
-			$data['statement'] = $this->User_model->select_account_detail_parameter_account_id($this->input->post('account_id'));
+			$data['statement'] = $this->User_model->select_account_detail_parameter_account_id($this->input->post('account_id'),$this->input->post("previous"));
 		}
 		else{
-			$data['statement'] = $this->User_model->select_account_detail_parameter_account_id_filter($this->input->post('account_id'),$this->input->post('filter'));
+			$data['statement'] = $this->User_model->select_account_detail_parameter_account_id_filter($this->input->post('account_id'),$this->input->post('filter'),$this->input->post('previous'));
 		}
 		$pdf = new Pdf('P','mm','A4');
-      	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
-      	$pdf->setFooterData(array(0,64,0), array(0,64,128));
-      	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-      	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-      	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-      	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-      	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-      	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-      	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-      	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-      	$pdf->setFontSubsetting(true);
-      	$pdf->SetFont('thsarabun', '', 16, '', true);
+      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      $pdf->setFooterData(array(0,64,0), array(0,64,128));
+      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      $pdf->setFontSubsetting(true);
+      $pdf->SetFont('thsarabun', '', 16, '', true);
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
@@ -2971,7 +2979,7 @@ class Project_controller extends CI_Controller {
 						<td style="border:1px solid black">'.$action.'</td>
 						<td align="right" style="border:1px solid black">'.number_format($row->trans_money,2).'</td>
 						<td align="right"  style="border:1px solid black">'.number_format($row->account_detail_balance,2).'</td>
-						<td align="left" style="border:1px solid black">'.$row->staff_title."".$row->staff_name.'</td>
+						<td align="left" style="border:1px solid black;">'.$row->staff_title."".$row->staff_name.'</td>
 					</tr>';
 			$i++;
 		}
@@ -3091,22 +3099,22 @@ class Project_controller extends CI_Controller {
 	public function fetch_account_detail(){
 		$sccount_id = $this->uri->segment(3);
 		$order_index = $this->input->get('order[0][column]');
-        $param['page_size'] = $this->input->get('length');
-        $param['start'] = $this->input->get('start');
-        $param['draw'] = $this->input->get('draw');
-        $param['keyword'] = trim($this->input->get('search[value]'));
-        $param['column'] = $this->input->get("columns[{$order_index}][data]");
-        $param['dir'] = $this->input->get('order[0][dir]');
+      $param['page_size'] = $this->input->get('length');
+      $param['start'] = $this->input->get('start');
+      $param['draw'] = $this->input->get('draw');
+      $param['keyword'] = trim($this->input->get('search[value]'));
+      $param['column'] = $this->input->get("columns[{$order_index}][data]");
+      $param['dir'] = $this->input->get('order[0][dir]');
  
-        $results = $this->User_model->fetch_account_detail_datatable($param,$sccount_id);
+      $results = $this->User_model->fetch_account_detail_datatable($param,$sccount_id);
  
-        $data['draw'] = $param['draw'];
-        $data['recordsTotal'] = $results['count'];
-        $data['recordsFiltered'] = $results['count_condition'];
-        $data['data'] = $results['data'];
-        $data['error'] = $results['error_message'];
+      $data['draw'] = $param['draw'];
+      $data['recordsTotal'] = $results['count'];
+      $data['recordsFiltered'] = $results['count_condition'];
+      $data['data'] = $results['data'];
+      $data['error'] = $results['error_message'];
  
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+      $this->output->set_content_type('application/json')->set_output(json_encode($data));
 	}
 	public function fetch_member_datatable(){
 		$order_index = $this->input->get('order[0][column]');
@@ -3837,5 +3845,11 @@ class Project_controller extends CI_Controller {
 
 			}
 		}	
+	}
+	public function select_remain_system_money(){
+		$response = array();
+		$response["remain_money"] = "123,222.00";
+
+		echo json_encode($response);
 	}
 }

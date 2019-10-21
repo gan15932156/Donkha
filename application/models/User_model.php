@@ -708,15 +708,16 @@ class User_model extends CI_Model {
 		return $query;
 	}
 
-	public function select_account_detail_parameter_account_id($account_id){
+	public function select_account_detail_parameter_account_id($account_id,$previous){
 		$this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);
+		$this->db->where("(record_date BETWEEN '".date('Y-m-d', strtotime("-".$previous." month"))."' AND '".date('Y-m-d')."')");
 		$this->db->join('staff', 'staff_id = staff_record_id','inner');
-		$this->db->order_by('record_date ASC, record_time ASC');
+		$this->db->order_by('record_date DESC, record_time DESC');
 		$query=$this->db->get();
 		return $query;
 	}
-	public function select_account_detail_parameter_account_id_filter($account_id,$filter){
+	public function select_account_detail_parameter_account_id_filter($account_id,$filter,$previous){
 		$this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);
 		if($filter == "deposit"){
@@ -728,6 +729,7 @@ class User_model extends CI_Model {
 		else if($filter == "tranfer_money"){
 			$this->db->where('action','tranfer_money');	
 		}
+		$this->db->where("(record_date BETWEEN '".date('Y-m-d', strtotime("-".$previous." month"))."' AND '".date('Y-m-d')."')");
 		$this->db->join('staff', 'staff_id = staff_record_id','inner');
 		$this->db->order_by('record_date ASC, record_time ASC');
 		$query=$this->db->get();
