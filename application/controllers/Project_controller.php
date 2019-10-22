@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Project_controller extends CI_Controller {
-	public $ip = "18.140.49.199";
+	public $ip = "127.0.0.1"/*"18.140.49.199"*/;
 	public $picture_path = "picture/"/*"/opt/lampp/htdocs/Donkha/picture/"*/;
 	public function __construct(){
 		parent::__construct();
@@ -595,7 +595,7 @@ class Project_controller extends CI_Controller {
 			'account_id'=>$this->input->post("ac_code"),
 			'member_id'=>$this->input->post("member_id"),
 			'staff_open_id'=>$this->input->post("staff_id"),
-			'account_open_date'=>$this->input->post("date"),
+			'account_open_date'=>date('Y-m-d'),
 			'account_name'=>$this->input->post("ac_name"),
 			'account_status'=>'1',
 			'account_balance'=>$this->input->post("money")
@@ -613,7 +613,7 @@ class Project_controller extends CI_Controller {
 			'account_id'=>$this->input->post("ac_code"),
 			'staff_record_id'=>$this->input->post("staff_id"),
 			'action'=>'open_account',
-			'record_date'=>$this->input->post("now_date"),
+			'record_date'=>date('Y-m-d'),
 			'record_time'=>$now_time,
 			'account_detail_balance'=>$this->input->post("money"),
 			'trans_money'=>$this->input->post("money"),
@@ -632,7 +632,7 @@ class Project_controller extends CI_Controller {
 			'account_id'=>$this->input->post("ac_code"),
 			'member_id'=>$this->input->post("member_id"),
 			'staff_open_id'=>$this->input->post("staff_id"),
-			'account_open_date'=>$this->input->post("date"),
+			'account_open_date'=>date('Y-m-d'),
 			'account_name'=>$this->input->post("ac_name"),
 			'account_status'=>'1',
 		);
@@ -649,7 +649,7 @@ class Project_controller extends CI_Controller {
 			'account_id'=>$this->input->post("ac_code"),
 			'staff_record_id'=>$this->input->post("staff_id"),
 			'action'=>'open_account',
-			'record_date'=>$this->input->post("date"),
+			'record_date'=>date('Y-m-d'),
 			'record_time'=>$now_time,
 			'account_detail_balance'=>$this->input->post("money"),
 			'trans_money'=>$this->input->post("money"),
@@ -1144,7 +1144,16 @@ class Project_controller extends CI_Controller {
 		}
 	}
 	public function get_account_details_modal(){
-		$result='<script>
+		$response = array();
+		foreach($this->User_model->select_account_with_parameter($this->input->post('account_id'))->result() as $row){
+			$response["account_id"] = $row->account_id;
+			$response["account_name"] = $row->account_name;
+			$response["account_balance"] = $row->account_balance;	
+			$response["member_name"] = $row->member_name;	
+		}
+
+		echo json_encode($response);
+	/*	$result='<script>
 		$(document).ready(function(){
 			$("#filter").change(function(){
 				$.ajax({
@@ -1253,7 +1262,7 @@ class Project_controller extends CI_Controller {
 		//end table div
 
 		$result.='</div>';
-		echo $result;
+		echo $result;*/
 		
 	}
 	public function show_modal_tranfer(){

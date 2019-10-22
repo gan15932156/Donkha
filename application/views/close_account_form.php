@@ -14,7 +14,7 @@
           var rel = JSON.parse(response);
           if(!rel.error){
             alert("บันทึกข้อมูลสำเร็จ\nผลตอบแทน "+new Intl.NumberFormat().format(parseFloat(rel.interest))+" บาท\nจำนวนเงินคงเหลือ "+new Intl.NumberFormat().format(parseFloat(rel.new_balance))+" บาท");
-            window.open("<?=base_url("Project_controller/index_staff");?>", "_self");   
+            window.open("<?=base_url("Project_controller/account_detail/");?>"+$("#member_id").val(), "_self");   
           }	
           else{
             alert(rel.message);
@@ -45,7 +45,8 @@
               $('#acc_name').val(response.account_name);
               $('#acc_balance').val(new Intl.NumberFormat().format(parseFloat(response.account_balance)));
               $('#acc_balance_hidden').val(parseFloat(response.account_balance));
-              $("#show_image_pic").attr("src",response.member_pic);         
+              $("#show_image_pic").attr("src",response.member_pic);       
+              $("#member_id").val(response.member_id);  
             }
           }
           else{

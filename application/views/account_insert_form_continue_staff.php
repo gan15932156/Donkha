@@ -69,7 +69,6 @@
                       $b_date=DateThai($row->member_birth_date);
                     ?>
                     <input type="text" class="form-control" value="<?php echo $thai_date; ?>" id="now_date" name="now_date" readonly="">
-                    <input type="hidden" class="form-control" value="<?php echo $regis_date; ?>" id="date" name="date" readonly="">
                   </div>
                 </div>
                 <div class="row">

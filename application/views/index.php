@@ -33,7 +33,7 @@
       }
       .work-container{
         border: 3px solid #C5C5C5 ;
-        height: 84vh;
+        height: 83vh;
         margin-left: 1px; 
         margin-right: 1px;
       }
@@ -55,7 +55,7 @@
             <div class="col-12">
               <div style="background-color: #F1FCFF;height:100%;" align="center" class="row right-work-container"> 
                 <div class="col-3"></div>
-                <div class="col-6 login-formm h-25 d-inline-block" style="border:3px solid #C5C5C5 ;">
+                <div class="col-6 login-formm h-50 d-inline-block" style="border:3px solid #C5C5C5 ;">
                   <h5 class="text-center"><B>เข้าสู่ระบบ</B></h5>
                   <form method="post" action="<?=base_url();?>index.php/Project_controller/login_check" enctype="multipart/form-data" name="login" id="login">
                     <div class="form-row" >

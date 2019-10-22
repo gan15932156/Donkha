@@ -1,3 +1,4 @@
+<script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/helper.js"></script> 
 <script type="text/javascript">
   $(document).ready(function(){
     var table = $('#data_table').DataTable({
@@ -64,20 +65,34 @@
       })
     });
   });
-  function show_modal_datatable(){
-    $('#exampleModal').modal('show');
-  }
-  function show_modal(account_id){
+  function show_modal_datatable(account_id){
     $.ajax({
+		    url: "<?=base_url("Project_controller/get_account_details_modal/");?>",
+		    type:"post",
+        data:{account_id:account_id},
+        dataType: "JSON",		
+        error: function(){ alert("error"); }
+        }).done(function(data){
+          /*$.each(data, function (key, acc) {
+              alert(acc.account_id);
+          })*/
+          var tran_money = parseFloat(data.account_balance);  
+          $("#modal_title_ac_code").text("หมายเลชบัญชี "+data.account_id);
+          $("#modal_title_ac_name").text("ชื่อบัญชี "+data.account_name);
+          $("#modal_title_ac_balance").text("จำนวนเงินคงเหลือ "+formatNumber(tran_money.toFixed(2))+" บาท");
+        });
+   /* $.ajax({
       url:"<?=base_url()?>index.php/Project_controller/get_account_details_modal/",
       method:"POST",
       data:{account_id:account_id},
-      success:function(data)
-      {
-        $('.result').html(data);
-        $('#exampleModal').modal('show');
-      }
-    }); 
+      dataType: "JSON",
+      error: function(){ alert("error"); }
+      })
+    .done(function(data){
+            
+      $("#modal_title_ac_code").val(data.account_id);
+    });*/
+    $('#exampleModal').modal('show');
   }
   
 </script>
@@ -113,7 +128,7 @@
 
 
 <style>
-    .modal-dialog {max-height:100vh;max-width:150vh;}  
+    .modal-dialog {max-height:100vh;max-width:85vw;}  
     .modal-body{height:100%;width:100%;align:center;}  
     .body-container{background-color:white;}    
 </style>
@@ -123,8 +138,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">บัญชีธนาคาร</h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <h5 class="modal-title" id="modal_title_ac_code">หมายเลขบัญชี 2019009</h5>&nbsp;&nbsp;&nbsp;
-        <h5 class="modal-title" id="modal_title_ac_name">ชื่อบัญชี Pritakpol Damrisil</h5>
+        <h5 class="modal-title" id="modal_title_ac_code"></h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <h5 class="modal-title" id="modal_title_ac_name"></h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <h5 class="modal-title" id="modal_title_ac_balance"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -133,18 +149,47 @@
         <div class="container-fluid body-container">       
             <div class="row"> 
                 <div class="col-md-12">
-                    <div class="result"></div>
-                    <div class="row">
-                      <div class="col-md-3"><label for="txt_ac_code" id="lb_ac_code"><B>ชื่อเจ้าของบัญชี :</B> dsdaddddaddd</label></div>
-                      <div class="col-md-3"><label for="txt_ac_name" id="lb_ac_name"><B>ชื่อบัญชี :</B> dsdaddddaddd</label></div>
-                      <div class="col-md-3"><label for="txt_ac_name" id="lb_ac_name"><B>ยอดเงินคงเหลือ :</B> 2019.00</label></div>
+                  <div class="result"></div>
+                  <div class="row">
+                    <div class="form-group col-2"></div>
+                    <div class="form-group col-2"><label><B>การแสดงผล</B></label></div>
+                    <div class="form-group col-2">
+                      <select  id="filter" name="filter" class="form-control" >
+                        <option value="all">ทั้งหมด</option>
+                        <option value="deposit">รายการฝาก</option>
+                        <option value="withdraw">รายการถอน</option>
+                        <option value="tranfer_money">รายการโอน</option>
+                      </select>
+                    </div> 
+                    <div class="form-group col-2"><label><B>ย้อนหลัง</B></label></div>
+                    <div class="form-group col-2">
+                      <select  id="previous" name="previous" class="form-control" >
+                        <option value="3">3 เดือน</option>
+                        <option value="6">6 เดือน</option>
+                      </select>
+                    </div> 
+                    <div class="form-group col-2"></div>
+                    <div class="form-group col-12">
+                    <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
+                      <thead class="thead-light table-bordered text-center">
+                        <tr>
+                          <th width="15%" scope="col">วันที่</th>
+                          <th width="10%" scope="col">รายการ</th>
+                          <th width="15%" scope="col">จำนวนเงิน(บาท)</th>
+                          <th width="15%" scope="col">คงเหลือ(บาท)</th>
+                          <th width="25%" scope="col">พนักงานที่ทำรายการ</th>
+                        </tr>
+                      </thead>
+                      <tbody class="table-bordered" style="font-size:14px;">
+                      </tbody>
+                    </table>
                     </div>
+                  </div>
                 </div>
-            </div> 
-        </div>
-    </div>
+              </div> 
+            </div>
+          </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิดหน้าต่าง</button>
         <button type="button" id="print_report" class="btn btn-warning">พิมพ์รายงาน</button>
       </div>
     </div>

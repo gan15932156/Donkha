@@ -5,7 +5,7 @@
         {targets: [0,2,3],className: 'dt-body-center'},
         {targets: [1],className: 'dt-body-left'}
       ],
-      pageLength: 8,
+      pageLength: 9,
       serverSide: true,
       processing: true,
       "language": {

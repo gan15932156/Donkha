@@ -35,7 +35,7 @@
     </div>
     <div class="col-md-12">
      <br> 
-     <button onclick="show_modal()" style="font-size:20px;" class="btn btn-primary">เพิ่มเงินในระบบ</button>
+     <!--<button onclick="show_modal()" style="font-size:20px;" class="btn btn-primary">เพิ่มเงินในระบบ</button>-->
     </div>                   
   </div>   
 </div>      
