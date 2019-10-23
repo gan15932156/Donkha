@@ -80,7 +80,7 @@
                   <div class="row">
                     <div class="form-group col-md-4"></div>
                     <div class="form-group col-md-4">
-                      <a href="<?=base_url("index.php/Project_controller/manage_member_staff");?>" class="btn btn-outline-success">ย้อนกลับ</a>
+                      <a href="<?=base_url("index.php/Project_controller/manage_member_staff");?>" class="btn btn-success">ย้อนกลับ</a>
                     </div> 
                     <div class="form-group col-md-4"></div>
                   </div>  

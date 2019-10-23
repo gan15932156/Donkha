@@ -22,7 +22,7 @@
         dataType: "JSON",		
         error: function(){ alert("error"); }
         }).done(function(data){
-          alert(data.message);
+         // alert(data.message);
           window.open("<?=base_url("Project_controller/account_detail/");?>"+$("#acc_code").val(), "_self");
         });
       }
@@ -103,7 +103,7 @@
               <input placeholder="ชื่อหรือหมายเลขบัญชี" autofocus type="text" class="form-control" id="account" name="account">
             </div>
             <div class="col-2">
-              <button type="submit" class="btn btn-outline-success" id="search_account">ค้นหา</button> 
+              <button type="submit" class="btn btn-success" id="search_account">ค้นหา</button> 
             </div>
           </div>
         </div>
@@ -184,8 +184,8 @@
           <div class="form-group col-12" align="left">
             <div class="row">
               <div class="form-group col-md-12 text-center">
-                <a href="<?=base_url("index.php/Project_controller/index_staff");?>" class="btn btn-outline-success">ย้อนกลับ</a>
-                <button type="submit" class="btn btn-outline-primary" id="submit">ตกลง</button>
+                <a href="<?=base_url("index.php/Project_controller/index_staff");?>" class="btn btn-success">ย้อนกลับ</a>
+                <button type="submit" class="btn btn-primary" id="submit">ตกลง</button>
               </div>
             </div>
           </div>                          

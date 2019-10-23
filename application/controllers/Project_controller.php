@@ -746,9 +746,10 @@ class Project_controller extends CI_Controller {
 			'record_time'=>$now_time,
 			'account_detail_balance'=>$this->input->post("new_balance"),
 			'trans_money'=>$this->input->post("tranfer_money"),
-			'account_detail_confirm'=>'0',
+			'account_detail_confirm'=>'1',
 		);
 		$this->User_model->insert_account_details($data_account_detail);
+		$this->User_model->update_confirm_account_tranfer($this->input->post("acc_code"),$this->input->post("new_balance"));
 		//ผู้รับ
 		$rec_code = $this->User_model->auto_generate_recive_money_code();
 		foreach ($this->User_model->select_account_with_parameter($this->input->post("ac_tranfer"))->result() as $row) {
@@ -776,6 +777,11 @@ class Project_controller extends CI_Controller {
 		$this->User_model->insert_tranfer_money($data_rec);
 		$this->User_model->insert_account_details($data_account_detail_reciver);
 		$this->User_model->update_confirm_account_tranfer($this->input->post("ac_tranfer"),$new_balance);
+
+		$response = array();
+		$response["message"] = "บันทึกข้อมูลสำเร็จ";
+		$response["error"] = false;
+		echo json_encode($response);
 	}
 	public function close_account_insert(){
 		date_default_timezone_set('Asia/Bangkok');

@@ -1,3 +1,4 @@
+<script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/helper.js"></script> 
 <script type="text/javascript">
   function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
@@ -5,20 +6,26 @@
   $(document).ready(function(){
     $("#tranfer_form").submit(function(event) {
 			event.preventDefault();
-			$.ajax({
+
+      var tran_money = parseFloat($("#tranfer_money").val());
+      var total_money = parseFloat($("#new_balance").val());
+      var connn = confirm("ยืนยันการโอนหรือไม่\n \nบัญชีที่โอน "+$("#ac_tranfer").val()+"\nจำนวนเงินโอน "+formatNumber(tran_money.toFixed(2))+" บาท\nจำนวนเงินคงเหลือ "+formatNumber(total_money.toFixed(2))+" บาท");
+      if(connn){
+        $.ajax({
 		    url: "<?=base_url("Project_controller/tranfer_money_insert/");?>",
 		    type:"post",
-        data:new FormData(this),
+        data:new FormData($(this)[0]),
         processData:false,
         contentType:false,
         cache:false,
         async:false,
-		    success: function(response){
-          alert("บันทึกข้อมูลสำเร็จ");
-			    window.open("<?=base_url("Project_controller/noti_tdf");?>", "_self");    		
-		    },
-		    error: function(){ alert("error"); }
-      });
+        dataType: "JSON",		
+        error: function(){ alert("error"); }
+        }).done(function(data){
+          //alert(data.message);
+          window.open("<?=base_url("Project_controller/account_detail/");?>"+$("#acc_code").val(), "_self");
+        });
+      }
 		});
     var acc_balance = 0 ;
     function search_data(account){
@@ -105,7 +112,7 @@
               <input placeholder="ชื่อหรือหมายเลขบัญชี" autofocus type="text" class="form-control" id="account" name="account">
             </div>
             <div class="col-2">
-              <button type="submit" class="btn btn-outline-success" id="search_account">ค้นหา</button> 
+              <button type="submit" class="btn btn-success" id="search_account">ค้นหา</button> 
             </div>
           </div>
         </div>
@@ -192,8 +199,8 @@
           <div class="form-group col-12" align="left">
             <div class="row">
               <div class="form-group col-md-12 text-center">
-                <a href="<?=base_url("index.php/Project_controller/index_staff");?>" class="btn btn-outline-success">ย้อนกลับ</a>
-                <button type="submit" class="btn btn-outline-primary" id="submit">ตกลง</button>
+                <a href="<?=base_url("index.php/Project_controller/index_staff");?>" class="btn btn-success">ย้อนกลับ</a>
+                <button type="submit" class="btn btn-primary" id="submit">ตกลง</button>
               </div>
             </div>
           </div>                          

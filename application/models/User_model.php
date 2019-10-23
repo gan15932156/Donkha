@@ -731,7 +731,7 @@ class User_model extends CI_Model {
 		}
 		$this->db->where("(record_date BETWEEN '".date('Y-m-d', strtotime("-".$previous." month"))."' AND '".date('Y-m-d')."')");
 		$this->db->join('staff', 'staff_id = staff_record_id','inner');
-		$this->db->order_by('record_date ASC, record_time ASC');
+		$this->db->order_by('record_date DESC, record_time DESC');
 		$query=$this->db->get();
 		return $query;
 	}
@@ -955,6 +955,7 @@ class User_model extends CI_Model {
 		$this->db->from('account');
 		$this->db->where('account_open_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"');
 		$this->db->join('member', 'member.member_id = account.member_id','inner');
+		$this->db->order_by('account_open_date DESC');
 		$query=$this->db->get();
 		return $query;
 	}

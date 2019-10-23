@@ -1,6 +1,146 @@
 <script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/helper.js"></script> 
 <script type="text/javascript">
-  $(document).ready(function(){
+  var table_account_detal;
+  function onload_datatable(url){
+    table_account_detal = $('#data_table_modal').DataTable({
+    columnDefs: [
+      {targets: [0,1],className: 'dt-body-center'},
+      {targets: [2,3],className: 'dt-body-right'},
+      { orderable: false, targets: '_all' }
+    ],     
+    "searching": false,
+    "lengthChange": false,
+    pageLength: 12,
+    destroy: true,
+    serverSide: true,
+    processing: true,
+    "language": {
+      "search":"ค้นหา:",
+      "zeroRecords": "ไม่พบข้อมูล",
+      "info": "แสดงหน้า _PAGE_ จาก _PAGES_",
+      "infoEmpty": "ไม่พบข้อมูล",
+      "infoFiltered": "(กรองจาก _MAX_ รายการทั้งหมด)",
+      "paginate": {
+        "first":      "หน้าแรก",
+        "last":       "หน้าสุดท้าย",
+        "next":       "ถัดไป",
+        "previous":   "ก่อนหน้า"
+      },
+    },      
+    ajax: {
+      url:url
+    },
+    'columns':[
+    {
+      data:'record_date',
+      render: function (data,type,row){
+        var dateee = row['record_date'];
+        var t_year =  parseInt(dateee.substring(0,4))+543;
+        var t_month = new Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+        var t_day = Number(dateee.substring(8));
+        var th_dateeee = t_day+" "+t_month[parseInt(dateee.substring(5,7))]+" "+t_year;
+        return th_dateeee+" "+row['record_time'];
+      }
+    },
+    {
+      data:'action',
+      render: function (data,type,row){
+        var action;
+        if(row['action'] == "deposit"){
+          action = "<span class='text-success'>ฝาก</span>";
+        }
+        else if(row['action'] == "withdraw"){
+          action = "<span class='text-danger'>ถอน</span>";
+        }
+        else if(row['action'] == "open_account"){
+          action = "<span class='text-success'>เปิดบัญชี</span>";
+        }
+        else if(row['action'] == "add_interest"){
+          action = "<span class='text-success'>เพิ่มดอกเบี้ย</span>";
+        }
+        else if(row['action'] == "tranfer_money"){
+          action = "<span class='text-danger'>โอน</span>";
+        }
+        else if(row['action'] == "recive_money"){
+          action = "<span class='text-success'>รับเงินโอน</span>";
+        }
+        else{
+          action = "<span class='text-danger'>ปิดบัญชี</span>";
+        }               
+        return action;
+      }
+    },
+    {
+      data:'trans_money',
+      render: function (data,type,row){
+        var tran_money = parseFloat(row['trans_money']);
+        var action;
+        if(row['action'] == "deposit"){
+          action = "<span class='text-success'>++"+formatNumber(tran_money.toFixed(2))+"</span>";
+        }
+        else if(row['action'] == "withdraw"){
+          action = "<span class='text-danger'>--"+formatNumber(tran_money.toFixed(2))+"</span>";
+        }
+        else if(row['action'] == "open_account"){
+          action = "<span class='text-success'>++"+formatNumber(tran_money.toFixed(2))+"</span>";
+        }
+        else if(row['action'] == "add_interest"){
+          action = "<span class='text-success'>++"+formatNumber(tran_money.toFixed(2))+"</span>";
+        }
+        else if(row['action'] == "tranfer_money"){
+          action = "<span class='text-danger'>--"+formatNumber(tran_money.toFixed(2))+"</span>";
+        }
+        else if(row['action'] == "recive_money"){
+          action = "<span class='text-success'>++"+formatNumber(tran_money.toFixed(2))+"</span>";
+        }
+        else{
+          action = "<span class='text-danger'>--"+formatNumber(tran_money.toFixed(2))+"</span>";
+        }  
+        return action;
+      }
+    },
+    {
+      data:'account_detail_id',
+      render: function(data, type, row){
+        var balance = parseFloat(row['account_detail_balance']);                       
+        return formatNumber(balance.toFixed(2));
+      }
+    },
+    {
+      data:'staff_name',
+      render: function(data, type, row){                      
+        return "<span style='margin-left:10px;'>"+row['staff_title']+""+row['staff_name']+"</span>";
+      }
+    }
+    ]
+  });
+  }
+  function show_modal_datatable(account_id){
+    $.ajax({
+		  url: "<?=base_url("Project_controller/get_account_details_modal/");?>",
+		  type:"post",
+      data:{account_id:account_id},
+      dataType: "JSON",		
+      error: function(){ alert("error"); }
+      })
+      .done(function(data){
+        /*$.each(data, function (key, acc) {
+            alert(acc.account_id);
+        })*/
+        var tran_money = parseFloat(data.account_balance);  
+        $("#modal_title_ac_code").text(data.account_id);
+        $("#modal_title_ac_name").text("ชื่อบัญชี "+data.account_name);
+        $("#modal_title_ac_balance").text("จำนวนเงินคงเหลือ "+formatNumber(tran_money.toFixed(2))+" บาท");
+
+        $(".tbody_modal").empty();
+        $('#filter option:first').prop('selected',true);
+        $('#previous option:first').prop('selected',true);
+
+        onload_datatable('<?php echo base_url("index.php/Project_controller/filter_previous_account_detail_datatable/"); ?>'+account_id+"/"+$("#filter").val()+"/"+$("#previous").val());
+      });
+    $('#exampleModal').modal('show');
+  } 
+  $(document).ready(function(){  
     var table = $('#data_table').DataTable({
       columnDefs: [
         {targets: [0,2],className: 'dt-body-center'}
@@ -9,17 +149,17 @@
       serverSide: true,
       processing: true,
       "language": {
-          "search":"ค้นหา:",
-          "zeroRecords": "ไม่พบข้อมูล",
-          "info": "แสดงหน้า _PAGE_ จาก _PAGES_",
-          "infoEmpty": "ไม่พบข้อมูล",
-          "infoFiltered": "(กรองจาก _MAX_ รายการทั้งหมด)",
-          "paginate": {
-            "first":      "หน้าแรก",
-            "last":       "หน้าสุดท้าย",
-            "next":       "ถัดไป",
-            "previous":   "ก่อนหน้า"
-          },
+        "search":"ค้นหา:",
+        "zeroRecords": "ไม่พบข้อมูล",
+        "info": "แสดงหน้า _PAGE_ จาก _PAGES_",
+        "infoEmpty": "ไม่พบข้อมูล",
+        "infoFiltered": "(กรองจาก _MAX_ รายการทั้งหมด)",
+        "paginate": {
+          "first":      "หน้าแรก",
+          "last":       "หน้าสุดท้าย",
+          "next":       "ถัดไป",
+          "previous":   "ก่อนหน้า"
+        },
       },   
       "lengthChange": false,
       ajax: {
@@ -32,7 +172,7 @@
       {
         data:'account_name',
         render: function(data,type,row){       
-            return '<a href="#" onclick="show_modal_datatable('+row['account_id']+')"  >'+row['account_name']+'</a>';
+          return '<a href="#" onclick="show_modal_datatable('+row['account_id']+')"  >'+row['account_name']+'</a>';
         }
       },
       {
@@ -54,9 +194,10 @@
           responseType: "blob"
         },
         data:{
-              filter:$('[id="filter"]').val(),
-              account_id:$('[id="ac_id"]').val()
-              },
+          previous:$('[id="previous"]').val(),
+          filter:$('[id="filter"]').val(),
+          account_id:$('[id="modal_title_ac_code"]').text()
+        },
         success:function(response)
         { 
           url = window.URL.createObjectURL(response);
@@ -64,37 +205,15 @@
         }
       })
     });
+    $("#filter").change(function(){
+      $(".tbody_modal").empty();
+      onload_datatable('<?php echo base_url("index.php/Project_controller/filter_previous_account_detail_datatable/"); ?>'+$("#modal_title_ac_code").text()+"/"+$("#filter").val()+"/"+$("#previous").val());
+    });
+    $("#previous").change(function(){
+      $(".tbody_modal").empty();
+      onload_datatable('<?php echo base_url("index.php/Project_controller/filter_previous_account_detail_datatable/"); ?>'+$("#modal_title_ac_code").text()+"/"+$("#filter").val()+"/"+$("#previous").val());
+    });
   });
-  function show_modal_datatable(account_id){
-    $.ajax({
-		    url: "<?=base_url("Project_controller/get_account_details_modal/");?>",
-		    type:"post",
-        data:{account_id:account_id},
-        dataType: "JSON",		
-        error: function(){ alert("error"); }
-        }).done(function(data){
-          /*$.each(data, function (key, acc) {
-              alert(acc.account_id);
-          })*/
-          var tran_money = parseFloat(data.account_balance);  
-          $("#modal_title_ac_code").text("หมายเลชบัญชี "+data.account_id);
-          $("#modal_title_ac_name").text("ชื่อบัญชี "+data.account_name);
-          $("#modal_title_ac_balance").text("จำนวนเงินคงเหลือ "+formatNumber(tran_money.toFixed(2))+" บาท");
-        });
-   /* $.ajax({
-      url:"<?=base_url()?>index.php/Project_controller/get_account_details_modal/",
-      method:"POST",
-      data:{account_id:account_id},
-      dataType: "JSON",
-      error: function(){ alert("error"); }
-      })
-    .done(function(data){
-            
-      $("#modal_title_ac_code").val(data.account_id);
-    });*/
-    $('#exampleModal').modal('show');
-  }
-  
 </script>
 <div class="col-md-12">
   <div class="row">
@@ -104,10 +223,6 @@
           <h4 class="text-center"><B>รายงานบัญชี</B></h4>
         </div>             
       <div class="col-md-12">
-      <!-- Button trigger modal -->
-        <!--  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-          Launch demo modal
-        </button>-->
         <div id="result_search"></div>
           <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
             <thead class="thead-light table-bordered text-center">
@@ -128,8 +243,8 @@
 
 
 <style>
-    .modal-dialog {max-height:100vh;max-width:85vw;}  
-    .modal-body{height:100%;width:100%;align:center;}  
+    .modal-dialog {max-height:100vh;max-width:70vw;}  
+    .modal-body{height:70vh;width:100%;align:center;}  
     .body-container{background-color:white;}    
 </style>
 <!-- Modal -->
@@ -138,6 +253,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">บัญชีธนาคาร</h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <h5 class="modal-title" >หมายเลชบัญชี</h5>&nbsp;&nbsp;
         <h5 class="modal-title" id="modal_title_ac_code"></h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <h5 class="modal-title" id="modal_title_ac_name"></h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <h5 class="modal-title" id="modal_title_ac_balance"></h5>
@@ -170,7 +286,7 @@
                     </div> 
                     <div class="form-group col-2"></div>
                     <div class="form-group col-12">
-                    <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
+                    <table class="table table-striped table-hover table-sm" id="data_table_modal" style="width:100%;">
                       <thead class="thead-light table-bordered text-center">
                         <tr>
                           <th width="15%" scope="col">วันที่</th>
@@ -180,7 +296,7 @@
                           <th width="25%" scope="col">พนักงานที่ทำรายการ</th>
                         </tr>
                       </thead>
-                      <tbody class="table-bordered" style="font-size:14px;">
+                      <tbody class="table-bordered tbody_modal" style="font-size:16px;">
                       </tbody>
                     </table>
                     </div>
