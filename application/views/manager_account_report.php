@@ -1,6 +1,31 @@
 <script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/helper.js"></script> 
 <script type="text/javascript">
   var table_account_detal;
+  function onmouseover_foo(ac,action){
+    if(action == "recive_money" || action == "tranfer_money"){
+      $.ajax({
+        url:"<?php echo base_url("index.php/Project_controller/show_modal_tranfer"); ?>",
+        method:"POST",
+        data:{
+          'account_detail_id':ac,
+          'action':action,
+        },
+        success:function(data){
+          $('.rexposne').empty();
+          $('.rexposne').html(data);
+          
+          $('#tranfer_modal').modal('show');
+          var filterVal = 'blur(3px)';
+            $('#exampleModal')
+              .css('filter',filterVal)
+              .css('webkitFilter',filterVal)
+              .css('mozFilter',filterVal)
+              .css('oFilter',filterVal)
+              .css('msFilter',filterVal);
+        }
+      })
+    }
+  }
   function onload_datatable(url){
     table_account_detal = $('#data_table_modal').DataTable({
     columnDefs: [
@@ -10,7 +35,7 @@
     ],     
     "searching": false,
     "lengthChange": false,
-    pageLength: 12,
+    pageLength: 8,
     destroy: true,
     serverSide: true,
     processing: true,
@@ -213,9 +238,30 @@
       $(".tbody_modal").empty();
       onload_datatable('<?php echo base_url("index.php/Project_controller/filter_previous_account_detail_datatable/"); ?>'+$("#modal_title_ac_code").text()+"/"+$("#filter").val()+"/"+$("#previous").val());
     });
+    $('#data_table_modal tbody').on( 'click', 'tr', function () {
+      var data = table_account_detal.row( this ).data();
+      onmouseover_foo(data.account_detail_id,data.action);
+    });
+    $('#data_table_modal tbody').on( 'mouseover', 'tr', function () {
+      var data = table_account_detal.row( this ).data();
+      if(data.action == "recive_money" || data.action == "tranfer_money"){
+        $(this).css("cursor","pointer");
+      }    
+    });
+    $("#tranfer_modal_btn").click(function(){
+      var filterVal = 'blur(0px)';
+        $('#exampleModal')
+          .css('filter',filterVal)
+          .css('webkitFilter',filterVal)
+          .css('mozFilter',filterVal)
+          .css('oFilter',filterVal)
+          .css('msFilter',filterVal);
+    });
+    
   });
 </script>
 <div class="col-md-12">
+
   <div class="row">
     <div class="col-md-12">
       <div  class="row">
@@ -243,13 +289,18 @@
 
 
 <style>
-    .modal-dialog {max-height:100vh;max-width:70vw;}  
-    .modal-body{height:70vh;width:100%;align:center;}  
-    .body-container{background-color:white;}    
+    .modal_dialog_account_detail {max-height:100vh;max-width:80vw;}  
+    .modal_body_account_detail{height:70vh;width:100%;align:center;}  
+    .modal_container_account_detail{background-color:white;}    
+
+    .modal_dialog_trafer {max-height:100vh;max-width:150vh;}  
+    .modal_body_tranfer{height:100%;width:100%;align:center;}  
+    .modal_container_tranfer{background-color:white;}    
 </style>
+
 <!-- Modal -->
-<div align="center" class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div align="center" class="modal fade" id="exampleModal">
+  <div class="modal-dialog modal_dialog_account_detail" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">บัญชีธนาคาร</h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -261,8 +312,8 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <div class="container-fluid body-container">       
+      <div class="modal-body modal_body_account_detail">
+        <div class="container-fluid body-container modal_container_account_detail">       
             <div class="row"> 
                 <div class="col-md-12">
                   <div class="result"></div>
@@ -307,6 +358,31 @@
           </div>
       <div class="modal-footer">
         <button type="button" id="print_report" class="btn btn-warning">พิมพ์รายงาน</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Tranfer-Receiver-->
+<div align="center" class="modal fade" id="tranfer_modal" name="tranfer_modal" data-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal_dialog_trafer" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" id="tranfer_modal_btn" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body modal_body_tranfer">
+        <div class="container-fluid body-container modal_container_tranfer">       
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="rexposne"></div>
+                </div>
+            </div> 
+        </div>
+    </div>
+      <div class="modal-footer">
+       
       </div>
     </div>
   </div>

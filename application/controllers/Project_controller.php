@@ -400,6 +400,64 @@ class Project_controller extends CI_Controller {
 		$this->load->view('increase_money_form');
 		$this->load->view('templates/footer');
 	}*/
+	public function today_statement_report(){
+		$result;
+
+		$dep_money=0.0;
+		$wd_money=0.0;
+
+		$action_dep="";
+		$action_wd="";
+
+		$data["account"] = $this->User_model->select_account_detail_today_non_parameter()->result();
+		$result= ' <table style="border:1px solid black">
+		<thead style="border:1px solid black">
+		  <tr>
+			 <th style="border:1px solid black">เลขที่บัญชี</th>
+			 <th style="border:1px solid black">ชื่อบัญชี</th>
+			 <th style="border:1px solid black">ฝาก</th>
+			 <th style="border:1px solid black">ถอน</th>
+		  </tr>
+		</thead>
+		<tbody >';
+		foreach ($data["account"] as $row) {
+			if($row->action =='recive_money' ||
+				$row->action =='add_interest' ||
+				$row->action =='deposit' ||
+				$row->action =='open_account' 
+			){
+				$dep_money+= floatval($row->trans_money);
+				$action_dep = $row->trans_money;
+			}
+			else{
+				$wd_money+= floatval($row->trans_money);
+				$action_wd = $row->trans_money;
+			}
+			$result.='<tr>
+				<td align="center">'.$row->account_id.'</td>
+				<td>'.$row->account_name.'</td>
+				<td align="center">'.$action_dep.'</td>
+				<td align="center">'.$action_wd.'</td>
+			</tr>';
+			$action_dep = null;
+			$action_wd =null;
+		}
+		$total = $dep_money-$wd_money;
+		$result.='</tbody> <tfoot >
+		<tr>
+		  <td style="border:1px solid black" align="center" colspan="2">รวม</td>
+		  <td style="border:1px solid black" align="center" colspan="1">'.$dep_money.'</td>
+		  <td style="border:1px solid black" align="center" colspan="1">'.$wd_money.'</td>
+		</tr>
+		<tr>
+		  <td style="border:1px solid black" align="center" colspan="2">รวมมมม</td>
+		  <td style="border:1px solid black" align="center" colspan="2">'.$total.'</td>
+		</tr>
+	 </tfoot></table>';
+		echo $result;
+		//print_r($data["account"]);
+		//echo json_encode($data["account"]);
+	}
 	
 
 	////////////////////////////////////////////////////////////
@@ -1157,119 +1215,7 @@ class Project_controller extends CI_Controller {
 			$response["account_balance"] = $row->account_balance;	
 			$response["member_name"] = $row->member_name;	
 		}
-
 		echo json_encode($response);
-	/*	$result='<script>
-		$(document).ready(function(){
-			$("#filter").change(function(){
-				$.ajax({
-					url:"'.base_url("index.php/Project_controller/filter_transaction_table_manager_report_modal").'",
-					method:"POST",
-					data:{
-						  "filter":$(this).val(),
-						  "account_id":$("#ac_id").val(),
-						},
-					success:function(data){
-						$("table").remove("#result_table");
-					  	$("#result_table").html(data);				  
-					}
-				  })        
-			});
-		});
-		</script>
-		<style type="text/css">     
-			.schooller{height:48vh;overflow:auto;}
-			table{width:20px;}
-			thead tr:nth-child(1) th{position: sticky;top: 0;z-index: 10;} 
-		</style>
-		
-		<div class="row">';
-		foreach($this->User_model->select_account_with_parameter($this->input->post('account_id'))->result() as $row){
-			$result.= '<div class="col-md-6"><B>หมายเลขบัญชี :</B>'." ".$row->account_id.'</div>
-			<div class="col-md-6"><B>ชื่อบัญชี :</B>'." ".$row->account_name.'</div>';
-			//echo $row->account_name." ".$row->account_id;
-		}
-		$result.='<div class="col-2"></div>';
-		$result.=' <div class="form-group col-2"><br><label><B>การแสดงผล</B></label></div>';	
-		$result.='<div class="form-group col-2"><br>
-				<select  id="filter" name="filter" class="form-control" >
-					<option value="all">ทั้งหมด</option>
-					<option value="deposit">รายการฝาก</option>
-					<option value="withdraw">รายการถอน</option>
-					<option value="tranfer">รายการโอน</option>
-				</select>
-			</div> ';
-		$result.='<div class="form-group col-2"><br><label style="width: 100%"><B>ยอดเงินคงเหลือ</B></label></div>';	
-		$result.='<div class="form-group col-2" align="left"><br><label>'.number_format($row->account_balance,2)." ".'บาท</label></div> ';
-		$result.='<div class="col-2"></div>'; 
-
-		//table div
-		$result.='<div class="form-group col-12 schooller"><input type="hidden" name="ac_id" id="ac_id" value="'.$row->account_id.'">';
-		$result.='<div id="result_table"></div>';
-		$result.='<table class="table  table-hover table-sm" id="result_table">
-		<thead class="thead-light table-bordered text-center">
-		  <tr>
-			<th width="5%" scope="col">ลำดับ</th>
-			<th width="26%" scope="col">วันที่</th>
-			<th width="10%" scope="col">รายการ</th>
-			<th width="12%" scope="col">จำนวนเงิน</th>
-			<th width="12%" scope="col">คงเหลือ</th>
-			<th width="35%" scope="col">พนักงานที่ทำรายการ</th>
-		  </tr>
-		</thead>
-		<tbody class="table-bordered text-center">';
-		$i = 1;
-		foreach($this->User_model->select_account_detail_parameter_account_id($this->input->post('account_id'))->result() as $row2){
-			if($row2->action == "deposit"){
-				$action="<span class='text-success'>ฝาก</span>";
-				$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
-			}
-			elseif($row2->action == "withdraw"){
-				$action="<span class='text-danger'>ถอน</span>";
-				$trans_money="<span class='text-danger'>+".number_format($row2->trans_money,2)."</span>";
-			}
-			elseif($row2->action == "add_interest"){
-				$action="<span class='text-success'>เพิ่มดอกเบี้ย</span>";
-				$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
-			}
-			elseif($row2->action == "open_account"){
-				$action="<span class='text-success'>เปิดบัญชี</span>";
-				$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
-			}
-			elseif($row2->action == "close_account"){
-				$action="<span class='text-danger'>ปิดบัญชี</span>";
-				$trans_money="<span class='text-danger'>-".number_format($row2->trans_money,2)."</span>";
-			}
-			elseif($row2->action == "tranfer_money"){
-				$action="<span class='text-danger'>โอน</span>";
-				$trans_money="<span class='text-danger'>-".number_format($row2->trans_money,2)."</span>";
-			}
-			elseif($row2->action == "recive_money"){
-				$action="<span class='text-success'>รับเงินโอน</span>";
-				$trans_money="<span class='text-success'>+".number_format($row2->trans_money,2)."</span>";
-			}
-			else{
-				$action="<span class='text-danger'>โอน</span>";
-				$trans_money="<span class='text-danger'>+".number_format($row2->trans_money,2)."</span>";
-			}
-			$result.='<tr>';
-				$result.='<td>'.$i.'</td>';
-				$result.='<td>'.$this->DateThai($row2->record_date).'</td>';
-				$result.='<td>'.$action.'</td>';
-				$result.='<td>'.$trans_money.'</td>';
-				$result.='<td>'.number_format($row2->account_detail_balance,2).'</td>';
-				$result.='<td>'.$row2->staff_title."".$row2->staff_name.'</td>';
-			$result.='</tr>';
-			$i++;
-		}
-
-		$result.='</tbody></table>';
-		$result.='</div>';
-		//end table div
-
-		$result.='</div>';
-		echo $result;*/
-		
 	}
 	public function show_modal_tranfer(){
 		$ac = $this->input->post('account_detail_id');

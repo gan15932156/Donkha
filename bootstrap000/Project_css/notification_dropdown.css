@@ -4,7 +4,8 @@
    padding: 15px 26px;
    position: relative;
    display: inline-block;
-   font-size: 40px;
+	font-size: 35px;
+	width:70%;
 }
 .notification .badge {
   background-color: #28A745;
@@ -16,7 +17,7 @@
   border: 2px solid;
   border-color: #28A745;
   color: white;
-  font-size: 25px;
+  font-size: 30px;
 }
 .notification:hover .badge {
   color: #28A745;
@@ -38,7 +39,6 @@
   	position:absolute;
   	min-width:100%;
   	opacity:0;
-  	transition:.3s;
 }
 .dropdown:hover div{
   	visibility:visible;
@@ -49,9 +49,16 @@
   	text-decoration:none;
   	padding:8px;
   	color:#000;
-  	transition:.1s;
+
   	white-space:nowrap;
 }
 .dropdown div a:hover{
   	background-color:#D6EAF8;
+}
+
+
+
+.btn_index{
+	width:21vw;
+	height:17vh;
 }

@@ -1120,6 +1120,7 @@ class User_model extends CI_Model {
 		return $result;
 	}
 	public function fetch_member_datatable($param){
+		date_default_timezone_set('Asia/Bangkok');
 		$keyword = $param['keyword'];
 		$this->db->select('*');
  
@@ -1149,6 +1150,7 @@ class User_model extends CI_Model {
 		return $result;
 	}
 	public function fetch_staff_datatable($param){
+		date_default_timezone_set('Asia/Bangkok');
 		$keyword = $param['keyword'];
 		$this->db->join('level', 'staff.level_id = level.level_id','inner');
 		$this->db->select('*');
@@ -1179,6 +1181,7 @@ class User_model extends CI_Model {
 		return $result;
 	}
 	public function select_account_detail_lastest($account_id){
+		date_default_timezone_set('Asia/Bangkok');
 		$this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);
 		$this->db->order_by('record_date DESC, record_time DESC');
@@ -1262,6 +1265,20 @@ class User_model extends CI_Model {
 	public function select_sum_tranfer_day($date){
 		$this->db->select('SUM(trans_money) as sum FROM account_detail WHERE action="tranfer_money" AND record_date != "0000-00-00" AND record_date ="'.$date.'"');
 		return $this->db->get();
+	}
+	public function select_account_detail_today_non_parameter(){
+		date_default_timezone_set('Asia/Bangkok');
+		$this->db->from('account_detail');
+		$this->db->join('account', 'account.account_id = account_detail.account_id','inner');
+		$this->db->where("record_date",date('Y-m-d'));
+		$this->db->order_by('record_date DESC, record_time DESC');
+		$query=$this->db->get();
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
 	}
 
 	////////////////////////////////////////////////////////////

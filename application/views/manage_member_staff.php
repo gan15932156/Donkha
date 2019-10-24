@@ -1,6 +1,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
     var table = $('#data_table').DataTable({
+      "orderFixed": [ 0, 'asc' ],
       columnDefs: [
         {targets: [1,2],className: 'dt-body-center'},
         {targets: [0],className: 'dt-body-left'}
