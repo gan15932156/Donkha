@@ -401,7 +401,10 @@ class Project_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}*/
 	public function today_statement_report(){
-		$result;
+		$this->load->view('templates/header');
+		$this->load->view('today_statement_report');
+		$this->load->view('templates/footer');
+		/*$result;
 
 		$dep_money=0.0;
 		$wd_money=0.0;
@@ -409,7 +412,6 @@ class Project_controller extends CI_Controller {
 		$action_dep="";
 		$action_wd="";
 
-		$data["account"] = $this->User_model->select_account_detail_today_non_parameter()->result();
 		$result= ' <table style="border:1px solid black">
 		<thead style="border:1px solid black">
 		  <tr>
@@ -420,43 +422,52 @@ class Project_controller extends CI_Controller {
 		  </tr>
 		</thead>
 		<tbody >';
-		foreach ($data["account"] as $row) {
-			if($row->action =='recive_money' ||
-				$row->action =='add_interest' ||
-				$row->action =='deposit' ||
-				$row->action =='open_account' 
-			){
-				$dep_money+= floatval($row->trans_money);
-				$action_dep = $row->trans_money;
+		if($data["account"] = $this->User_model->select_account_detail_today_non_parameter()){
+			foreach ($data["account"]->result() as $row) {
+				if($row->action =='recive_money' ||
+					$row->action =='add_interest' ||
+					$row->action =='deposit' ||
+					$row->action =='open_account' 
+				){
+					$dep_money+= floatval($row->trans_money);
+					$action_dep = $row->trans_money;
+				}
+				else{
+					$wd_money+= floatval($row->trans_money);
+					$action_wd = $row->trans_money;
+				}
+				$result.='<tr>
+					<td align="center">'.$row->account_id.'</td>
+					<td>'.$row->account_name.'</td>
+					<td align="center">'.$action_dep.'</td>
+					<td align="center">'.$action_wd.'</td>
+				</tr>';
+				$action_dep = null;
+				$action_wd =null;
 			}
-			else{
-				$wd_money+= floatval($row->trans_money);
-				$action_wd = $row->trans_money;
-			}
-			$result.='<tr>
-				<td align="center">'.$row->account_id.'</td>
-				<td>'.$row->account_name.'</td>
-				<td align="center">'.$action_dep.'</td>
-				<td align="center">'.$action_wd.'</td>
-			</tr>';
-			$action_dep = null;
-			$action_wd =null;
+			$total = $dep_money-$wd_money;
+			$result.='</tbody> <tfoot >
+			<tr>
+			  <td style="border:1px solid black" align="center" colspan="2">รวม</td>
+			  <td style="border:1px solid black" align="center" colspan="1">'.$dep_money.'</td>
+			  <td style="border:1px solid black" align="center" colspan="1">'.$wd_money.'</td>
+			</tr>
+			<tr>
+			  <td style="border:1px solid black" align="center" colspan="2">รวมมมม</td>
+			  <td style="border:1px solid black" align="center" colspan="2">'.$total.'</td>
+			</tr>
+		 </tfoot></table>';
 		}
-		$total = $dep_money-$wd_money;
-		$result.='</tbody> <tfoot >
-		<tr>
-		  <td style="border:1px solid black" align="center" colspan="2">รวม</td>
-		  <td style="border:1px solid black" align="center" colspan="1">'.$dep_money.'</td>
-		  <td style="border:1px solid black" align="center" colspan="1">'.$wd_money.'</td>
-		</tr>
-		<tr>
-		  <td style="border:1px solid black" align="center" colspan="2">รวมมมม</td>
-		  <td style="border:1px solid black" align="center" colspan="2">'.$total.'</td>
-		</tr>
-	 </tfoot></table>';
-		echo $result;
-		//print_r($data["account"]);
-		//echo json_encode($data["account"]);
+		else{
+			$result.='</tbody><tfoot> 
+				<tr>
+					<td style="border:1px solid black" align="center" colspan="4">ไม่พบข้อมูล</td>
+				</tr>
+			</tfoot></table>';
+		}
+		
+		echo $result;*/
+
 	}
 	
 
@@ -1440,6 +1451,30 @@ class Project_controller extends CI_Controller {
       $data['data'] = $results['data'];
       $data['error'] = $results['error_message'];
       $this->output->set_content_type('application/json')->set_output(json_encode($data));
+	}
+	public function select_today_statement(){
+		$sccount_id = $this->uri->segment(3);
+		$action = $this->uri->segment(4);
+		$previous = $this->uri->segment(5);
+		$order_index = $this->input->get('order[0][column]');
+		$param['page_size'] = $this->input->get('length');
+		$param['start'] = $this->input->get('start');
+		$param['draw'] = $this->input->get('draw');
+		$param['keyword'] = trim($this->input->get('search[value]'));
+		$param['column'] = $this->input->get("columns[{$order_index}][data]");
+		$param['dir'] = $this->input->get('order[0][dir]');
+	
+		$results = $this->User_model->select_account_detail_today_non_parameter($param);
+	
+		$data['draw'] = $param['draw'];
+		$data['recordsTotal'] = $results['count'];
+		$data['recordsFiltered'] = $results['count_condition'];
+		$data['data'] = $results['data'];
+		$data['sum_dep_limit'] = $results['data'];
+		$data['sum_wd_limit'] = $results['data'];
+		$data['error'] = $results['error_message'];
+		$this->output->set_content_type('application/json')->set_output(json_encode($data));
+		/////////////////เหลือ select value sum เฉพาะรายการ deposit หรือ withdraw แบบมี limit ด้วย ไว้เวลาแบ่งหน้า  อิอิ :)
 	}
 	public function filter_previous_account_detail_datatable(){
 		$sccount_id = $this->uri->segment(3);
