@@ -3,22 +3,25 @@
   $(document).ready(function(){
     var table = $('#data_table').DataTable({
         drawCallback:function(settings)
-        {
-            console.log(settings.json.recordsFiltered);
-            $('#sum_dep').html(settings.json.recordsFiltered);
+        { 
+          var sum_dep = parseFloat(settings.json.sum_dep); 
+          var sum_wd = parseFloat(settings.json.sum_wd); 
+          var sum_dep_limit = parseFloat(settings.json.sum_dep_limit); 
+          var sum_wd_limit = parseFloat(settings.json.sum_wd_limit); 
+          $('#sum_wd').html(formatNumber(sum_wd_limit.toFixed(2))+"(จากทั้งหมด "+formatNumber(sum_wd.toFixed(2))+")");
+          $('#sum_dep').html(formatNumber(sum_dep_limit.toFixed(2))+"(จากทั้งหมด "+formatNumber(sum_dep.toFixed(2))+")");
         },
       columnDefs: [
         {targets: [0,1],className: 'dt-body-center'},
         {targets: [2],className: 'dt-body-left'},
         {targets: [3,4],className: 'dt-body-right'},
         { orderable: false, targets: '_all' },
-
       ],   
       "order": [[ 1, 'asc' ]],  
       "lengthChange": false,
       "searching": false,
       "orderable": false,
-      pageLength: 2,
+      pageLength: 8,
       destroy: true,
       serverSide: true,
       processing: true,
@@ -91,16 +94,13 @@
             cell.innerHTML = i + 1 + PageInfo.start;
         } );
     } );
-  /*  $('#data_table tbody').on( 'click', 'tr', function () {
-      var data = table.row( this ).data();
-      onmouseover_foo(data.account_detail_id,data.action);
+    $("table#data_table tfoot").css({ 
+      'background-color': '#99c0ff',
+      'border' : '20px solid black',
+      'color' : 'black',
+      'font-size': '16px',
+      
     });
-    $('#data_table tbody').on( 'mouseover', 'tr', function () {
-        var data = table.row( this ).data();
-        if(data.action == "recive_money" || data.action == "tranfer_money"){
-          $(this).css("cursor","pointer");
-        }    
-    });*/
    /* $("#print").click(function(){
       $.ajax({
         url:"<?php echo base_url("index.php/Project_controller/print_report_statement"); ?>",
@@ -132,7 +132,7 @@
         <div class="col-md-12 text-center">
           <div class="row">                                      
           <div class="form-group col-4">
-             <a href="<?=base_url("index.php/Project_controller/manage_account");?>" class="btn btn-warning">ย้อนกลับ</a>
+             <a href="<?=base_url("index.php/Project_controller/index_staff");?>" class="btn btn-warning">ย้อนกลับ</a>
             <button class="btn btn-success" id="print">พิมพ์รายงาน</button> 
           </div>     
         </div>
@@ -142,23 +142,23 @@
         <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
           <thead class="thead-light table-bordered text-center">
             <tr>
-              <th width="10%" scope="col">ลำดับ</th>
-              <th width="15%" scope="col">เลขที่บัญชี</th>
-              <th width="20%" scope="col">ชื่อบัญชี</th>
-              <th width="12%" scope="col">ฝาก(บาท)</th>
-              <th width="12%" scope="col">ถอน(บาท)</th>
+              <th width="8%" scope="col">ลำดับ</th>
+              <th width="10%" scope="col">เลขที่บัญชี</th>
+              <th width="15%" scope="col">ชื่อบัญชี</th>
+              <th width="22%" scope="col">ฝาก(บาท)</th>
+              <th width="22%" scope="col">ถอน(บาท)</th>
             </tr>
           </thead>
           <tbody class="table-bordered" style="font-size:16px;">
           </tbody>
-          <tfoot>
+         
+          <tfoot class="tf">
             <tr>
-                <th class="text-center" colspan="3">รวม</th>
-                <th class="text-right" id="sum_dep" colspan="1">123,123.00</th>
-                <th class="text-right" id="sum_wd" colspan="1">123,123.00</th>
+                <th scope="col" class="text-center" colspan="3">รวม</th>
+                <th scope="col" class="text-right" id="sum_dep" colspan="1"></th>
+                <th scope="col" class="text-right" id="sum_wd" colspan="1"></th>
             </tr>
           </tfoot>
-        
         </table>
       </div>                                     
     </div>

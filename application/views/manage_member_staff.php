@@ -30,7 +30,7 @@
       {
         data:'member_name',
         render: function(data,type,row){      
-          return row['member_title']+" "+row['member_name'];
+          return row['member_title']+""+row['member_name'];
         }
       },
       {

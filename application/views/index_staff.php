@@ -2,12 +2,15 @@
   <div class="row text-center">
     <div class="col-md-12"><br>
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-1"></div>
+        <div class="col-md-4">
           <a href="<?php  echo base_url()."Project_controller/noti_dep/"; ?>" class="btn btn-success notification">แจ้งเตือนรายการฝาก<span class="badge "><?php echo $not_confirm_dep; ?></span></a>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-2"></div>
+        <div class="col-md-4">
           <a href="<?php  echo base_url()."Project_controller/noti_wd/"; ?>" class="btn btn-success notification">แจ้งเตือนรายการถอน<span class="badge"><?php echo $not_confirm_wd; ?></span></a>
         </div>
+        <div class="col-md-1"></div>
       </div>    
       <!--<a href="<?php  echo base_url()."Project_controller/noti_tdf/"; ?>" class="btn btn-outline-success notification">แจ้งเตือนรายการโอน<span class="badge"><?php echo $not_confirm_tdf; ?></span></a>-->
     </div>

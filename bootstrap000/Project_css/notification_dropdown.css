@@ -1,11 +1,10 @@
 .notification {
-   margin-right:1%;
    text-decoration: none;
    padding: 15px 26px;
    position: relative;
    display: inline-block;
 	font-size: 35px;
-	width:70%;
+	width:26vw;
 }
 .notification .badge {
   background-color: #28A745;

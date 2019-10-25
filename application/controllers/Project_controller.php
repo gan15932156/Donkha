@@ -404,70 +404,6 @@ class Project_controller extends CI_Controller {
 		$this->load->view('templates/header');
 		$this->load->view('today_statement_report');
 		$this->load->view('templates/footer');
-		/*$result;
-
-		$dep_money=0.0;
-		$wd_money=0.0;
-
-		$action_dep="";
-		$action_wd="";
-
-		$result= ' <table style="border:1px solid black">
-		<thead style="border:1px solid black">
-		  <tr>
-			 <th style="border:1px solid black">เลขที่บัญชี</th>
-			 <th style="border:1px solid black">ชื่อบัญชี</th>
-			 <th style="border:1px solid black">ฝาก</th>
-			 <th style="border:1px solid black">ถอน</th>
-		  </tr>
-		</thead>
-		<tbody >';
-		if($data["account"] = $this->User_model->select_account_detail_today_non_parameter()){
-			foreach ($data["account"]->result() as $row) {
-				if($row->action =='recive_money' ||
-					$row->action =='add_interest' ||
-					$row->action =='deposit' ||
-					$row->action =='open_account' 
-				){
-					$dep_money+= floatval($row->trans_money);
-					$action_dep = $row->trans_money;
-				}
-				else{
-					$wd_money+= floatval($row->trans_money);
-					$action_wd = $row->trans_money;
-				}
-				$result.='<tr>
-					<td align="center">'.$row->account_id.'</td>
-					<td>'.$row->account_name.'</td>
-					<td align="center">'.$action_dep.'</td>
-					<td align="center">'.$action_wd.'</td>
-				</tr>';
-				$action_dep = null;
-				$action_wd =null;
-			}
-			$total = $dep_money-$wd_money;
-			$result.='</tbody> <tfoot >
-			<tr>
-			  <td style="border:1px solid black" align="center" colspan="2">รวม</td>
-			  <td style="border:1px solid black" align="center" colspan="1">'.$dep_money.'</td>
-			  <td style="border:1px solid black" align="center" colspan="1">'.$wd_money.'</td>
-			</tr>
-			<tr>
-			  <td style="border:1px solid black" align="center" colspan="2">รวมมมม</td>
-			  <td style="border:1px solid black" align="center" colspan="2">'.$total.'</td>
-			</tr>
-		 </tfoot></table>';
-		}
-		else{
-			$result.='</tbody><tfoot> 
-				<tr>
-					<td style="border:1px solid black" align="center" colspan="4">ไม่พบข้อมูล</td>
-				</tr>
-			</tfoot></table>';
-		}
-		
-		echo $result;*/
-
 	}
 	
 
@@ -704,6 +640,7 @@ class Project_controller extends CI_Controller {
 			'account_open_date'=>date('Y-m-d'),
 			'account_name'=>$this->input->post("ac_name"),
 			'account_status'=>'1',
+			'account_balance'=>$this->input->post("money")
 		);
 		$this->User_model->insert_account($data_acc);
 		$dep_code = $this->User_model->auto_generate_deposit_code();
@@ -1470,11 +1407,41 @@ class Project_controller extends CI_Controller {
 		$data['recordsTotal'] = $results['count'];
 		$data['recordsFiltered'] = $results['count_condition'];
 		$data['data'] = $results['data'];
-		$data['sum_dep_limit'] = $results['data'];
-		$data['sum_wd_limit'] = $results['data'];
+
+		$rel['sumrel_limit'] = $this->User_model->get_sum_statement_today_limit($this->input->get('length'),$this->input->get('start'));
+		$rel['sumrel'] = $this->User_model->get_sum_statement_today();		
+		
+		$data['page_size'] = $this->input->get('length');
+		$data['start'] = $this->input->get('start');
+		$data['sum_dep_limit'] = 0.0;
+		$data['sum_wd_limit'] = 0.0;
+
+		$data['sum_dep'] = 0.0;
+		$data['sum_wd'] = 0.0;
+		foreach ($rel['sumrel']->result() as $row2) {
+			if($row2->action =='recive_money' ||
+			$row2->action =='add_interest' ||
+			$row2->action =='deposit' ||
+			$row2->action =='open_account' ){
+				$data['sum_dep']+= floatval($row2->trans_money);
+			}
+			else{
+				$data['sum_wd']+= floatval($row2->trans_money);
+			}
+		}
+		foreach ($rel['sumrel_limit']->result() as $row) {
+			if($row->action =='recive_money' ||
+			$row->action =='add_interest' ||
+			$row->action =='deposit' ||
+			$row->action =='open_account' ){
+				$data['sum_dep_limit']+= floatval($row->trans_money);
+			}
+			else{
+				$data['sum_wd_limit']+= floatval($row->trans_money);
+			}
+		}
 		$data['error'] = $results['error_message'];
 		$this->output->set_content_type('application/json')->set_output(json_encode($data));
-		/////////////////เหลือ select value sum เฉพาะรายการ deposit หรือ withdraw แบบมี limit ด้วย ไว้เวลาแบ่งหน้า  อิอิ :)
 	}
 	public function filter_previous_account_detail_datatable(){
 		$sccount_id = $this->uri->segment(3);
