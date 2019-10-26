@@ -38,6 +38,7 @@ class Service_App_Model extends CI_Model {
       $this->db->from('account_detail');
 		$this->db->where('account_id',$account_id);
 		$this->db->where('account_detail_confirm','1');	
+		$this->db->order_by('record_date DESC, record_time DESC');
 		$query=$this->db->get('');
 		if($query->num_rows() > 0){
             return $query;
@@ -103,6 +104,7 @@ class Service_App_Model extends CI_Model {
 		$this->db->where('account_id',$account_id);
 		$this->db->where('record_date',$date);
 		$this->db->where('account_detail_confirm','1');	
+		$this->db->order_by('record_date DESC, record_time DESC');
 		$query=$this->db->get('');
 		if($query->num_rows() > 0){
             return $query;
@@ -117,6 +119,7 @@ class Service_App_Model extends CI_Model {
 		$this->db->where('record_date',$date);
 		$this->db->where("action = 'withdraw'");
 		$this->db->where('account_detail_confirm','1');	
+		$this->db->order_by('record_date DESC, record_time DESC');
 		$query=$this->db->get('');
 		if($query->num_rows() > 0){
             return $query;
@@ -131,6 +134,7 @@ class Service_App_Model extends CI_Model {
 		$this->db->where('record_date',$date);
 		$this->db->where("action = 'tranfer_money'");
 		$this->db->where('account_detail_confirm','1');	
+		$this->db->order_by('record_date DESC, record_time DESC');
 		$query=$this->db->get('');
 		if($query->num_rows() > 0){
             return $query;
@@ -145,6 +149,7 @@ class Service_App_Model extends CI_Model {
 		$this->db->where('record_date',$date);
 		$this->db->where("(action = 'recive_money' OR action = 'add_interest' OR action = 'deposit' OR action = 'open_account')");
 		$this->db->where('account_detail_confirm','1');	
+		$this->db->order_by('record_date DESC, record_time DESC');
 		$query=$this->db->get('');
 		if($query->num_rows() > 0){
             return $query;
@@ -168,6 +173,7 @@ class Service_App_Model extends CI_Model {
 			}
 		}
 		$this->db->where('account_detail_confirm','1');	
+		$this->db->order_by('record_date DESC, record_time DESC');
 		$query=$this->db->get('');
 		if($query->num_rows() > 0){
             return $query;
@@ -271,6 +277,11 @@ class Service_App_Model extends CI_Model {
 		{
 			return false;
 		}
+	}
+	public function update_account_tranfer_service($account_id,$account_balance){
+		$data_account = array('account_balance' => $account_balance);
+		$this->db->where("account_id",$account_id);
+		$this->db->update("account",$data_account);
 	}
 	public function tranfer_service_insert($data_tran){
 		$this->db->insert('tranfer_money',$data_tran);	

@@ -417,6 +417,21 @@ class Service_app extends CI_Controller {
 		}
 		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);	
 	}
+	public function bypasstranfer(){
+		$this->response = null ;
+		$this->response['error'] = true;
+		
+		
+		foreach ($this->Service_App_Model->check_account_tranfer($this->input->post("account_id_tranfer"))->result() as $row) {
+			$account_balance=$row->account_balance;
+		}
+		$new_balance = $account_balance+$this->input->post('tranfer_money',true);	
+		$this->response['message'] = 'account_id '.$this->input->post("account_id")." account_id_tranfer ".$this->input->post("account_id_tranfer")." money_tranfer ".$this->input->post("tranfer_money")." total ".$this->input->post("new_balance")." receriver banlance ".$new_balance;
+		
+		
+		
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
+	}
 	public function receive_tranfer_insert(){
 		$this->response = null ;
 		date_default_timezone_set('Asia/Bangkok');	
@@ -430,16 +445,18 @@ class Service_app extends CI_Controller {
 		$data_account_detail=array(
 			'trans_id'=>$tdf_code,
 			'account_id'=>$this->input->post("account_id"),
-			'staff_record_id'=>'',
+			'staff_record_id'=>'1',
 			'action'=>'tranfer_money',
 			'record_date'=>date('Y-m-d'),
 			'record_time'=>date('H:i:s'),
 			'account_detail_balance'=>$this->input->post("new_balance"),
 			'trans_money'=>$this->input->post("tranfer_money"),
-			'account_detail_confirm'=>'0',
+			'account_detail_confirm'=>'1',
 		);
 		if($data["check_account"]=$this->Service_App_Model->check_account_tranfer($this->input->post("account_id_tranfer"))){
 			if($this->Service_App_Model->tranfer_service_insert($data_tran) && $this->Service_App_Model->account_detail_service_insert($data_account_detail)){		
+				$this->Service_App_Model->update_account_tranfer_service($this->input->post("account_id"),$this->input->post("new_balance"));
+				
 				$rec_code = $this->User_model->auto_generate_recive_money_code();
 				foreach ($data["check_account"]->result() as $row) {
 					$account_balance=$row->account_balance;
@@ -449,7 +466,7 @@ class Service_app extends CI_Controller {
 				$data_account_detail_reciver=array(
 					'trans_id'=>$rec_code, //recive tranfer money
 					'account_id'=>$this->input->post("account_id_tranfer"),
-					'staff_record_id'=>'',
+					'staff_record_id'=>'1',
 					'action'=>'recive_money',
 					'record_date'=>date('Y-m-d'),
 					'record_time'=>date('H:i:s'),
@@ -466,7 +483,7 @@ class Service_app extends CI_Controller {
 				if($this->Service_App_Model->tranfer_service_insert($data_rec) && $this->Service_App_Model->account_detail_service_insert($data_account_detail_reciver)){
 					$this->Service_App_Model->update_confirm_account_tranfer_service($this->input->post("account_id_tranfer"),$new_balance);
 					$this->response['error'] = false;
-					$this->response['message'] = 'ทำรายการสำเร็จ กรุณารอการยืนยันจากพนักงาน';
+					$this->response['message'] = 'ทำรายการสำเร็จ';
 				}
 				else{
 					$this->response['error'] = true;
