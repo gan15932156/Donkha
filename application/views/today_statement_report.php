@@ -58,32 +58,24 @@
         data:'trans_money',
         render: function(data, type, row){
           var balance = parseFloat(row['trans_money']);     
-          if(row['action'] =='recive_money' ||
-		    	row['action'] =='add_interest' ||
-		    	row['action'] =='deposit' ||
-		    	row['action'] =='open_account' 
-		    ){
-		    	return formatNumber(balance.toFixed(2));
-		    }
-		    else{
-		    	return null;
-		    }                           
+          if(row['action'] =='deposit' || row['action'] =='open_account'){
+		    	  return formatNumber(balance.toFixed(2));
+		      }
+          else if(row['action'] =='withdraw' || row['action'] =='close_account'){
+            return null;
+          }                           
         }
       },
       {
         data:'trans_money',
         render: function(data, type, row){
             var balance = parseFloat(row['trans_money']);     
-            if(row['action'] =='recive_money' ||
-                    row['action'] =='add_interest' ||
-                    row['action'] =='deposit' ||
-                    row['action'] =='open_account' 
-                ){
-                    return null;
-                }
-                else{
-                    return formatNumber(balance.toFixed(2));
-                }                  
+            if(row['action'] =='deposit' || row['action'] =='open_account'){
+              return null;
+            }
+            else if(row['action'] =='withdraw' || row['action'] =='close_account'){
+              return formatNumber(balance.toFixed(2));
+            }                  
         }
       }
     ]
@@ -101,9 +93,9 @@
       'font-size': '16px',
       
     });
-   /* $("#print").click(function(){
+    $("#print").click(function(){
       $.ajax({
-        url:"<?php echo base_url("index.php/Project_controller/print_report_statement"); ?>",
+        url:"<?php echo base_url("index.php/Project_controller/print_today_statement"); ?>",
         method:"POST",
         xhrFields: {
           responseType: "blob"
@@ -119,7 +111,7 @@
           window.open(url, '_blank');
         }
       })
-    });*/
+    });
   });
 </script>
 <div class="col-md-12 text-center">
@@ -127,31 +119,48 @@
     <div class="col-md-12">
       <div  class="row">
         <div class="col-md-12 ">
-          <h5 class="text-center"><B>รายงานฝาก ถอนประจำวัน</B></h5>
+          <h5 class="text-center"><B>รายงานทะเบียนเงินสด ประจำวัน</B></h5>
         </div>
         <div class="col-md-12 text-center">
-          <div class="row">                                      
+          <div class="row">    
+          <div class="form-group col-4">
+          </div> 
+          <div class="form-group col-4">
+          <?php  
+            function DateThai($strDate)
+            { 
+              $strYear = date("Y",strtotime($strDate))+543;
+              $strMonth= date("n",strtotime($strDate));
+              $strDay= date("j",strtotime($strDate));
+              $strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+              $strMonthThai=$strMonthCut[$strMonth];
+              return "$strDay $strMonthThai $strYear";
+            } 
+            date_default_timezone_set('Asia/Bangkok');
+          ?>
+            <span style="font-size:22px;"><b>ประจำวันที่ <?php echo DateThai(date('Y-m-d'));?></b></span>
+          </div>                                 
           <div class="form-group col-4">
              <a href="<?=base_url("index.php/Project_controller/index_staff");?>" class="btn btn-warning">ย้อนกลับ</a>
             <button class="btn btn-success" id="print">พิมพ์รายงาน</button> 
           </div>     
         </div>
       </div>
-      <div class="form-group col-12">
+      <div class="form-group col-2"></div>
+      <div class="form-group col-8">
         <div id="result_table"></div>
         <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
           <thead class="thead-light table-bordered text-center">
             <tr>
-              <th width="8%" scope="col">ลำดับ</th>
-              <th width="10%" scope="col">เลขที่บัญชี</th>
+              <th width="5%" scope="col">ลำดับ</th>
+              <th width="13%" scope="col">เลขที่บัญชี</th>
               <th width="15%" scope="col">ชื่อบัญชี</th>
-              <th width="22%" scope="col">ฝาก(บาท)</th>
-              <th width="22%" scope="col">ถอน(บาท)</th>
+              <th width="23%" scope="col">ฝาก(บาท)</th>
+              <th width="23%" scope="col">ถอน(บาท)</th>
             </tr>
           </thead>
           <tbody class="table-bordered" style="font-size:16px;">
           </tbody>
-         
           <tfoot class="tf">
             <tr>
                 <th scope="col" class="text-center" colspan="3">รวม</th>
@@ -160,7 +169,8 @@
             </tr>
           </tfoot>
         </table>
-      </div>                                     
+      </div>  
+      <div class="form-group col-2"></div>                                   
     </div>
   </div>                   
 </div>        

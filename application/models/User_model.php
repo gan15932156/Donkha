@@ -1266,31 +1266,44 @@ class User_model extends CI_Model {
 		$this->db->select('SUM(trans_money) as sum FROM account_detail WHERE action="tranfer_money" AND record_date != "0000-00-00" AND record_date ="'.$date.'"');
 		return $this->db->get();
 	}
+	public function select_today_statement(){
+		date_default_timezone_set('Asia/Bangkok');
+		$this->db->from('account_detail');
+		$this->db->join('account', 'account.account_id = account_detail.account_id','inner');
+		$this->db->where("record_date",date('Y-m-d'));
+		$this->db->order_by('record_date DESC, record_time DESC');
+		$query=$this->db->get();
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+	}
 	public function select_account_detail_today_non_parameter($param){
 		date_default_timezone_set('Asia/Bangkok');
-
 		$keyword = $param['keyword'];
-      $this->db->select('*');
+      	$this->db->select('*');
 		$this->db->join('account', 'account.account_id = account_detail.account_id','inner');
-      $condition = "1=1";
-      if(!empty($keyword)){
-       	$condition .= " and (account_id like '%{$keyword}%' or account_name like '%{$keyword}%')";
+		$condition = "1=1";
+		if(!empty($keyword)){
+			$condition .= " and (account_id like '%{$keyword}%' or account_name like '%{$keyword}%')";
 		}
 		$this->db->where("record_date",date('Y-m-d'));
-      $this->db->where($condition);
-      $this->db->limit($param['page_size'], $param['start']);
+		$this->db->where($condition);
+		$this->db->limit($param['page_size'], $param['start']);
 		$this->db->order_by('record_date DESC, record_time DESC');
-      $query = $this->db->get('account_detail');
-      $data = [];
-      if($query->num_rows() > 0){
-         foreach($query->result() as $row){
-            $data[] = $row;
-         }
+		$query = $this->db->get('account_detail');
+		$data = [];
+		if($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$data[] = $row;
+			}
 		}
-      $count_condition = $this->db->from('account_detail')->where($condition)->where("record_date",date('Y-m-d'))->count_all_results();
-      $count = $this->db->from('account_detail')->where("record_date",date('Y-m-d'))->count_all_results();
+		$count_condition = $this->db->from('account_detail')->where($condition)->where("record_date",date('Y-m-d'))->count_all_results();
+		$count = $this->db->from('account_detail')->where("record_date",date('Y-m-d'))->count_all_results();
 		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
-      return $result;
+		return $result;
 	}
 	public function get_sum_statement_today_limit($page_size,$start){
 		date_default_timezone_set('Asia/Bangkok');
