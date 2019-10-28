@@ -8,8 +8,8 @@
           var sum_wd = parseFloat(settings.json.sum_wd); 
           var sum_dep_limit = parseFloat(settings.json.sum_dep_limit); 
           var sum_wd_limit = parseFloat(settings.json.sum_wd_limit); 
-          $('#sum_wd').html(formatNumber(sum_wd_limit.toFixed(2))+"(จากทั้งหมด "+formatNumber(sum_wd.toFixed(2))+")");
-          $('#sum_dep').html(formatNumber(sum_dep_limit.toFixed(2))+"(จากทั้งหมด "+formatNumber(sum_dep.toFixed(2))+")");
+          $('#sum_wd').html(formatNumber(sum_wd_limit.toFixed(2))+"(ทั้งหมด "+formatNumber(sum_wd.toFixed(2))+")");
+          $('#sum_dep').html(formatNumber(sum_dep_limit.toFixed(2))+"(ทั้งหมด "+formatNumber(sum_dep.toFixed(2))+")");
         },
       columnDefs: [
         {targets: [0,1],className: 'dt-body-center'},
@@ -146,8 +146,8 @@
           </div>     
         </div>
       </div>
-      <div class="form-group col-2"></div>
-      <div class="form-group col-8">
+      <div class="form-group col-1"></div>
+      <div class="form-group col-10">
         <div id="result_table"></div>
         <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
           <thead class="thead-light table-bordered text-center">
@@ -170,7 +170,7 @@
           </tfoot>
         </table>
       </div>  
-      <div class="form-group col-2"></div>                                   
+      <div class="form-group col-1"></div>                                   
     </div>
   </div>                   
 </div>        

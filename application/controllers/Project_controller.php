@@ -406,8 +406,26 @@ class Project_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 	public function remain_cash_report(){
+		$sum_dep = 0.0;
+		$sum_wd = 0.0;
+		foreach($this->User_model->select_today_statement()->result() as $row) {
+			$dep_money = "";
+			$wd_money = "";
+			if($row->action == "deposit" || $row->action == "open_account"){
+				$sum_dep += floatval($row->trans_money);
+				$dep_money = number_format($row->trans_money,2);
+			}
+			elseif($row->action == "withdraw" || $row->action == "close_account"){
+				$sum_wd += floatval($row->trans_money);
+				$wd_money = number_format($row->trans_money,2);
+			}
+		}
+		$total = $sum_dep - $sum_wd;
+		$data["total"] = $total;
+
+
 		$this->load->view('templates/header');
-		$this->load->view('remain_cash_report');
+		$this->load->view('remain_cash_report',$data);
 		$this->load->view('templates/footer');
 	}
 	
@@ -3913,5 +3931,152 @@ class Project_controller extends CI_Controller {
 		$response["remain_money"] = "123,222.00";
 
 		echo json_encode($response);
+	}
+	public function remain_print(){
+		$pdf = new Pdf('P','mm','A4');
+      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      $pdf->setFooterData(array(0,64,0), array(0,64,128));
+      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      $pdf->setFontSubsetting(true);
+      $pdf->SetFont('thsarabun', '', 16, '', true);
+		$pdf->setPrintHeader(false);
+		$pdf->setCellPadding(1,1,1,1);
+		$pdf->setCellmargins(1,1,1,1);
+		$pdf->SetTitle("รายงานทะเบียนเงินสด ประจำวัน");
+		$pdf->AddPage();
+		function DateThaitttttt($strDate)
+		{ 
+			$strYear = date("Y",strtotime($strDate))+543;
+			$strMonth= date("n",strtotime($strDate));
+			$strDay= date("j",strtotime($strDate));
+			$strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+			$strMonthThai=$strMonthCut[$strMonth];
+			return "$strDay $strMonthThai $strYear";
+		} 
+		date_default_timezone_set('Asia/Bangkok');
+		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
+		$pdf->Ln(8);
+		$heading = "<span>โรงเรียนดอนคาวิทยา ตำบลดอนคา อำเภออู่ทอง จังหวัดสุพรรณบุรี 72160</span><h3>รายงานทะเบียนเงินสด ประจำวัน</h3>";
+
+		$pdf->writeHTMLCell(0,0,'','',$heading,0,1,0,true,'C',true);
+		$todate = '<p><b>ประจำวันที่ '.DateThaitttttt(date('Y-m-d'));
+		
+		$pdf->writeHTMLCell(0,0,'40','',$todate,0,1,0,true,'L',true);
+		$table='<table style="border:1px solid black">';
+		$table.='<tr>
+	                <th style="border:1px solid black" width="25%" scope="col">รายงานการตรวจนับ</th>
+	                <th style="border:1px solid black" width="15%" scope="col">มูลค่าต่อหน่วย</th>
+	                <th style="border:1px solid black" width="15%" scope="col">จำนวนหน่วย</th>
+	                <th style="border:1px solid black" width="20%" scope="col">จำนวนเงิน</th>
+	                <th style="border:1px solid black" width="20%" scope="col">ยอดรวม</th>
+    			</tr>';
+		$i=1;
+		$table.='<tr>					
+						<td align="left " style="border:1px solid black">ธนบัตร</td>
+						<td align="center" style="border:1px solid black">1,000</td>
+						<td align="right" style="border:1px solid black">50</td>
+						<td align="right" style="border:1px solid black">50000</td>
+						<td align="right"  style="border:1px solid black">dasdasd</td>
+					</tr>';
+		
+					$table.='<tr>					
+					<td align="left " style="border:1px solid black">ธนบัตร</td>
+					<td align="center" style="border:1px solid black">1,000</td>
+					<td align="right" style="border:1px solid black">50</td>
+					<td align="right" style="border:1px solid black">50000</td>
+					<td align="right"  style="border:1px solid black">dasdasd</td>
+				</tr>';
+				$table.='<tr>					
+						<td align="left " style="border:1px solid black">ธนบัตร</td>
+						<td align="center" style="border:1px solid black">1,000</td>
+						<td align="right" style="border:1px solid black">50</td>
+						<td align="right" style="border:1px solid black">50000</td>
+						<td align="right"  style="border:1px solid black">dasdasd</td>
+					</tr>';
+					$table.='<tr>					
+						<td align="left " style="border:1px solid black">ธนบัตร</td>
+						<td align="center" style="border:1px solid black">1,000</td>
+						<td align="right" style="border:1px solid black">50</td>
+						<td align="right" style="border:1px solid black">50000</td>
+						<td align="right"  style="border:1px solid black">dasdasd</td>
+					</tr>';
+					$table.='<tr>					
+						<td align="left " style="border:1px solid black">ธนบัตร</td>
+						<td align="center" style="border:1px solid black">1,000</td>
+						<td align="right" style="border:1px solid black">50</td>
+						<td align="right" style="border:1px solid black">50000</td>
+						<td align="right"  style="border:1px solid black">dasdasd</td>
+					</tr>';
+					$table.='<tr>					
+						<td align="left " style="border:1px solid black">ธนบัตร</td>
+						<td align="center" style="border:1px solid black">1,000</td>
+						<td align="right" style="border:1px solid black">50</td>
+						<td align="right" style="border:1px solid black">50000</td>
+						<td align="right"  style="border:1px solid black">dasdasd</td>
+					</tr>';
+					$table.='<tr>					
+						<td align="left " style="border:1px solid black">ธนบัตร</td>
+						<td align="center" style="border:1px solid black">1,000</td>
+						<td align="right" style="border:1px solid black">50</td>
+						<td align="right" style="border:1px solid black">50000</td>
+						<td align="right"  style="border:1px solid black">dasdasd</td>
+					</tr>';
+					$table.='<tr>					
+						<td align="left " style="border:1px solid black">ธนบัตร</td>
+						<td align="center" style="border:1px solid black">1,000</td>
+						<td align="right" style="border:1px solid black">50</td>
+						<td align="right" style="border:1px solid black">50000</td>
+						<td align="right"  style="border:1px solid black">dasdasd</td>
+					</tr>';
+					$table.='<tr>					
+						<td align="left " style="border:1px solid black">ธนบัตร</td>
+						<td align="center" style="border:1px solid black">1,000</td>
+						<td align="right" style="border:1px solid black">50</td>
+						<td align="right" style="border:1px solid black">50000</td>
+						<td align="right"  style="border:1px solid black">dasdasd</td>
+					</tr>';
+					$table.='<tr>					
+						<td align="left " style="border:1px solid black">ธนบัตร</td>
+						<td align="center" style="border:1px solid black">1,000</td>
+						<td align="right" style="border:1px solid black">50</td>
+						<td align="right" style="border:1px solid black">50000</td>
+						<td align="right"  style="border:1px solid black">dasdasd</td>
+					</tr>';
+					$table.='<tr>					
+						<td align="left " style="border:1px solid black">ธนบัตร</td>
+						<td align="center" style="border:1px solid black">1,000</td>
+						<td align="right" style="border:1px solid black">50</td>
+						<td align="right" style="border:1px solid black">50000</td>
+						<td align="right"  style="border:1px solid black">dasdasd</td>
+					</tr>';
+					
+		
+		$table.='
+		<tfoot>
+			<tr>
+				<td align="left" colspan="1" style="border:1px solid black">ยอดรวมธนบัตรและเหรียญ</td>
+				<td align="right" colspan="1" style="border:1px solid black">123,200.00</td>
+			</tr>
+			<tr>
+				<td align="left" colspan="1" style="border:1px solid black">ยอดตามบัญชี</td>
+				<td align="right" colspan="1" style="border:1px solid black">123,200.00</td>
+			</tr>
+			<tr>
+				<td align="center" colspan="1" style="border:1px solid black">ผลต่าง</td>
+				<td align="right" colspan="1" style="border:1px solid black">123,200.00</td>
+			</tr>
+		</tfoot>';			
+		$table.='</table>';
+		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
+		ob_clean();
+		$pdf->Output('example_001.pdf', 'I');
+		ob_end_clean();
 	}
 }
