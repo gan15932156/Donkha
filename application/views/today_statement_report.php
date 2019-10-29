@@ -153,10 +153,10 @@
           <thead class="thead-light table-bordered text-center">
             <tr>
               <th width="5%" scope="col">ลำดับ</th>
-              <th width="13%" scope="col">เลขที่บัญชี</th>
-              <th width="15%" scope="col">ชื่อบัญชี</th>
-              <th width="23%" scope="col">ฝาก(บาท)</th>
-              <th width="23%" scope="col">ถอน(บาท)</th>
+              <th width="15%" scope="col">เลขที่บัญชี</th>
+              <th width="20%" scope="col">ชื่อบัญชี</th>
+              <th width="30%" scope="col">ฝาก(บาท)</th>
+              <th width="30%" scope="col">ถอน(บาท)</th>
             </tr>
           </thead>
           <tbody class="table-bordered" style="font-size:16px;">

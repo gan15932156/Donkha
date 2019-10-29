@@ -20,25 +20,6 @@
         }
       })
     });
-    /*$("#print").click(function(){
-      $.ajax({  
-        url:"<?php echo base_url("index.php/Project_controller/print_today_statement"); ?>",
-        method:"POST",
-        xhrFields: {
-          responseType: "blob"
-        },
-        data:{
-          filter:$("#filter").val(),
-          previous:$("#previous").val(),
-          account_id:$("#ac_id").val()
-        },
-        success:function(response)
-        { 
-          url = window.URL.createObjectURL(response);
-          window.open(url, '_blank');
-        }
-      })
-    });*/
   });
 </script>
 <div class="col-md-12 text-center">
@@ -136,13 +117,13 @@
             <tr>
               <td align="center">เหรียญ 0.50</td>
               <td align="center"><input placeholder="0.50" min="0" type="number"  id="c0_5" name="c0_5" required=""></td>
-              <td align="center"><input type="text"  id="cal0_5" name="cal0_5"></td>
+              <td align="center"><input type="number" step=any  id="cal0_5" name="cal0_5"></td>
               <td align="center"><input type="number"  id="" name=""></td>
             </tr>
             <tr>
               <td align="center">เหรียญ 0.25</td>
               <td align="center"><input placeholder="0.25" min="0" type="number"  id="c0_25" name="c0_25" required=""></td>
-              <td align="center"><input type="text"  id="cal0_25" name="cal0_25"></td>
+              <td align="center"><input type="number" step=any  id="cal0_25" name="cal0_25"></td>
               <td align="center"><input type="number"  id="" name=""></td>
             </tr>       
           </tbody>
@@ -155,16 +136,16 @@
               <th width="70%" scope="col">ยอมรวมธนบัตรและเหรียญ</th>
               <td align="right" width="30%">
                 <input style="width:100%;text-align:center;" type="button" value="คำนวณ" id="cal_total" name="cal_total">
-                <input style="width:120px;" type="text" id="cash_total">
+                <input style="width:120px;" type="number" step=any id="cash_total">
               </td>
             </tr>
             <tr>
               <th width="70%" scope="col">ยอดตามบัญชี</th>
-              <td align="right" width="30%"><input style="width:120px;" type="text" name="account_st_total" id="account_st_total" value="<?php echo $total;?>"></td>
+              <td align="right" width="30%"><input style="width:120px;" type="number" step=any name="account_st_total" id="account_st_total" value="<?php echo $total;?>"></td>
             </tr>
             <tr>
               <th width="70%" scope="col">ผลต่าง</th>
-              <td align="right" width="30%"><input style="width:120px;" type="text" name="diff_total" id="diff_total"></td>
+              <td align="right" width="30%"><input style="width:120px;" type="number" step=any name="diff_total" id="diff_total"></td>
             </tr>
           </tbody>
         </table>

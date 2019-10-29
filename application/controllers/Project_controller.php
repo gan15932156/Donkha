@@ -406,23 +406,19 @@ class Project_controller extends CI_Controller {
 		$this->load->view('templates/footer');
 	}
 	public function remain_cash_report(){
+		// 30000 + ( - 500) -> total = stock + (- today_statement)
 		$sum_dep = 0.0;
 		$sum_wd = 0.0;
 		foreach($this->User_model->select_today_statement()->result() as $row) {
-			$dep_money = "";
-			$wd_money = "";
 			if($row->action == "deposit" || $row->action == "open_account"){
 				$sum_dep += floatval($row->trans_money);
-				$dep_money = number_format($row->trans_money,2);
 			}
 			elseif($row->action == "withdraw" || $row->action == "close_account"){
 				$sum_wd += floatval($row->trans_money);
-				$wd_money = number_format($row->trans_money,2);
 			}
 		}
 		$total = $sum_dep - $sum_wd;
 		$data["total"] = $total;
-
 
 		$this->load->view('templates/header');
 		$this->load->view('remain_cash_report',$data);
@@ -3019,7 +3015,7 @@ class Project_controller extends CI_Controller {
 		$pdf->writeHTMLCell(0,0,'','',$heading,0,1,0,true,'C',true);
 		$todate = '<p><b>ประจำวันที่ '.DateThaitttttt(date('Y-m-d'));
 		
-		$pdf->writeHTMLCell(0,0,'40','',$todate,0,1,0,true,'L',true);
+		$pdf->writeHTMLCell(0,0,'','',$todate,0,1,0,true,'C',true);
 		$table='<table style="border:1px solid black">';
 		$table.='<tr>
 	                <th style="border:1px solid black" width="5%" scope="col">ที่</th>
@@ -3049,8 +3045,7 @@ class Project_controller extends CI_Controller {
 						<td align="center" style="border:1px solid black">'.$row->account_id.'</td>
 						<td align="right" style="border:1px solid black">'.$dep_money.'</td>
 						<td align="right" style="border:1px solid black">'.$wd_money.'</td>
-						<td align="left"  style="border:1px solid black">dasdasd</td>
-						<td align="left" style="border:1px solid black;">adasdad</td>
+						<td align="left" colspan="2"  style="border:1px solid black"> </td>
 						<td align="center" style="border:1px solid black;"> </td>
 					</tr>';
 			$i++;
@@ -3061,6 +3056,8 @@ class Project_controller extends CI_Controller {
 				<td align="center" colspan="2" style="border:1px solid black">รวม</td>
 				<td align="right" colspan="1" style="border:1px solid black">'.number_format($sum_dep,2).'</td>
 				<td align="right" colspan="1" style="border:1px solid black">'.number_format($sum_wd,2).'</td>
+				<td align="right" colspan="1" style="border:1px solid black"> </td>
+				<td align="right" colspan="1" style="border:1px solid black"> </td>
 			</tr>
 		</tfoot>';			
 		$table.='</table>';
