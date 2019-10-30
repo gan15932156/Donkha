@@ -1282,8 +1282,11 @@ class User_model extends CI_Model {
         }
 	}
 	public function select_open_account_open_money($account_id){
+		$this->db->select('*');
+		$this->db->join('account', 'account.account_id = account_detail.account_id','inner');
+		$this->db->join('member', 'member.member_id = account.member_id','inner');
 		$this->db->from('account_detail');
-		$this->db->where('account_id',$account_id);
+		$this->db->where('account_detail.account_id',$account_id);
 //		$this->db->where('action','open_account');
 		$this->db->order_by('record_date ASC, record_time ASC');
 		$this->db->limit(1,0);
@@ -1298,8 +1301,8 @@ class User_model extends CI_Model {
 	public function select_open_account_report($param,$start_date,$stop_date){
 		date_default_timezone_set('Asia/Bangkok');
 		$keyword = $param['keyword'];
-      $this->db->select('*');
-		$this->db->join('member', 'member.member_id = account.member_id','inner');
+      	$this->db->select('*');
+		
 		$condition = "1=1";
 		if(!empty($keyword)){
 			$condition .= " and (account_id like '%{$keyword}%' or account_name like '%{$keyword}%')";
@@ -1307,16 +1310,28 @@ class User_model extends CI_Model {
 		$this->db->where('account_open_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"');
 		$this->db->limit($param['page_size'], $param['start']);
 		$this->db->order_by('account_open_date DESC');
+		$this->db->order_by('account_id DESC');
 		$query = $this->db->get('account');
 		$data = [];
 		if($query->num_rows() > 0){
+			$limit_money = 0.0;
+			$total_money = 0.0;
 			foreach($query->result() as $row){
-				$data[] = $row;
+				foreach($this->select_open_account_open_money($row->account_id)->result() as $row2){
+					$data[] = $row2;
+					$limit_money += floatval($row2->trans_money);
+				}	
+			}
+			foreach($this->select_open_account_between_date($start_date,$stop_date)->result() as $row3){
+				foreach($this->select_open_account_open_money($row3->account_id)->result() as $row4){
+					$total_money += floatval($row4->trans_money);
+				}	
 			}
 		}
+
 		$count_condition = $this->db->from('account')->where($condition)->where('account_open_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"')->count_all_results();
 		$count = $this->db->from('account')->where('account_open_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"')->count_all_results();
-		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
+		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'','limit_money'=>$limit_money,'total_money'=>$total_money);
 		return $result;
 	}
 	public function select_account_detail_today_non_parameter($param){
@@ -1363,6 +1378,7 @@ class User_model extends CI_Model {
 		$this->db->order_by('record_date DESC, record_time DESC');
 		return $this->db->get("account_detail");
 	}
+
 
 	////////////////////////////////////////////////////////////
 	/////////////////////  UPDATE    //////////////////////////

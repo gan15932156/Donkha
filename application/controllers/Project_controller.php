@@ -1930,16 +1930,16 @@ class Project_controller extends CI_Controller {
 		$stop = "2019-10-30";*/
 		$results = $this->User_model->select_open_account_report($param,$start,$stop);
 	
-		//$rel['rellll'] = $this->User_model->asdaddasasd($start,$stop);
+
 		$data['draw'] = $param['draw'];
 		$data['recordsTotal'] = $results['count'];
 		$data['recordsFiltered'] = $results['count_condition'];
 		$data['data'] = $results['data'];
-		
+		$data['limit_money'] = $results['limit_money'];
+		$data['total_money'] = $results['total_money'];
 		$data['page_size'] = $this->input->get('length');
 		$data['start'] = $this->input->get('start');
 	
-		
 		$this->output->set_content_type('application/json')->set_output(json_encode($data));
 	}	
 	public function fetch_report_close_account(){
@@ -2328,7 +2328,7 @@ class Project_controller extends CI_Controller {
 		$pdf->AddPage();
 		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
 		$pdf->Ln(8);
-		$content = '<h3>รายงานเปิดบัญชี</h3><span align="center">วันที่'." ".$this->DateThai($this->uri->segment(3))." ถึง ".$this->DateThai($this->uri->segment(4)).'</span><br>
+		$content = '<h3>รายงานเปิดบัญชี</h3><span align="center">วันที่'." ".$this->DateThai($this->input->post("start"))." ถึง ".$this->DateThai($this->input->post("stop")).'</span><br>
 			<span>ธนาคารโรงเรียน โรงเรียนดอนคาวิทยา ต.ดอนคา อ.อู่ทอง จ.สุพรรณบุรี 72160</span>
 		';
 		$pdf->writeHTMLCell(0,0,'','',$content,0,1,0,true,'C',true);
@@ -2344,9 +2344,9 @@ class Project_controller extends CI_Controller {
     			</tr>';
 		$i=1;
 		$sum_total=0.0;
-		foreach ($this->User_model->select_open_account_between_date($this->uri->segment(3),$this->uri->segment(4))->result() as $row) {
+		foreach ($this->User_model->select_open_account_between_date($this->input->post("start"),$this->input->post("stop"))->result() as $row) {
 			$open_money=0.0;
-			foreach($this->User_model->select_account_detail_open($row->account_id,$row->account_open_date)->result() as $row2){
+			foreach($this->User_model->select_open_account_open_money($row->account_id)->result() as $row2){
 				$open_money = $row2->account_detail_balance;
 				$sum_total+=floatval($row2->account_detail_balance);
 			}
@@ -2363,7 +2363,7 @@ class Project_controller extends CI_Controller {
 		$table.='<tr><th style="border-right:1px solid black" colspan="5" scope="col">รวมจำนวนเงิน</th><td align="right" colspan="1" scope="col">'.number_format($sum_total,2).'</td></tr>
 		</tbody><tfoot></tfoot></table>';
 		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
-		$count="<span>จํานวนผูที่เปิดบัญชีทั้งหมด ".$this->User_model->count_account_opendate_between($this->uri->segment(3),$this->uri->segment(4))." คน</span><br>";
+		$count="<span>จํานวนผูที่เปิดบัญชีทั้งหมด ".$this->User_model->count_account_opendate_between($this->input->post("start"),$this->input->post("stop"))." คน</span><br>";
 		$count.="<span>วันที่ออกรายงาน ".$this->DateThai(date('Y-m-d'))."</span>";
 		$pdf->writeHTMLCell(0,0,'','',$count,0,1,0,true,'R',true);
 		ob_clean();
