@@ -193,6 +193,12 @@ class Project_controller extends CI_Controller {
 		$this->load->view('manager_member_report');
 		$this->load->view('templates/footer');					
 	}
+	public function today_balance_sheet(){
+
+	}
+	public function total_trial_balance(){
+
+	}
 
 
 	////////////////////////////////////////////////////////////
@@ -409,17 +415,21 @@ class Project_controller extends CI_Controller {
 		// 30000 + ( - 500) -> total = stock + (- today_statement)
 		$sum_dep = 0.0;
 		$sum_wd = 0.0;
-		foreach($this->User_model->select_today_statement()->result() as $row) {
-			if($row->action == "deposit" || $row->action == "open_account"){
-				$sum_dep += floatval($row->trans_money);
+		if($data["today"] = $this->User_model->select_today_statement()){
+			foreach($data["today"]->result() as $row) {
+				if($row->action == "deposit" || $row->action == "open_account"){
+					$sum_dep += floatval($row->trans_money);
+				}
+				elseif($row->action == "withdraw" || $row->action == "close_account"){
+					$sum_wd += floatval($row->trans_money);
+				}
 			}
-			elseif($row->action == "withdraw" || $row->action == "close_account"){
-				$sum_wd += floatval($row->trans_money);
-			}
+			$total = $sum_dep - $sum_wd;
+			$data["total"] = $total;
 		}
-		$total = $sum_dep - $sum_wd;
-		$data["total"] = $total;
-
+		else{
+			$data["total"] = null;
+		}
 		$this->load->view('templates/header');
 		$this->load->view('remain_cash_report',$data);
 		$this->load->view('templates/footer');
@@ -1309,7 +1319,6 @@ class Project_controller extends CI_Controller {
 					$response['member_close_date'] = $row->member_close_date;
 					$response['member_status'] = $row->member_status;
 				}
-
 			}	
 			$response['error'] = false;
 			$response['message'] = "พบบัญชี";	
@@ -1891,66 +1900,47 @@ class Project_controller extends CI_Controller {
 				  }
 			  }
 		}
-	  }
-	public function fetch_report_open_account(){
-		date_default_timezone_set('Asia/Bangkok');
-		$output='';
-		$data['result'] = $this->User_model->select_open_account_between_date($this->input->post('start_date'),$this->input->post('stop_date'));
-		$output.='
-			<table class="table table-striped table-hover table-sm text-center" id="job-table">
-				<thead class="thead-light table-bordered">
-						<tr>
-								<th width="2%" scope="col">ลำดับ</th>
-								<th width="15%" scope="col">หมายเลขบัญชี</th>
-								<th width="22%" scope="col">ชื่อบัญชี</th>
-								<th width="25%" scope="col">ชื่อ - นามสกุล</th>					
-								<th width="20%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
-								<th width="20%" scope="col">จำนวนเงินที่เปิดบัญชี</th>
-						</tr>
-				</thead>
-				<tbody class="table-bordered" style="background-color: #EFFEFD">
-		';
-		if($data['result']->num_rows() >0){
-			$i=1;
-			$sum_total = 0.0 ;
-			$result=$data['result']->result();
-			foreach ($result as $row) {
-				$open_money = 0.0 ;
-				
-				foreach ($this->User_model->select_account_detail_open($row->account_id,$row->account_open_date)->result() as $row2) {
-					$open_money = $row2->account_detail_balance;
-					$sum_total+=floatval($row2->account_detail_balance);
-				}
-				$output.='
-					<tr>
-						<th id="count"  scope="row">'.$i.'</th>
-						<td id="ac_code">'.$row->account_id.'</td>
-						<td id="ac_name" align="left"  >'.$row->account_name.'</td>
-						<td id="ac_ac_nae" align="left" >'.$row->member_title." ".$row->member_name.'</td>
-						<td id="date_open" >'.$this->DateThai($row->account_open_date).'</td>
-						<td id="open_money" align="right" >'.number_format($open_money,2).'</td>
-					</tr>';
-				$i++;
+	}
+	public function select_open_account_open_money(){
+		$response = array();
+		if($data['rel']=$this->User_model->select_open_account_open_money($this->uri->segment(3))){
+			$response['error'] = false;
+			foreach($data['rel']->result() as $row){
+				$response["trans_money"] = $row->trans_money;
 			}
-			$link =base_url("index.php/Project_controller/print_report_account_betwwen_date")."/".$this->input->post('start_date')."/".$this->input->post('stop_date');
-		$output.='
-			<tr><th colspan="5" scope="col">รวมจำนวนเงิน</th><td align="right" colspan="1" scope="col"><B>'.number_format($sum_total,2).'</B></td></tr>
-			</tbody><tfoot></tfoot>
-		</table>
-		<a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a> 
-		 ';
 		}
 		else{
-			$output.='
-			<tr><th colspan="10" scope="col">ไม่พบข้อมูล</th></tr>
-			';
-		$output.='
-			</tbody><tfoot></tfoot>
-		</table>
+			$response['error'] = true;
+		}
+		$this->output->set_content_type('application/json')->set_output(json_encode($response));
+	}
+	public function fetch_report_open_account(){
+		date_default_timezone_set('Asia/Bangkok');
+		$start = $this->uri->segment(3);
+		$stop = $this->uri->segment(4);
+		$order_index = $this->input->get('order[0][column]');
+		$param['page_size'] = $this->input->get('length');
+		$param['start'] = $this->input->get('start');
+		$param['draw'] = $this->input->get('draw');
+		$param['keyword'] = trim($this->input->get('search[value]'));
+		$param['column'] = $this->input->get("columns[{$order_index}][data]");
+		$param['dir'] = $this->input->get('order[0][dir]');
 		
-		 ';	
-		}	
-		echo $output;
+		/*$start = "2018-10-20";
+		$stop = "2019-10-30";*/
+		$results = $this->User_model->select_open_account_report($param,$start,$stop);
+	
+		//$rel['rellll'] = $this->User_model->asdaddasasd($start,$stop);
+		$data['draw'] = $param['draw'];
+		$data['recordsTotal'] = $results['count'];
+		$data['recordsFiltered'] = $results['count_condition'];
+		$data['data'] = $results['data'];
+		
+		$data['page_size'] = $this->input->get('length');
+		$data['start'] = $this->input->get('start');
+	
+		
+		$this->output->set_content_type('application/json')->set_output(json_encode($data));
 	}	
 	public function fetch_report_close_account(){
 		date_default_timezone_set('Asia/Bangkok');

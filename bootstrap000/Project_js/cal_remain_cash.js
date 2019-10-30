@@ -73,10 +73,12 @@ $(document).ready(function(){
          + cal_25 
          ;
          $("#cash_total").val(total);
-         $("#diff_total").val(total - $("#account_st_total").val());
+         if($("#account_st_total").val() != ''){
+            $("#diff_total").val(total - $("#account_st_total").val());
+         }
          $("#cash_total").show("dadasdasd");
          $(this).hide();
-         cal_status = false;
+         cal_status = false;  
       }     
    });
    $("#cash_total").click(function(){

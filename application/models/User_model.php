@@ -1271,6 +1271,7 @@ class User_model extends CI_Model {
 		$this->db->from('account_detail');
 		$this->db->join('account', 'account.account_id = account_detail.account_id','inner');
 		$this->db->where("record_date",date('Y-m-d'));
+		$this->db->where("(action = 'deposit' OR action = 'open_account' OR action = 'withdraw' OR action = 'close_account')");
 		$this->db->order_by('record_date DESC, record_time DESC');
 		$query=$this->db->get();
 		if($query->num_rows() > 0){
@@ -1279,6 +1280,44 @@ class User_model extends CI_Model {
         else{
             return false;
         }
+	}
+	public function select_open_account_open_money($account_id){
+		$this->db->from('account_detail');
+		$this->db->where('account_id',$account_id);
+//		$this->db->where('action','open_account');
+		$this->db->order_by('record_date ASC, record_time ASC');
+		$this->db->limit(1,0);
+		$query=$this->db->get();
+		if($query->num_rows() > 0){
+         return $query;
+      }
+      else{
+         return false;
+      }
+	}
+	public function select_open_account_report($param,$start_date,$stop_date){
+		date_default_timezone_set('Asia/Bangkok');
+		$keyword = $param['keyword'];
+      $this->db->select('*');
+		$this->db->join('member', 'member.member_id = account.member_id','inner');
+		$condition = "1=1";
+		if(!empty($keyword)){
+			$condition .= " and (account_id like '%{$keyword}%' or account_name like '%{$keyword}%')";
+		}
+		$this->db->where('account_open_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"');
+		$this->db->limit($param['page_size'], $param['start']);
+		$this->db->order_by('account_open_date DESC');
+		$query = $this->db->get('account');
+		$data = [];
+		if($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$data[] = $row;
+			}
+		}
+		$count_condition = $this->db->from('account')->where($condition)->where('account_open_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"')->count_all_results();
+		$count = $this->db->from('account')->where('account_open_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"')->count_all_results();
+		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
+		return $result;
 	}
 	public function select_account_detail_today_non_parameter($param){
 		date_default_timezone_set('Asia/Bangkok');
@@ -1290,7 +1329,9 @@ class User_model extends CI_Model {
 			$condition .= " and (account_id like '%{$keyword}%' or account_name like '%{$keyword}%')";
 		}
 		$this->db->where("record_date",date('Y-m-d'));
+		$this->db->where("record_date",date('Y-m-d'));
 		$this->db->where($condition);
+		$this->db->where("(action = 'deposit' OR action = 'open_account' OR action = 'withdraw' OR action = 'close_account')");
 		$this->db->limit($param['page_size'], $param['start']);
 		$this->db->order_by('record_date DESC, record_time DESC');
 		$query = $this->db->get('account_detail');
@@ -1300,8 +1341,8 @@ class User_model extends CI_Model {
 				$data[] = $row;
 			}
 		}
-		$count_condition = $this->db->from('account_detail')->where($condition)->where("record_date",date('Y-m-d'))->count_all_results();
-		$count = $this->db->from('account_detail')->where("record_date",date('Y-m-d'))->count_all_results();
+		$count_condition = $this->db->from('account_detail')->where($condition)->where("record_date",date('Y-m-d'))->where("(action = 'deposit' OR action = 'open_account' OR action = 'withdraw' OR action = 'close_account')")->count_all_results();
+		$count = $this->db->from('account_detail')->where("record_date",date('Y-m-d'))->where("(action = 'deposit' OR action = 'open_account' OR action = 'withdraw' OR action = 'close_account')")->count_all_results();
 		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
 		return $result;
 	}
@@ -1309,6 +1350,7 @@ class User_model extends CI_Model {
 		date_default_timezone_set('Asia/Bangkok');
 		$this->db->select('*');
 		$this->db->where("record_date",date('Y-m-d'));
+		$this->db->where("(action = 'deposit' OR action = 'open_account' OR action = 'withdraw' OR action = 'close_account')");
 		$this->db->limit($page_size, $start);
 		$this->db->order_by('record_date DESC, record_time DESC');
 		return $this->db->get("account_detail");
@@ -1317,6 +1359,7 @@ class User_model extends CI_Model {
 		date_default_timezone_set('Asia/Bangkok');
 		$this->db->select('*');
 		$this->db->where("record_date",date('Y-m-d'));
+		$this->db->where("(action = 'deposit' OR action = 'open_account' OR action = 'withdraw' OR action = 'close_account')");
 		$this->db->order_by('record_date DESC, record_time DESC');
 		return $this->db->get("account_detail");
 	}

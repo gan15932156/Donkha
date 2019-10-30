@@ -21,7 +21,7 @@
       "lengthChange": false,
       "searching": false,
       "orderable": false,
-      pageLength: 8,
+      pageLength: 3, // 8
       destroy: true,
       serverSide: true,
       processing: true,
@@ -148,7 +148,6 @@
       </div>
       <div class="form-group col-1"></div>
       <div class="form-group col-10">
-        <div id="result_table"></div>
         <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
           <thead class="thead-light table-bordered text-center">
             <tr>
