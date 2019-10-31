@@ -25,10 +25,8 @@
           { 
             var sum_total = parseFloat(settings.json.total_money); 
             var sum_limit = parseFloat(settings.json.limit_money);  
-            $('#count').html("จํานวนผู้ที่เปิดบัญชีทั้งหมด "+settings.json.recordsTotal+" คน");
-            $('#sum_open_account_money').html("ทั้งหมด "+formatNumber(sum_limit.toFixed(2))+"("+formatNumber(sum_total.toFixed(2))+")");
-             
-           // $('#sum_dep').html(formatNumber(sum_dep_limit.toFixed(2))+"(ทั้งหมด "+formatNumber(sum_dep.toFixed(2))+")");
+            $('#count').html("เปิดบัญชีทั้งหมด "+settings.json.recordsTotal+" คน");
+            $('#sum_open_account_money').html(formatNumber(sum_limit.toFixed(2))+"("+formatNumber(sum_total.toFixed(2))+")");
           },
           columnDefs: [
             {targets: [0,1,4],className: 'dt-body-center'},
@@ -145,52 +143,48 @@
         <div class="col-md-12 t">
           <h4 class=""><B>รายงานเปิดบัญชี</B></h4>
           <div class="row">
-            <div class="col-1"></div>
-            <div class="col-1">
+            <div class="col-2">
               <label>ค้นหาวันที่</label>
             </div>
-            <div class="col-2">
+            <div class="col-3">
               <input autofocus type="date" class="form-control" id="start_date" name="start_date" required>
             </div>
-            <div class="col-2">
+            <div class="col-1">
               <label >ถึงวันที่</label>
             </div>
-            <div class="col-2">
+            <div class="col-3">
               <input type="date" class="form-control" id="stop_date" name="stop_date" max="<?=date('Y-m-d');?>" required>
             </div>
-            <div class="col-1">
+            <div class="col-2">
               <button type="submit" class="btn btn-success " id="display_report">แสดงรายงาน</button>
             </div>
             <div class="col-1">
               <button type="submit" class="btn btn-warning " id="print_report">พิมพ์</button>
             </div>
-            <div class="col-1"></div>
           </div><hr>
-          <!--<div id="chart_div"></div>-->
         </div>
         <div class="col-md-12 text-center">
-        <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
-          <thead class="thead-light table-bordered text-center">
-            <tr>
-              <th width="2%" scope="col">ลำดับ</th>
-              <th width="15%" scope="col">หมายเลขบัญชี</th>
-              <th width="22%" scope="col">ชื่อบัญชี</th>
-              <th width="25%" scope="col">ชื่อ - นามสกุล</th>					
-              <th width="20%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
-              <th width="20%" scope="col">จำนวนเงินที่เปิดบัญชี</th>
-            </tr>
-          </thead>
-          <tbody class="table-bordered" style="font-size:16px;">
-          </tbody>
-          <tfoot class="tf">
-            <tr>
-              <th scope="col" class="text-center" colspan="3"> </th>
-              <th scope="col" class="text-right" id="count" colspan="1"></th>
-              <th scope="col" class="text-center" colspan="1">รวม</th>
-              <th scope="col" class="text-right" id="sum_open_account_money" colspan="1"></th>
-            </tr>
-          </tfoot>
-        </table>
+          <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
+            <thead class="thead-light table-bordered text-center">
+              <tr>
+                <th width="2%" scope="col">ลำดับ</th>
+                <th width="15%" scope="col">หมายเลขบัญชี</th>
+                <th width="22%" scope="col">ชื่อบัญชี</th>
+                <th width="22%" scope="col">ชื่อ - นามสกุล</th>					
+                <th width="18%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
+                <th width="28%" scope="col">จำนวนเงินที่เปิดบัญชี</th>
+              </tr>
+            </thead>
+            <tbody class="table-bordered" style="font-size:16px;"></tbody>
+            <tfoot class="tf">
+              <tr>
+                <th scope="col" class="text-center" colspan="3"> </th>
+                <th scope="col" class="text-right" id="count" colspan="1"></th>
+                <th scope="col" class="text-center" colspan="1">รวม</th>
+                <th scope="col" class="text-right" id="sum_open_account_money" colspan="1"></th>
+              </tr>
+            </tfoot>
+          </table>
         </div>
       </div>
     </div>

@@ -1287,7 +1287,7 @@ class User_model extends CI_Model {
 		$this->db->join('member', 'member.member_id = account.member_id','inner');
 		$this->db->from('account_detail');
 		$this->db->where('account_detail.account_id',$account_id);
-//		$this->db->where('action','open_account');
+		//		$this->db->where('action','open_account');
 		$this->db->order_by('record_date ASC, record_time ASC');
 		$this->db->limit(1,0);
 		$query=$this->db->get();
@@ -1332,6 +1332,33 @@ class User_model extends CI_Model {
 		$count_condition = $this->db->from('account')->where($condition)->where('account_open_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"')->count_all_results();
 		$count = $this->db->from('account')->where('account_open_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"')->count_all_results();
 		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'','limit_money'=>$limit_money,'total_money'=>$total_money);
+		return $result;
+	}
+	public function select_close_account_report($param,$start_date,$stop_date){
+		date_default_timezone_set('Asia/Bangkok');
+		$keyword = $param['keyword'];
+      $this->db->select('*');
+		
+		$condition = "1=1";
+		if(!empty($keyword)){
+			$condition .= " and (account_id like '%{$keyword}%' or account_name like '%{$keyword}%')";
+		}
+		$this->db->join('member', 'member.member_id = account.member_id','inner');
+		$this->db->join('staff', 'staff.staff_id = account.staff_close_id','inner');
+		$this->db->where('account_close_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"');
+		$this->db->limit($param['page_size'], $param['start']);
+		$this->db->order_by('account_close_date DESC');
+		$this->db->order_by('account_id DESC');
+		$query = $this->db->get('account');
+		$data = [];
+		if($query->num_rows() > 0){
+			foreach($query->result() as $row){
+				$data[] = $row;		
+			}
+		}
+		$count_condition = $this->db->from('account')->where($condition)->where('account_close_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"')->count_all_results();
+		$count = $this->db->from('account')->where('account_close_date BETWEEN "'. $start_date. '" and "'. $stop_date.'"')->count_all_results();
+		$result = array('count'=>$count,'count_condition'=>$count_condition,'data'=>$data,'error_message'=>'');
 		return $result;
 	}
 	public function select_account_detail_today_non_parameter($param){

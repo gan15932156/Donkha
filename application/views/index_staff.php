@@ -19,7 +19,7 @@
         <div class="col-md-12">
           <div class="dropdown">
             <button class="btn btn-primary btn_index" style="border: 4px solid #CBCBCB;">
-              <span style="font-size: 4em; color: #FFFFFF;">
+              <span style="font-size: 3em; color: #FFFFFF;">
                 <i class="fa fa-university" aria-hidden="true"><h5 style="margin-top:3px;">บัญชี</h5></i>
               </span>
             </button>
@@ -31,7 +31,7 @@
           </div>
           <div class="dropdown">
             <button class="btn btn-primary btn_index" style="border: 4px solid #CBCBCB;">
-              <span style="font-size: 4em; color: #FFFFFF;">
+              <span style="font-size: 3em; color: #FFFFFF;">
                 <i class="fa fa-user-o" aria-hidden="true"><h5 style="margin-top:3px;">สมาชิก</h5></i>
               </span>
             </button>

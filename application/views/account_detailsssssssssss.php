@@ -136,11 +136,6 @@
   }
   $(document).ready(function(){
     onload_datatable('<?php echo base_url("index.php/Project_controller/filter_previous_account_detail_datatable/").$account_id."/"; ?>'+$("#filter").val()+"/"+$("#previous").val());
-    /*table.on( 'order.dt search.dt', function () {
-        table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
-            cell.innerHTML = i+1;
-        } );
-    } ).draw();*/
     $('#data_table tbody').on( 'click', 'tr', function () {
       var data = table.row( this ).data();
       onmouseover_foo(data.account_detail_id,data.action);
@@ -153,12 +148,10 @@
     });
     $("#filter").change(function(){
       $("tbody").empty();
-      //alert($(this).val()+" "+$("#previous").val());
       onload_datatable('<?php echo base_url("index.php/Project_controller/filter_previous_account_detail_datatable/").$account_id."/"; ?>'+$(this).val()+"/"+$("#previous").val());
     });
     $("#previous").change(function(){
       $("tbody").empty();
-      //alert($("#filter").val()+" "+$(this).val());
       onload_datatable('<?php echo base_url("index.php/Project_controller/filter_previous_account_detail_datatable/").$account_id."/"; ?>'+$("#filter").val()+"/"+$(this).val());
     });
     $("#print").click(function(){
@@ -192,12 +185,12 @@
             <?php 
             foreach($account->result() as $row){ 
             ?>  
-            <div class="form-group col-3"><label><B>ชื่อเจ้าของบัญชี : </B><?php echo $row->member_name; ?></label></div>
-            <div class="form-group col-3"><label><B>หมายเลขบัญชี : </B><?php echo $row->account_id; ?></label>
+            <div class="form-group col-3"><label><B>เจ้าของบัญชี: </B><?php echo $row->member_name; ?></label></div>
+            <div class="form-group col-3"><label><B>หมายเลขบัญชี: </B><?php echo $row->account_id; ?></label>
                 <input type="hidden" name="ac_id" id="ac_id" value="<?php echo $row->account_id; ?>">
             </div>
-            <div class="form-group col-3"><label><B>ชื่อบัญชี : </B><?php echo $row->account_name; ?></label></div>                       
-            <div class="form-group col-3"><label  ><B>ยอดเงินคงเหลือ </B><?php echo number_format($row->account_balance,2); ?> บาท</label></div>
+            <div class="form-group col-3"><label><B>ชื่อบัญชี: </B><?php echo $row->account_name; ?></label></div>                       
+            <div class="form-group col-3"><label><B>ยอดเงินคงเหลือ </B><?php echo number_format($row->account_balance,2); ?> บาท</label></div>
           </div>  
         </div>
         <div class="col-md-12 text-center">
@@ -273,8 +266,7 @@
             </div> 
         </div>
     </div>
-      <div class="modal-footer">
-       
+      <div class="modal-footer">   
       </div>
     </div>
   </div>

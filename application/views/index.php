@@ -25,7 +25,7 @@
       .container-fluid{
         width:100%;
         height:64%;
-        margin-top:27px;  
+        margin-top:22px;  
       }
       .head-container{
         margin-top:5px;

@@ -194,10 +194,14 @@ class Project_controller extends CI_Controller {
 		$this->load->view('templates/footer');					
 	}
 	public function today_balance_sheet(){
-
+		$this->load->view('templates/header');
+		$this->load->view('today_balance_sheet');
+		$this->load->view('templates/footer');					
 	}
 	public function total_trial_balance(){
-
+		$this->load->view('templates/header');
+		$this->load->view('today_trails_balance');
+		$this->load->view('templates/footer');			
 	}
 
 
@@ -323,9 +327,6 @@ class Project_controller extends CI_Controller {
 	    	$data['base_amphures']=$this->User_model->getAllAmp($pro_id);
 			$data['base_districts']=$this->User_model->getAllDist($amp_id);
 			$data['base_zipcode']=$this->User_model->getAllZip($dist_id);			
-			$this->load->view('templates/header');
-			$this->load->view('member_update_form_staff',$data);
-			$this->load->view('templates/footer');				
 		}
 		else{ //นักเรียน
 			$data['member_after']=$this->User_model->get_student_member($member_id);
@@ -335,11 +336,11 @@ class Project_controller extends CI_Controller {
 	    	$data['base_job']=$this->User_model->getJob();
 	    	$data['base_amphures']=$this->User_model->getAllAmp($pro_id);
 			$data['base_districts']=$this->User_model->getAllDist($amp_id);
-			$data['base_zipcode']=$this->User_model->getAllZip($dist_id);			
-			$this->load->view('templates/header');
-			$this->load->view('member_update_form_staff',$data);
-			$this->load->view('templates/footer');				
+			$data['base_zipcode']=$this->User_model->getAllZip($dist_id);						
 		}
+		$this->load->view('templates/header');
+		$this->load->view('member_update_form_staff',$data);
+		$this->load->view('templates/footer');				
 	}
 	public function account_insert_form_continue_admin(){
 		$member_id=$this->uri->segment(3);
@@ -1233,14 +1234,14 @@ class Project_controller extends CI_Controller {
 		$result = '<div class="row">';		
 		foreach($data['member_after']->result() as $row2){
 			if($row2->std_code == '0'){
-				$std_code = 'ไม่มี';
-				$edu_id = 'ไม่มี';
+				$std_code = '-';
+				$edu_id = '-';
 				$job = $row2->job_name;
 			} 
 			else{
-			$std_code = $row2->std_code;
-			$edu_id = $row2->edu_name;
-			$job = 'นักเรียน';
+				$std_code = $row2->std_code;
+				$edu_id = $row2->edu_name;
+				$job = 'นักเรียน';
 			}
 			$result.='<div class="form-group col-md-1"></div>';
 			$result.= '
@@ -1260,7 +1261,7 @@ class Project_controller extends CI_Controller {
 					<div class="form-group col-md-6"><B>วัน/เดือน/ปีเกิด :</B>'." ".$this->DateThai($row2->member_birth_date).'</div>
 					<div class="form-group col-md-6"><B>รหัสนักเรียน :</B>'." ".$std_code.'</div>
 					<div class="form-group col-md-6"><B>เลขบัตรประชาชน :</B>'." ".$row2->member_id_card.'</div>
-					<div class="form-group col-md-12"><B>ชื่อ :</B>'." ".$row2->member_title." ".$row2->member_name.'</div>
+					<div class="form-group col-md-12"><B>ชื่อ :</B>'." ".$row2->member_title."".$row2->member_name.'</div>
 					<div class="form-group col-md-6"><B>ระดับการศึกษา :</B>'." ".$edu_id.'</div>
 					<div class="form-group col-md-6"><B>ตำแหน่ง :</B>'." ".$row2->level_name.'</div>
 					<div class="form-group col-md-12"><B>ที่อยู่ :</B>'." ".$row2->address." ตำบล".$row2->DISTRICT_NAME." อำเภอ".$row2->AMPHUR_NAME." จังหวัด".$row2->PROVINCE_NAME." รหัสไปรษณีย์ ".$row2->zipcode.'</div>
@@ -1944,55 +1945,29 @@ class Project_controller extends CI_Controller {
 	}	
 	public function fetch_report_close_account(){
 		date_default_timezone_set('Asia/Bangkok');
-		$output='';
-		$data['result'] = $this->User_model->select_close_account_between_date($this->input->post('start_date'),$this->input->post('stop_date'));
-		$output.='
-			<table class="table table-striped table-hover table-sm text-center" id="job-table">
-				<thead class="thead-light table-bordered">
-						<tr>
-								<th width="2%" scope="col">ลำดับ</th>
-								<th width="15%" scope="col">หมายเลขบัญชี</th>
-								<th width="22%" scope="col">ชื่อบัญชี</th>
-								<th width="25%" scope="col">ชื่อ - นามสกุล</th>					
-								<th width="20%" scope="col">วัน-เดือน-ปี ที่ปิด</th>
-								<th width="20%" scope="col">พนักงานปิดบัญชี</th>
-						</tr>
-				</thead>
-				<tbody class="table-bordered" style="background-color: #EFFEFD">
-		';
-		if($data['result']->num_rows() >0){
-			$i=1;
-			$result=$data['result']->result();
-			foreach ($result as $row) {
-				$output.='
-					<tr>
-						<th id="count"  scope="row">'.$i.'</th>
-						<td id="ac_code">'.$row->account_id.'</td>
-						<td id="ac_name" align="left"  >'.$row->account_name.'</td>
-						<td id="ac_ac_nae" align="left" >'.$row->member_title." ".$row->member_name.'</td>
-						<td id="date_open" >'.$this->DateThai($row->account_close_date).'</td>
-						<td id="staff_close_id" >'.$row->staff_title." ".$row->staff_name.'</td>
-					</tr>';
-				$i++;
-			}
-			$link =base_url("index.php/Project_controller/print_report_account_betwwen_date_close")."/".$this->input->post('start_date')."/".$this->input->post('stop_date');
-		$output.='
-			</tbody><tfoot></tfoot>
-		</table>
-		<a href="'.$link.'" target="_blank" class="btn btn-warning print">พิมพ์</a> 
-		 ';
-		}
-		else{
-			$output.='
-			<tr><th colspan="10" scope="col">ไม่พบข้อมูล</th></tr>
-			';
-		$output.='
-			</tbody><tfoot></tfoot>
-		</table>
+		$start = $this->uri->segment(3);
+		$stop = $this->uri->segment(4);
+		$order_index = $this->input->get('order[0][column]');
+		$param['page_size'] = $this->input->get('length');
+		$param['start'] = $this->input->get('start');
+		$param['draw'] = $this->input->get('draw');
+		$param['keyword'] = trim($this->input->get('search[value]'));
+		$param['column'] = $this->input->get("columns[{$order_index}][data]");
+		$param['dir'] = $this->input->get('order[0][dir]');
 		
-		 ';	
-		}	
-		echo $output;
+		$start = "2018-10-20";
+		$stop = "2019-10-30";
+		$results = $this->User_model->select_close_account_report($param,$start,$stop);
+	
+		$data['draw'] = $param['draw'];
+		$data['recordsTotal'] = $results['count'];
+		$data['recordsFiltered'] = $results['count_condition'];
+		$data['data'] = $results['data'];
+
+		$data['page_size'] = $this->input->get('length');
+		$data['start'] = $this->input->get('start');
+	
+		$this->output->set_content_type('application/json')->set_output(json_encode($data));
 	}	
 	public function report_deposit_per_year(){
 		$sumofyear=0.0;
@@ -2309,18 +2284,18 @@ class Project_controller extends CI_Controller {
 	}
 	public function print_report_account_betwwen_date(){
 		$pdf = new Pdf('P','mm','A4');
-      	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
-      	$pdf->setFooterData(array(0,64,0), array(0,64,128));
-      	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-      	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-      	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-      	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-      	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-      	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-      	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-      	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-      	$pdf->setFontSubsetting(true);
-      	$pdf->SetFont('thsarabun', '', 16, '', true);
+      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      $pdf->setFooterData(array(0,64,0), array(0,64,128));
+      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      $pdf->setFontSubsetting(true);
+      $pdf->SetFont('thsarabun', '', 16, '', true);
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
@@ -2335,11 +2310,11 @@ class Project_controller extends CI_Controller {
 		$pdf->Ln(5);
 		$table='<table style="border:1px solid black">';
 		$table.='<tr>
-	               <th style="border:1px solid black" width="6%" scope="col">ลําดับ</th>
-	               <th style="border:1px solid black" width="15%" scope="col">หมายเลขบัญชี	</th>
-	               <th style="border:1px solid black" width="25%" scope="col">ชื่อบัญชี</th>
-	               <th style="border:1px solid black" width="25%" scope="col">ชื่อ - นามสกุล</th>
-				   <th style="border:1px solid black" width="17%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
+	            <th style="border:1px solid black" width="7%" scope="col">ลําดับ</th>
+	            <th style="border:1px solid black" width="15%" scope="col">หมายเลขบัญชี	</th>
+	            <th style="border:1px solid black" width="23%" scope="col">ชื่อบัญชี</th>
+	            <th style="border:1px solid black" width="27%" scope="col">ชื่อ - นามสกุล</th>
+				   <th style="border:1px solid black" width="18%" scope="col">วัน-เดือน-ปี ที่เปิด</th>
 				   <th style="border:1px solid black" width="12%" scope="col">จำนวนเงิน</th>
     			</tr>';
 		$i=1;
@@ -2372,18 +2347,18 @@ class Project_controller extends CI_Controller {
 	}
 	public function print_report_account_betwwen_date_close(){
 		$pdf = new Pdf('P','mm','A4');
-      	$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
-      	$pdf->setFooterData(array(0,64,0), array(0,64,128));
-      	$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-      	$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-      	$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-      	$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-      	$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-      	$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-      	$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-      	$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-      	$pdf->setFontSubsetting(true);
-      	$pdf->SetFont('thsarabun', '', 16, '', true);
+      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+      $pdf->setFooterData(array(0,64,0), array(0,64,128));
+      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+      $pdf->setFontSubsetting(true);
+      $pdf->SetFont('thsarabun', '', 16, '', true);
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
@@ -2391,22 +2366,22 @@ class Project_controller extends CI_Controller {
 		$pdf->AddPage();
 		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
 		$pdf->Ln(8);
-		$content = '<h3>รายงานเปิดบัญชี</h3><span align="center">วันที่'." ".$this->DateThai($this->uri->segment(3))." ถึง ".$this->DateThai($this->uri->segment(4)).'</span><br>
+		$content = '<h3>รายงานปิดบัญชี</h3><span align="center">วันที่'." ".$this->DateThai($this->input->post('start'))." ถึง ".$this->DateThai($this->input->post('stop')).'</span><br>
 			<span>ธนาคารโรงเรียน โรงเรียนดอนคาวิทยา ต.ดอนคา อ.อู่ทอง จ.สุพรรณบุรี 72160</span>
 		';
 		$pdf->writeHTMLCell(0,0,'','',$content,0,1,0,true,'C',true);
 		$pdf->Ln(5);
 		$table='<table style="border:1px solid black">';
 		$table.='<tr>
-	               <th style="border:1px solid black" width="6%" scope="col">ลําดับ</th>
-	               <th style="border:1px solid black" width="15%" scope="col">หมายเลขบัญชี</th>
-	               <th style="border:1px solid black" width="20%" scope="col">ชื่อบัญชี</th>
-	               <th style="border:1px solid black" width="20%" scope="col">ชื่อ - นามสกุล</th>
-				   <th style="border:1px solid black" width="16%" scope="col">วัน-เดือน-ปี ที่ปิด</th>
+	            <th style="border:1px solid black" width="7%" scope="col">ลําดับ</th>
+	            <th style="border:1px solid black" width="14%" scope="col">หมายเลขบัญชี</th>
+	            <th style="border:1px solid black" width="18%" scope="col">ชื่อบัญชี</th>
+	            <th style="border:1px solid black" width="20%" scope="col">ชื่อ - นามสกุล</th>
+				   <th style="border:1px solid black" width="17%" scope="col">วัน-เดือน-ปี ที่ปิด</th>
 				   <th style="border:1px solid black" width="24%" scope="col">พนักงานปิดบัญชี</th>
     			</tr>';
 		$i=1;
-		foreach ($this->User_model->select_close_account_between_date($this->uri->segment(3),$this->uri->segment(4))->result() as $row) {			
+		foreach ($this->User_model->select_close_account_between_date($this->input->post('start'),$this->input->post('stop'))->result() as $row) {			
 			$table.='<tr>
 				<td style="border:1px solid black">'.$i.'</td>
 				<td style="border:1px solid black">'.$row->account_id.'</td>
@@ -2417,10 +2392,9 @@ class Project_controller extends CI_Controller {
 			</tr>';		
 			$i++;
 		}
-		$table.='<tr><th colspan="4" scope="col"></th><th style="border-right:1px solid black" colspan="1" scope="col">รวมจำนวนเงิน</th><td align="right" colspan="1" scope="col">'.number_format($sum_total,2).'</td></tr>
-		</tbody><tfoot></tfoot></table>';
+		$table.='</tbody></table>';
 		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
-		$count="<span>จํานวนผูที่ปิดบัญชีทั้งหมด ".$this->User_model->count_account_closedate_between($this->uri->segment(3),$this->uri->segment(4))." คน</span><br>";
+		$count="<span>จํานวนผู้ที่ปิดบัญชีทั้งหมด ".$this->User_model->count_account_closedate_between($this->input->post('start'),$this->input->post('stop'))." คน</span><br>";
 		$count.="<span>วันที่ออกรายงาน ".$this->DateThai(date('Y-m-d'))."</span>";
 		$pdf->writeHTMLCell(0,0,'','',$count,0,1,0,true,'R',true);
 		ob_clean();
@@ -3919,6 +3893,12 @@ class Project_controller extends CI_Controller {
 
 		echo json_encode($response);
 	}
+	public function balance_print(){
+		echo $this->input->post('cash');
+	}
+	public function trails_print(){
+		echo $this->input->post('sum_asset');
+	}
 	public function remain_print(){
 		$pdf = new Pdf('P','mm','A4');
       $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
@@ -3955,109 +3935,95 @@ class Project_controller extends CI_Controller {
 		$pdf->writeHTMLCell(0,0,'','',$heading,0,1,0,true,'C',true);
 		$todate = '<p><b>ประจำวันที่ '.DateThaitttttt(date('Y-m-d'));
 		
-		$pdf->writeHTMLCell(0,0,'40','',$todate,0,1,0,true,'L',true);
+		$pdf->writeHTMLCell(0,0,'','',$todate,0,1,0,true,'C',true);
 		$table='<table style="border:1px solid black">';
 		$table.='<tr>
 	                <th style="border:1px solid black" width="25%" scope="col">รายงานการตรวจนับ</th>
-	                <th style="border:1px solid black" width="15%" scope="col">มูลค่าต่อหน่วย</th>
-	                <th style="border:1px solid black" width="15%" scope="col">จำนวนหน่วย</th>
-	                <th style="border:1px solid black" width="20%" scope="col">จำนวนเงิน</th>
-	                <th style="border:1px solid black" width="20%" scope="col">ยอดรวม</th>
+	                <th style="border:1px solid black" width="25%" scope="col">มูลค่าต่อหน่วย</th>
+	                <th style="border:1px solid black" width="25%" scope="col">จำนวนหน่วย</th>
+	                <th style="border:1px solid black" width="25%" scope="col">ยอดรวม</th>
     			</tr>';
 		$i=1;
 		$table.='<tr>					
-						<td align="left " style="border:1px solid black">ธนบัตร</td>
-						<td align="center" style="border:1px solid black">1,000</td>
-						<td align="right" style="border:1px solid black">50</td>
-						<td align="right" style="border:1px solid black">50000</td>
-						<td align="right"  style="border:1px solid black">dasdasd</td>
+						<td align="center " style="border:1px solid black">ธนบัตร</td>
+						<td align="right" style="border:1px solid black">1,000</td>
+						<td align="right" style="border:1px solid black">'.$this->input->post("b1000").'</td>
+						<td align="right"  style="border:1px solid black">'.number_format($this->input->post("cal1000"),2).'</td>
 					</tr>';
 		
-					$table.='<tr>					
-					<td align="left " style="border:1px solid black">ธนบัตร</td>
-					<td align="center" style="border:1px solid black">1,000</td>
-					<td align="right" style="border:1px solid black">50</td>
-					<td align="right" style="border:1px solid black">50000</td>
-					<td align="right"  style="border:1px solid black">dasdasd</td>
+		$table.='<tr>					
+					<td align="left " style="border:1px solid black"> </td>
+					<td align="right" style="border:1px solid black">500</td>
+					<td align="right" style="border:1px solid black">'.$this->input->post("b500").'</td>
+					<td align="right"  style="border:1px solid black">'.number_format($this->input->post("cal500"),2).'</td>
 				</tr>';
-				$table.='<tr>					
-						<td align="left " style="border:1px solid black">ธนบัตร</td>
-						<td align="center" style="border:1px solid black">1,000</td>
-						<td align="right" style="border:1px solid black">50</td>
-						<td align="right" style="border:1px solid black">50000</td>
-						<td align="right"  style="border:1px solid black">dasdasd</td>
+		$table.='<tr>					
+						<td align="left " style="border:1px solid black"> </td>
+						<td align="right" style="border:1px solid black">100</td>
+						<td align="right" style="border:1px solid black">'.$this->input->post("b100").'</td>
+						<td align="right"  style="border:1px solid black">'.number_format($this->input->post("cal100"),2).'</td>
 					</tr>';
-					$table.='<tr>					
-						<td align="left " style="border:1px solid black">ธนบัตร</td>
-						<td align="center" style="border:1px solid black">1,000</td>
+		$table.='<tr>					
+						<td align="left " style="border:1px solid black"> </td>
 						<td align="right" style="border:1px solid black">50</td>
-						<td align="right" style="border:1px solid black">50000</td>
-						<td align="right"  style="border:1px solid black">dasdasd</td>
+						<td align="right" style="border:1px solid black">'.$this->input->post("b50").'</td>
+						<td align="right"  style="border:1px solid black">'.number_format($this->input->post("cal50"),2).'</td>
 					</tr>';
-					$table.='<tr>					
-						<td align="left " style="border:1px solid black">ธนบัตร</td>
-						<td align="center" style="border:1px solid black">1,000</td>
-						<td align="right" style="border:1px solid black">50</td>
-						<td align="right" style="border:1px solid black">50000</td>
-						<td align="right"  style="border:1px solid black">dasdasd</td>
+		$table.='<tr>					
+						<td align="left " style="border:1px solid black"> </td>
+						<td align="right" style="border:1px solid black">20</td>
+						<td align="right" style="border:1px solid black">'.$this->input->post("b20").'</td>
+						<td align="right"  style="border:1px solid black">'.number_format($this->input->post("cal20"),2).'</td>
 					</tr>';
-					$table.='<tr>					
-						<td align="left " style="border:1px solid black">ธนบัตร</td>
-						<td align="center" style="border:1px solid black">1,000</td>
-						<td align="right" style="border:1px solid black">50</td>
-						<td align="right" style="border:1px solid black">50000</td>
-						<td align="right"  style="border:1px solid black">dasdasd</td>
+		$table.='<tr>					
+						<td align="center " style="border:1px solid black">เหรียญ</td>
+						<td align="right" style="border:1px solid black">10</td>
+						<td align="right" style="border:1px solid black">'.$this->input->post("c10").'</td>
+						<td align="right"  style="border:1px solid black">'.number_format($this->input->post("cal10"),2).'</td>
 					</tr>';
-					$table.='<tr>					
-						<td align="left " style="border:1px solid black">ธนบัตร</td>
-						<td align="center" style="border:1px solid black">1,000</td>
-						<td align="right" style="border:1px solid black">50</td>
-						<td align="right" style="border:1px solid black">50000</td>
-						<td align="right"  style="border:1px solid black">dasdasd</td>
+		$table.='<tr>					
+						<td align="left " style="border:1px solid black"> </td>
+						<td align="right" style="border:1px solid black">5</td>
+						<td align="right" style="border:1px solid black">'.$this->input->post("c5").'</td>
+						<td align="right"  style="border:1px solid black">'.number_format($this->input->post("cal5"),2).'</td>
 					</tr>';
-					$table.='<tr>					
-						<td align="left " style="border:1px solid black">ธนบัตร</td>
-						<td align="center" style="border:1px solid black">1,000</td>
-						<td align="right" style="border:1px solid black">50</td>
-						<td align="right" style="border:1px solid black">50000</td>
-						<td align="right"  style="border:1px solid black">dasdasd</td>
+		$table.='<tr>					
+						<td align="left " style="border:1px solid black"> </td>
+						<td align="right" style="border:1px solid black">2</td>
+						<td align="right" style="border:1px solid black">'.$this->input->post("c2").'</td>
+						<td align="right"  style="border:1px solid black">'.number_format($this->input->post("cal2"),2).'</td>
 					</tr>';
-					$table.='<tr>					
-						<td align="left " style="border:1px solid black">ธนบัตร</td>
-						<td align="center" style="border:1px solid black">1,000</td>
-						<td align="right" style="border:1px solid black">50</td>
-						<td align="right" style="border:1px solid black">50000</td>
-						<td align="right"  style="border:1px solid black">dasdasd</td>
+		$table.='<tr>					
+						<td align="left " style="border:1px solid black"> </td>
+						<td align="right" style="border:1px solid black">1</td>
+						<td align="right" style="border:1px solid black">'.$this->input->post("c1").'</td>
+						<td align="right"  style="border:1px solid black">'.number_format($this->input->post("cal1"),2).'</td>
 					</tr>';
-					$table.='<tr>					
-						<td align="left " style="border:1px solid black">ธนบัตร</td>
-						<td align="center" style="border:1px solid black">1,000</td>
-						<td align="right" style="border:1px solid black">50</td>
-						<td align="right" style="border:1px solid black">50000</td>
-						<td align="right"  style="border:1px solid black">dasdasd</td>
+		$table.='<tr>					
+						<td align="left " style="border:1px solid black"> </td>
+						<td align="right" style="border:1px solid black">0.50</td>
+						<td align="right" style="border:1px solid black">'.$this->input->post("c0_5").'</td>
+						<td align="right"  style="border:1px solid black">'.number_format($this->input->post("cal0_5"),2).'</td>
 					</tr>';
-					$table.='<tr>					
-						<td align="left " style="border:1px solid black">ธนบัตร</td>
-						<td align="center" style="border:1px solid black">1,000</td>
-						<td align="right" style="border:1px solid black">50</td>
-						<td align="right" style="border:1px solid black">50000</td>
-						<td align="right"  style="border:1px solid black">dasdasd</td>
+		$table.='<tr>					
+						<td align="left " style="border:1px solid black"> </td>
+						<td align="right" style="border:1px solid black">0.25</td>
+						<td align="right" style="border:1px solid black">'.$this->input->post("c0_25").'</td>
+						<td align="right"  style="border:1px solid black">'.number_format($this->input->post("cal0_25"),2).'</td>
 					</tr>';
-					
-		
 		$table.='
 		<tfoot>
 			<tr>
-				<td align="left" colspan="1" style="border:1px solid black">ยอดรวมธนบัตรและเหรียญ</td>
-				<td align="right" colspan="1" style="border:1px solid black">123,200.00</td>
+				<td align="right" colspan="3" style="border:1px solid black">ยอดรวมธนบัตรและเหรียญ</td>
+				<td align="right" colspan="1" style="border:1px solid black">'.number_format($this->input->post("cash_total"),2).'</td>
 			</tr>
 			<tr>
-				<td align="left" colspan="1" style="border:1px solid black">ยอดตามบัญชี</td>
-				<td align="right" colspan="1" style="border:1px solid black">123,200.00</td>
+				<td align="right" colspan="3" style="border:1px solid black">ยอดตามบัญชี</td>
+				<td align="right" colspan="1" style="border:1px solid black">'.number_format($this->input->post("account_st_total"),2).'</td>
 			</tr>
 			<tr>
-				<td align="center" colspan="1" style="border:1px solid black">ผลต่าง</td>
-				<td align="right" colspan="1" style="border:1px solid black">123,200.00</td>
+				<td align="right" colspan="3" style="border:1px solid black">ผลต่าง</td>
+				<td align="right" colspan="1" style="border:1px solid black">'.number_format($this->input->post("diff_total"),2).'</td>
 			</tr>
 		</tfoot>';			
 		$table.='</table>';

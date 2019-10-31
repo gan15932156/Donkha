@@ -142,12 +142,13 @@
           </div>                                 
           <div class="form-group col-4">
              <a href="<?=base_url("index.php/Project_controller/index_staff");?>" class="btn btn-warning">ย้อนกลับ</a>
-            <button class="btn btn-success" id="print">พิมพ์รายงาน</button> 
+            <button class="btn btn-primary" id="print">พิมพ์รายงาน</button> 
           </div>     
         </div>
       </div>
       <div class="form-group col-1"></div>
       <div class="form-group col-10">
+      
         <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
           <thead class="thead-light table-bordered text-center">
             <tr>

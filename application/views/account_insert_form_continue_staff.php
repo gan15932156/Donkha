@@ -38,7 +38,7 @@
           $new_stu_code = $row->std_code;
         }
         ?>
-      <form  enctype="multipart/form-data" name="account_form" id="account_form">
+      <form name="account_form" id="account_form">
         <div class="row">
         <div class="form-group col-4" align="center">        
           <img id="show_image_pic" width="200px" height= "250px" src="<?php  echo $row->member_pic; ?>" alt="your image" style="border: solid 1px #c0c0c0;" />

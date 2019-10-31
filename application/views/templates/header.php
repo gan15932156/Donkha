@@ -42,8 +42,8 @@
                         else{echo base_url("Project_controller/index_admin/");}                                                                
                      ?>
                      "><B>หน้าแรก</B></a></h4>
-                  <img style="border-radius: 50%;" src="<?php  echo $this->session->userdata('spic'); ?>" width="165px" height="180px">
-                  <h5><?php echo $this->session->userdata('sname');  ?></h5>
+                  <img style="border-radius: 50%;" src="<?php  echo $this->session->userdata('spic'); ?>" width="60%" height="30%">
+                  <h5 style="font-size:18px;"><?php echo $this->session->userdata('sname');  ?></h5>
                   <h5><?php echo "<B>สถานะ </B>".$this->session->userdata('slevel');  ?></h5>
                   <button onclick="logout()" type="submit" class="btn btn-danger" id="submit">ออกจากระบบ</button>
                </div>

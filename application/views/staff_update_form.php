@@ -102,7 +102,7 @@
                       </div>  
                       <div class="row">
                         <div class="form-group col-md-2">
-                          <label>ปีที่เข้าศึกษา</label>
+                          <label>ปีเข้าศึกษา</label>
                         </div>   
                         <div class="form-group col-md-3">
                           <input id="yofadmis" name="yofadmis" require  class="form-control "  type="number" placeholder="ปปปป" min="<?php echo date('Y',strtotime('-6 year'))+543; ?>" max="<?php echo date('Y')+543; ?>" value="<?=intval($row->staff_yofadmis)+543;?>">
@@ -166,7 +166,7 @@
                   
                   </div>
                   <div class="row">
-                    <div class="form-group col-md-12 text-center"><br>
+                    <div class="form-group col-md-12 text-center">
                       <a href="<?=base_url("index.php/Project_controller/manage_staff");?>" class="btn btn-outline-success">ย้อนกลับ</a>
                       <button type="submit" class="btn btn-outline-primary" id="submit">ตกลง</button>
                     </div>

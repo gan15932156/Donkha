@@ -1,16 +1,13 @@
-<style type="text/css">
-  .table-responsive{
-    height:65vh;
-    overflow:auto;
-  }
-  thead tr:nth-child(1) th{
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-</style>
-<script type="text/javascript">
-  $(document).ready(function(){
+<script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/helper.js"></script> 
+<script type="text/javascript"> //print_report_account_betwwen_date_close
+   $(document).ready(function(){
+    var table;
+    $("table#data_table tfoot").css({ 
+      'background-color': '#99c0ff',
+      'border' : '1px solid black',
+      'color' : 'black',
+      'font-size': '16px',   
+    });
     $("#display_report").click(function(){
       if($("#start_date").val() == "" && $("#stop_date").val() == ""){
         alert("กรุณากรอกวันที่ให้ครบ");
@@ -22,56 +19,116 @@
         alert("กรุณากรอกวันที่ให้ครบ");
       }
       else{
-        $.ajax({
-          type: "POST",
-          url: "<?php echo site_url();?>/Project_controller/fetch_report_close_account",
-          method:"POST",
-          data:{
-            start_date:$("#start_date").val(),
-            stop_date:$("#stop_date").val()
+        table = $('#data_table').DataTable({
+          drawCallback:function(settings)
+          {  
+            $('#count').html("ปิดบัญชีทั้งหมด "+settings.json.recordsTotal+" คน");
           },
-          success:function(response){
-            if(response == false){alert("ไม่พบรายการ");}
-            else{$('.table-responsive').html(response);}
+          columnDefs: [
+            {targets: [0,1,4],className: 'dt-body-center'},
+            {targets: [2,3],className: 'dt-body-left'},
+            {targets: [5],className: 'dt-body-right'},
+            { orderable: false, targets: '_all' },
+          ], 
+          "order": [[ 4, 'desc' ]],  
+          "lengthChange": false,
+          "searching": false,
+          "orderable": false,
+          pageLength: 3, // 8
+          destroy: true,
+          serverSide: true,
+          processing: true,
+          "language": {
+            "search":"ค้นหา:",
+            "zeroRecords": "ไม่พบข้อมูล",
+            "info": "แสดงหน้า _PAGE_ จาก _PAGES_",
+            "infoEmpty": "ไม่พบข้อมูล",
+            "infoFiltered": "(กรองจาก _MAX_ รายการทั้งหมด)",
+            "paginate": {
+              "first":      "หน้าแรก",
+              "last":       "หน้าสุดท้าย",
+              "next":       "ถัดไป",
+              "previous":   "ก่อนหน้า"
+            },
+          },      
+          ajax: {
+            url:'<?php echo base_url("index.php/Project_controller/fetch_report_close_account/"); ?>'+$("#start_date").val()+"/"+$("#stop_date").val()
           },
-          error: function( error ){alert( error );}
+          'columns':[
+          {
+            data:'account_id',
+            render: function (data, type, full, counter ){
+              return  null;
+            }
+          },
+          {
+            data:'account_id',
+          },
+          {
+            data:'account_name',
+          },
+          {
+            data:'member_name',
+            render: function (data,type,row){
+              return row['member_title']+""+row['member_name'];
+            }
+          },
+          {
+            data:'account_close_date',
+            render: function (data,type,row){
+              var dateee = row['account_open_date'];
+              var t_year =  parseInt(dateee.substring(0,4))+543;
+              var t_month = new Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+              var t_day = Number(dateee.substring(8));
+              var th_dateeee = t_day+" "+t_month[parseInt(dateee.substring(5,7))]+" "+t_year;
+              return th_dateeee;
+            }
+          },
+          {
+            data:'staff_name',
+            render: function (data,type,row){
+              return row['staff_title']+""+row['staff_name'];
+            }
+          }
+          ]
         });
-        //console.log(start_date+" "+stop_date);
+        table.on( 'draw.dt', function () {
+          var PageInfo = $('#data_table').DataTable().page.info();
+          table.column(0, { page: 'current' }).nodes().each( function (cell, i) {
+            cell.innerHTML = i + 1 + PageInfo.start;
+          });
+        });
       }
     });
-    /*google.charts.load('current', {packages: ['corechart', 'bar']});
-    google.charts.setOnLoadCallback(drawBasic);
-    function drawBasic() {
-    var jsonData = $.ajax({
-        url: "echo base_url('Project_controller/test_get_data_repost/') ?>",
-        dataType: "json",
-        async:false
-    }).responseText;
-    var data = new google.visualization.DataTable(jsonData);
-    var options = {
-      title: 'Motivation Level Throughout the Day',
-      focusTarget: 'category',
-      width: 800,
-      height: 400,
-      hAxis:{
-        title: 'Time of Day',
-        viewWindow:{
-          min:[7,30,0],
-          max:[17,30,0]
-        },
-        textStyle:{
-          fontSize:14,
-          color: '#053061',
-          bold:true,
-          italic:false
-        },
+    $("#print_report").click(function(){
+      if($("#start_date").val() == "" && $("#stop_date").val() == ""){
+        alert("กรุณากรอกวันที่ให้ครบ");
       }
-    };
-    var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-    var formatter = new google.visualization.NumberFormat({suffix: ' บาท', negativeColor: 'red', negativeParens: true});
-    formatter.format(data, 1); // Apply formatter to second column
-    chart.draw(data, options);
-  }*/
+      else if($("#start_date").val() == ""){
+        alert("กรุณากรอกวันที่ให้ครบ");
+      }
+      else if($("#stop_date").val() == ""){
+        alert("กรุณากรอกวันที่ให้ครบ");
+      }
+      else{
+        $.ajax({
+        url:"<?php echo base_url("index.php/Project_controller/print_report_account_betwwen_date_close"); ?>",
+        method:"POST",
+        xhrFields: {
+          responseType: "blob"
+        },
+        data:{
+          start:$("#start_date").val(),
+          stop:$("#stop_date").val()
+        },
+        success:function(response)
+        { 
+          url = window.URL.createObjectURL(response);
+          window.open(url, '_blank');
+        }
+      })
+      }
+    });
   });
 </script>
 <div class="col-md-12 text-center" ><a href=""></a>
@@ -87,20 +144,40 @@
             <div class="col-3">
               <input autofocus type="date" class="form-control" id="start_date" name="start_date" required>
             </div>
-            <div class="col-2">
+            <div class="col-1">
               <label >ถึงวันที่</label>
             </div>
             <div class="col-3">
               <input type="date" class="form-control" id="stop_date" name="stop_date" max="<?=date('Y-m-d');?>" required>
             </div>
+            <div class="col-2">
+              <button type="submit" class="btn btn-success " id="display_report">แสดงรายงาน</button>
+            </div>
             <div class="col-1">
-              <button type="submit" class="btn btn-outline-success " id="display_report">แสดงรายงาน</button>
+              <button type="submit" class="btn btn-warning " id="print_report">พิมพ์</button>
             </div>
           </div><hr>
-          <!--<div id="chart_div"></div>-->
         </div>
         <div class="col-md-12 text-center">
-          <div class="table-responsive"></div>
+          <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
+            <thead class="thead-light table-bordered text-center">
+              <tr>
+                <th width="5%" scope="col">ลำดับ</th>
+                <th width="16%" scope="col">หมายเลขบัญชี</th>
+                <th width="21%" scope="col">ชื่อบัญชี</th>
+                <th width="22%" scope="col">ชื่อ - นามสกุล</th>					
+                <th width="17%" scope="col">วัน-เดือน-ปี ที่ปิด</th>
+                <th width="30%" scope="col">พนักงานปิดบัญชี</th>
+              </tr>
+            </thead>
+            <tbody class="table-bordered" style="font-size:16px;"></tbody>
+            <tfoot class="tf">
+              <tr>
+                <th scope="col" class="text-center" colspan="5"> </th>
+                <th scope="col" class="text-right" id="count" colspan="1"></th>
+              </tr>
+            </tfoot>
+          </table>
         </div>
       </div>
     </div>

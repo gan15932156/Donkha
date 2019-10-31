@@ -13,7 +13,7 @@
         async:false,
 		    success: function(response){
           alert("บันทึกข้อมูลสำเร็จ");
-			    window.open("<?=base_url("Project_controller/noti_dep");?>", "_self");    		
+			    window.open("<?=base_url("Project_controller/account_detail");?>"+$("#ac_code").val(), "_self");    		
 		    },
 		    error: function(){ alert("error"); }
       });
@@ -87,7 +87,6 @@
               <input placeholder="ค้นหาชื่อ" autofocus type="text" class="form-control input-lg typeahead" id="member_name" name="member_name">
             </div>
             <div class="col-2">
-
               <button type="submit" class="btn btn-success" id="search_member">ค้นหา</button> 
             </div>
           </div>

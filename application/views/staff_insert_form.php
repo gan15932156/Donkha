@@ -170,7 +170,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="form-group col-md-12 text-center"><br>
+              <div class="form-group col-md-12 text-center">
                 <a href="<?=base_url("index.php/Project_controller/index_admin");?>" class="btn btn-outline-success">ย้อนกลับ</a>
                 <button type="submit" class="btn btn-outline-primary" id="submit">ตกลง</button>                     
               </div>

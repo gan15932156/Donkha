@@ -60,18 +60,7 @@ $(document).ready(function(){
          cal1 = parseFloat($("#cal1").val());
          cal0_5 = parseFloat($("#cal0_5").val());
          cal_25 = parseFloat($("#cal0_25").val());
-         var total =  cal1000 
-         + cal500
-         + cal100
-         + cal50
-         + cal20
-         + cal10
-         + cal5
-         + cal2
-         + cal1
-         + cal0_5
-         + cal_25 
-         ;
+         var total =  cal1000+cal500+cal100+cal50+cal20+cal10+cal5+cal2+cal1+cal0_5+cal_25;
          $("#cash_total").val(total);
          if($("#account_st_total").val() != ''){
             $("#diff_total").val(total - $("#account_st_total").val());

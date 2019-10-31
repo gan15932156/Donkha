@@ -54,82 +54,73 @@
             input{
               text-align: right;
             }
+            input[type=number]{
+              width:100%;
+            }
           </style>
           <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
           <thead class="thead-light table-bordered text-center">
               <tr>
               <th width="20%" scope="col">มูลค่าต่อหน่วย</th>
               <th width="15%" scope="col">จำนวนหน่วย</th>
-              <th width="20%" scope="col">จำนวนเงิน</th>
-              <th width="15%" scope="col">ยอดรวม</th>
+              <th width="20%" scope="col">ยอดรวม</th>
               </tr>
           </thead>
           <tbody class="table-bordered" style="font-size:16px;">
             <tr>
               <td align="center">ธนบัตร 1,000</td>
-              <td><input placeholder="1,000" min="0" type="number"  id="b1000" name="b1000" required=""></td>
+              <td align="right"><input placeholder="1,000" min="0" type="number"  id="b1000" name="b1000" required=""></td>
               <td align="right"><input type="number"  id="cal1000" name="cal1000"></td>
-              <td align="right"><input type="number"  id="" name=""></td>
             </tr>
             <tr>
               <td align="center">ธนบัตร 500</td>
-              <td align="left"><input placeholder="500" min="0" type="number"  id="b500" name="b500" required=""></td>
-              <td align="left"><input type="number"  id="cal500" name="cal500"></td>
-              <td align="left"><input type="number"  id="" name=""></td>
+              <td align="right"><input placeholder="500" min="0" type="number"  id="b500" name="b500" required=""></td>
+              <td align="right"><input type="number"  id="cal500" name="cal500"></td>
             </tr>
             <tr>
               <td align="center">ธนบัตร 100</td>
-              <td align="left"><input placeholder="100" min="0" type="number"  id="b100" name="b100" required=""></td>
-              <td align="left"><input type="number"  id="cal100" name="cal100"></td>
-              <td align="left"><input type="number"  id="" name=""></td>
+              <td align="right"><input placeholder="100" min="0" type="number"  id="b100" name="b100" required=""></td>
+              <td align="right"><input type="number"  id="cal100" name="cal100"></td>
             </tr>
             <tr>
               <td align="center">ธนบัตร 50</td>
-              <td align="left"><input placeholder="50" min="0" type="number"  id="b50" name="b50" required=""></td>
-              <td align="left"><input type="number"  id="cal50" name="cal50"></td>
-              <td align="left"><input type="number"  id="" name=""></td>
+              <td align="right"><input placeholder="50" min="0" type="number"  id="b50" name="b50" required=""></td>
+              <td align="right"><input type="number"  id="cal50" name="cal50"></td>
             </tr>
             <tr>
               <td align="center">ธนบัตร 20</td>
-              <td align="left"><input placeholder="20" min="0" type="number"  id="b20" name="b20" required=""></td>
-              <td align="left"><input type="number"  id="cal20" name="cal20"></td>
-              <td align="left"><input type="number"  id="" name=""></td>
+              <td align="right"><input placeholder="20" min="0" type="number"  id="b20" name="b20" required=""></td>
+              <td align="right"><input type="number"  id="cal20" name="cal20"></td>
             </tr>
             <tr>
               <td align="center">เหรียญ 10</td>
-              <td align="center"><input placeholder="10" min="0" type="number"  id="c10" name="c10" required=""></td>
-              <td align="center"><input type="number"  id="cal10" name="cal10"></td>
-              <td align="center"><input type="number"  id="" name=""></td>
+              <td align="right"><input placeholder="10" min="0" type="number"  id="c10" name="c10" required=""></td>
+              <td align="right"><input type="number"  id="cal10" name="cal10"></td>
             </tr>
             <tr>
               <td align="center">เหรียญ 5</td>
-              <td align="center"><input placeholder="5" min="0" type="number"  id="c5" name="c5" required=""></td>
-              <td align="center"><input type="number"  id="cal5" name="cal5"></td>
-              <td align="center"><input type="number"  id="" name=""></td>
+              <td align="right"><input placeholder="5" min="0" type="number"  id="c5" name="c5" required=""></td>
+              <td align="right"><input type="number"  id="cal5" name="cal5"></td>
             </tr>
             <tr>
               <td align="center">เหรียญ 2</td>
-              <td align="center"><input placeholder="2" min="0" type="number"  id="c2" name="c2" required=""></td>
-              <td align="center"><input type="number"  id="cal2" name="cal2"></td>
-              <td align="center"><input type="number"  id="" name=""></td>
+              <td align="right"><input placeholder="2" min="0" type="number"  id="c2" name="c2" required=""></td>
+              <td align="right"><input type="number"  id="cal2" name="cal2"></td>
             </tr>
             <tr>
               <td align="center">เหรียญ 1</td>
-              <td align="center"><input placeholder="1" min="0" type="number"  id="c1" name="c1" required=""></td>
-              <td align="center"><input type="number"  id="cal1" name="cal1"></td>
-              <td align="center"><input type="number"  id="" name=""></td>
+              <td align="right"><input placeholder="1" min="0" type="number"  id="c1" name="c1" required=""></td>
+              <td align="right"><input type="number"  id="cal1" name="cal1"></td>
             </tr>
             <tr>
               <td align="center">เหรียญ 0.50</td>
-              <td align="center"><input placeholder="0.50" min="0" type="number"  id="c0_5" name="c0_5" required=""></td>
-              <td align="center"><input type="number" step=any  id="cal0_5" name="cal0_5"></td>
-              <td align="center"><input type="number"  id="" name=""></td>
+              <td align="right"><input placeholder="0.50" min="0" type="number"  id="c0_5" name="c0_5" required=""></td>
+              <td align="right"><input type="number" step=any  id="cal0_5" name="cal0_5"></td>
             </tr>
             <tr>
               <td align="center">เหรียญ 0.25</td>
-              <td align="center"><input placeholder="0.25" min="0" type="number"  id="c0_25" name="c0_25" required=""></td>
-              <td align="center"><input type="number" step=any  id="cal0_25" name="cal0_25"></td>
-              <td align="center"><input type="number"  id="" name=""></td>
+              <td align="right"><input placeholder="0.25" min="0" type="number"  id="c0_25" name="c0_25" required=""></td>
+              <td align="right"><input type="number" step=any  id="cal0_25" name="cal0_25"></td>
             </tr>       
           </tbody>
           </table>
@@ -141,12 +132,12 @@
               <th width="70%" scope="col">ยอมรวมธนบัตรและเหรียญ</th>
               <td align="right" width="30%">
                 <input style="width:100%;text-align:center;" type="button" value="คำนวณ" id="cal_total" name="cal_total">
-                <input style="width:120px;" type="number" step=any id="cash_total" readonly="">
+                <input style="width:120px;" type="text" step=any id="cash_total" name="cash_total" readonly="">
               </td>
             </tr>
             <tr>
               <th width="70%" scope="col">ยอดตามบัญชี</th> 
-              <td align="right" width="30%"><input readonly="" style="width:120px;" type="text" step=any name="account_st_total" id="account_st_total" value="<?php echo $total; ?>"></td>
+              <td align="right" width="30%"><input readonly="" style="width:120px;" type="number" step=any name="account_st_total" id="account_st_total" value="<?php echo $total; ?>"></td>
             </tr>
             <tr>
               <th width="70%" scope="col">ผลต่าง</th>

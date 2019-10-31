@@ -1,3 +1,4 @@
+<script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/check_information.js"></script> 
 <script type="text/javascript">
   $(document).ready(function(){
     var table = $('#data_table').DataTable({
@@ -43,7 +44,6 @@
       ]
     });
     $('[id="print_report"]').click(function(){
-        //alert($('[id="filter"]').val()+" "+$('[id="ac_id"]').val());
         $.ajax({
         url:"<?php echo base_url("index.php/Project_controller/print_member_report"); ?>",
         method:"POST",
@@ -99,8 +99,8 @@
 </div> 
 
 <style>
-    .modal-dialog {max-height:100vh;max-width:150vh;}  
-    .modal-body{height:100%;width:100%;align:center;}  
+    .modal-dialog {max-height:80vh;max-width:80vw;}  
+    .modal-body{height:70vh;width:100%;align:center;}  
     .body-container{background-color:white;}    
 </style>
 
