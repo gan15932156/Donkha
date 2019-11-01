@@ -1,4 +1,5 @@
 <script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/helper.js"></script> 
+<script type="text/javascript" src="<?php  echo base_url();?>bootstrap000/Project_js/cal_balance_sheet.js"></script> 
 <script type="text/javascript">
   $(document).ready(function(){
    $("#balance_form").submit(function(event) {
@@ -10,14 +11,14 @@
           data:new FormData($(this)[0]),
           processData: false,
           contentType: false,
-         /* xhrFields: {
+          xhrFields: {
             responseType: "blob"
-          },	*/
+          },	
           success:function(response)
           { 
-             alert(response);
-          /*  url = window.URL.createObjectURL(response);
-            window.open(url, '_blank');*/
+            //alert(response);
+            url = window.URL.createObjectURL(response);
+            window.open(url, '_blank');
           }
         })
       }
@@ -65,10 +66,12 @@
       <div class="form-group col-3"></div>
       <div class="form-group col-6">
       <style>
-            input{
-              text-align: right;
-            }
-          </style>
+        input{
+          text-align: right;
+          width:200px;
+        }
+        
+      </style>
       <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
          <thead class="thead-light table-bordered text-center">
             <tr>
@@ -78,17 +81,20 @@
           <tbody class="table-bordered" style="font-size:16px;">
             <tr>
                <td align="left">เงินสด</td>
-               <td align="right"><input min="0" type="number" step=any id="cash" name="cash" required=""></td>
+               <td align="right"><input  type="number" step=any id="cash" name="cash" required=""></td>
             </tr>
             <tr>
                <td align="left">เงินฝากธนาคาร</td>
-               <td align="right"><input min="0" type="number" step=any id="bank_cash" name="bank_cash" required=""></td>
+               <td align="right"><input  type="number" step=any id="bank_cash" name="bank_cash" required=""></td>
             </tr>
           </tbody>
           <tfoot >
                <tr class="table-info">
                   <th scope="col" class="text-center" colspan="1">รวม</th>
-                  <th scope="col" class="text-right" id="sum_asset" colspan="1"><input style="text-decoration: underline" min="0" step=any type="number"  id="b20" name="b20" required=""></th>
+                  <th scope="col" class="text-right"  colspan="1">
+                    <input style="text-align:center;" type="button" value="คำนวณ" id="cal_asset" name="cal_asset">
+                    <input id="sum_asset" name="sum_asset" style="text-decoration: underline;"  step=any type="number"  id="b20" name="b20" required="">
+                  </th>
                </tr>
           </tfoot>
         </table>
@@ -104,17 +110,17 @@
           <tbody class="table-bordered" style="font-size:16px;">
             <tr>
                <td align="left">เงินรับฝากสมาชิก</td>
-               <td align="right"><input min="0" type="number" step=any id="cash_2" name="cash_2" required=""></td>
+               <td align="right"><input  type="number" step=any id="cash_2" name="cash_2" required=""></td>
             </tr>
             <tr>
                <td align="left">กำไรสุทธิ</td>
-               <td align="right"><input min="0" type="number" step=any id="bank_cash_2" name="bank_cash_2" required=""></td>
+               <td align="right"><input  type="number" step=any id="bank_cash_2" name="bank_cash_2" required=""></td>
             </tr>
           </tbody>
           <tfoot >
                <tr class="table-info">
                   <th scope="col" class="text-center" colspan="1">รวม</th>
-                  <th scope="col" class="text-right" id="sum_capital" colspan="1"><input style="text-decoration: underline" step=any min="0" type="number"  id="b20" name="b20" required=""></th>
+                  <th scope="col" class="text-right"  colspan="1"><input id="sum_capital" name="sum_capital" style="text-decoration: underline" step=any type="number"  id="b20" name="b20" required=""></th>
                </tr>
           </tfoot>
         </table>

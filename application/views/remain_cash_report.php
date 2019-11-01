@@ -132,7 +132,7 @@
               <th width="70%" scope="col">ยอมรวมธนบัตรและเหรียญ</th>
               <td align="right" width="30%">
                 <input style="width:100%;text-align:center;" type="button" value="คำนวณ" id="cal_total" name="cal_total">
-                <input style="width:120px;" type="text" step=any id="cash_total" name="cash_total" readonly="">
+                <input style="width:100%;" type="text" step=any id="cash_total" name="cash_total" readonly="">
               </td>
             </tr>
             <tr>

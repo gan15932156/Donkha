@@ -654,17 +654,42 @@ class Project_controller extends CI_Controller {
 			'trans_money'=>$this->input->post("money"),
 			'account_detail_confirm'=>'1',
 		);
-
-		/*$stock_cash = 0.0;
-		foreach($this->User_model->select_stock_cash_no_admin()->result() as $row){
-			$stock_cash = $row->stock_cash;
-		}*/
-
+		//update stock cash
+		$this->stock_cash_update($this->input->post("ac_code"),$this->input->post("money"),"open_account",$this->input->post("staff_id"),"dep");
+		
 		$this->User_model->insert_account_details($data_account_detail);
 		$response = array();
 		$response["message"] = "บันทึกข้อมูลสำเร็จ";
 		$response["error"] = false;
 		echo json_encode($response);
+	}
+	public function stock_cash_update($account_id,$money,$action_des,$staff_id,$action){
+		date_default_timezone_set('Asia/Bangkok');
+		$stock_cash = 0.0;
+		$total_cash = 0.0;
+		foreach($this->User_model->select_stock_cash_no_admin()->result() as $row){
+			$stock_cash = floatval($row->stock_cash);
+		}
+		if($action == "dep"){
+			$total_cash = $stock_cash + floatval($money);
+		}
+		else if($action == "wd"){
+			$total_cash = $stock_cash - floatval($money);
+		}
+		$data_stock_history=array(
+			'account_id'=>$account_id,
+			'sch_date'=>date('Y-m-d'),
+			'sch_time'=>date('H:i:s'),
+			'action_money'=>$money,
+			'stock_balance'=>$total_cash,
+			'action_des'=>$action_des,
+			'sch_staff_record'=>$staff_id,
+		);
+		$this->User_model->insert_stock_cash_history($data_stock_history);
+		$data_stock_cash=array(
+			'stock_cash'=>$total_cash,
+	  	);
+	  	$this->User_model->update_stock_cash("stock99",$data_stock_cash);
 	}
 	public function account_insert_staff(){
  		date_default_timezone_set('Asia/Bangkok');
@@ -697,6 +722,9 @@ class Project_controller extends CI_Controller {
 			'trans_money'=>$this->input->post("money"),
 			'account_detail_confirm'=>'1',
 		);
+
+		$this->stock_cash_update($this->input->post("ac_code"),$this->input->post("money"),"open_account",$this->input->post("staff_id"),"dep");
+
 		$this->User_model->insert_account_details($data_account_detail);
 		$response = array();
 		$response["message"] = "บันทึกข้อมูลสำเร็จ";
@@ -730,6 +758,9 @@ class Project_controller extends CI_Controller {
 			$account_detail_balance=$row->account_detail_balance;
 		}
 		$this->User_model->update_confirm_account_deposit($this->input->post("acc_code"),$account_detail_balance);
+
+		$this->stock_cash_update($this->input->post("acc_code"),$this->input->post("deposit_money"),"deposit",$this->input->post("staff_id"),"dep");
+
 		$response = array();
 		$response["message"] = "บันทึกข้อมูลสำเร็จ";
 		$response["error"] = false;
@@ -762,6 +793,10 @@ class Project_controller extends CI_Controller {
 			$account_detail_balance=$row->account_detail_balance;
 		}
 		$this->User_model->update_confirm_account_withdraw($this->input->post("acc_code"),$account_detail_balance);
+		
+		$this->stock_cash_update($this->input->post("acc_code"),$this->input->post("withdraw_money"),"withdraw",$this->input->post("staff_id"),"wd");
+		
+		
 		$response = array();
 		$response["message"] = "บันทึกข้อมูลสำเร็จ";
 		$response["error"] = false;
@@ -2182,9 +2217,13 @@ class Project_controller extends CI_Controller {
 			$account_id=$row->account_id;
 			$trans_id=$row->trans_id;
 			$account_detail_balance=$row->account_detail_balance;
+			$trans_money = $row->trans_money;
 		}
 		$this->User_model->update_confirm_deposit($account_detail_id,$trans_id,$staff_id);
 		$this->User_model->update_confirm_account_deposit($account_id,$account_detail_balance);
+
+		$this->stock_cash_update($account_id,$trans_money,"deposit",$staff_id,"dep");
+
 		$url1 = base_url('Project_controller/check_next_passbook_page_accountdetail_id/').$account_detail_id;
 		$url2 = base_url('Project_controller/noti_dep/');
 		/*echo '
@@ -2209,9 +2248,13 @@ class Project_controller extends CI_Controller {
 			$account_id=$row->account_id;
 			$trans_id=$row->trans_id;
 			$account_detail_balance=$row->account_detail_balance;
+			$trans_money = $row->trans_money;
 		}
 		$this->User_model->update_confirm_withdraw($account_detail_id,$trans_id,$staff_id);
 		$this->User_model->update_confirm_account_withdraw($account_id,$account_detail_balance);
+
+		$this->stock_cash_update($account_id,$trans_money,"withdraw",$staff_id,"wd");
+
 		$url1 = base_url('Project_controller/check_next_passbook_page_accountdetail_id/').$account_detail_id;
 		$url2 = base_url('Project_controller/noti_wd/');
 		/*echo '
@@ -2370,18 +2413,18 @@ class Project_controller extends CI_Controller {
 	}
 	public function print_report_account_betwwen_date_close(){
 		$pdf = new Pdf('P','mm','A4');
-      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
-      $pdf->setFooterData(array(0,64,0), array(0,64,128));
-      $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-      $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-      $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-      $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-      $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-      $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-      $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-      $pdf->setFontSubsetting(true);
-      $pdf->SetFont('thsarabun', '', 16, '', true);
+		$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+		$pdf->setFooterData(array(0,64,0), array(0,64,128));
+		$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+		$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+		$pdf->setFontSubsetting(true);
+		$pdf->SetFont('thsarabun', '', 16, '', true);
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
@@ -3913,17 +3956,102 @@ class Project_controller extends CI_Controller {
 		$response = array();
 		if($data["cash"] = $this->User_model->select_stock_cash($this->input->post('admin_id'))){
 			$response["error"] = false;
+			$response["message"] = "สำเร็จ";
 			foreach($data['cash']->result() as $row){
 				$response["cash"] = $row->stock_cash;
 			}
 		}
 		else{
+			$response["message"] = "ไม่มีสิทธิ์ในการเข้าถึง";
 			$response["error"] = true;
 		}
 		echo json_encode($response);
 	}
 	public function balance_print(){
-		echo $this->input->post('cash');
+		$pdf = new Pdf('P','mm','A4');
+		$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+		$pdf->setFooterData(array(0,64,0), array(0,64,128));
+		$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+		$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+		$pdf->setFontSubsetting(true);
+		$pdf->SetFont('thsarabun', '', 16, '', true);
+		$pdf->setPrintHeader(false);
+		$pdf->setCellPadding(1,1,1,1);
+		$pdf->setCellmargins(1,1,1,1);
+		$pdf->SetTitle("รายงานงบดุล");
+		$pdf->AddPage();
+		function DateThaitttttt($strDate)
+		{ 
+		  $strYear = date("Y",strtotime($strDate))+543;
+		  $strMonth= date("n",strtotime($strDate));
+		  $strDay= date("j",strtotime($strDate));
+		  $strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+		  $strMonthThai=$strMonthCut[$strMonth];
+		  return "$strDay $strMonthThai $strYear";
+		} 
+		date_default_timezone_set('Asia/Bangkok');
+		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
+		$pdf->Ln(8);
+		$heading = "<span>โรงเรียนดอนคาวิทยา ตำบลดอนคา อำเภออู่ทอง จังหวัดสุพรรณบุรี 72160</span><h3>รายงานงบดุล</h3>";
+  
+		$pdf->writeHTMLCell(0,0,'','',$heading,0,1,0,true,'C',true);
+		$todate = '<p><b>สิ้นสุด ณ '.DateThaitttttt(date('Y-m-d'));
+		
+		$pdf->writeHTMLCell(0,0,'','',$todate,0,1,0,true,'C',true);
+		$table='<table align="center" style="width:100%;">'; 
+		$table.='<tr>
+				  <th colspan="2" scope="col"><b>สินทรัพย์</b></th>
+			  </tr>';
+		$table.='<tr>					
+					<td align="left">เงินสด</td>
+					<td align="right">'.number_format($this->input->post("cash"),2).'</td>
+				  </tr>';
+		
+		$table.='<tr>					
+				<td align="left">เงินฝากธนาคาร</td>
+				<td align="right">'.number_format($this->input->post("bank_cash"),2).'</td>
+		</tr>';
+		$table.='<tr>					
+			  <td align="left"> </td>
+			  <td align="right"><b>รวม&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>'.number_format($this->input->post("sum_asset"),2).'</span></b></td>
+		</tr>';
+		$table.='</table>';
+
+		$pdf->SetLeftMargin(40.0);
+		$pdf->SetRightMargin(40.0);
+		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
+
+
+		$table2='<br><table align="center" style="width:100%;">'; 
+		$table2.='<tr>
+				  <th colspan="2" scope="col"><b>หนี้สินและทุน</b></th>
+			  </tr>';
+		$table2.='<tr>					
+					<td align="left">เงินรับฝากสมาชิก</td>
+					<td align="right">'.number_format($this->input->post("cash_2"),2).'</td>
+				  </tr>';
+		
+		$table2.='<tr>					
+				<td align="left">กำไรสุทธิ</td>
+				<td align="right">'.number_format($this->input->post("bank_cash_2"),2).'</td>
+		</tr>';
+		$table2.='<tr>					
+			  <td align="left"> </td>
+			  <td align="right"><b>รวม&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>'.number_format($this->input->post("sum_capital"),2).'</span></b></td>
+		</tr>';
+		$table2.='</table>';
+		$pdf->SetLeftMargin(40.0);
+		$pdf->SetRightMargin(40.0);
+		$pdf->writeHTMLCell(0,0,'','',$table2,0,1,0,true,'C',true);
+		ob_clean();
+		$pdf->Output('example_001.pdf', 'I');
+		ob_end_clean();
 	}
 	public function trails_print(){
 		echo $this->input->post('sum_asset');

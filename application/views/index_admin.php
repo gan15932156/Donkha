@@ -8,8 +8,13 @@
       error: function(){ alert("error"); }
     })
     .done(function(data){
-      $('#cash').val(data.cash);
-      $('#exampleModal').modal('show');
+      if(!data.error){
+        $('#cash').val(data.cash);
+        $('#exampleModal').modal('show');
+      }
+      else{
+        alert(data.message);
+      }
     });
   }
   $(document).ready(function(){

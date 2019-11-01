@@ -152,6 +152,9 @@ class User_model extends CI_Model {
 	public function insert_interest_history($data_interest){
 		$this->db->insert('interest_history',$data_interest);
 	}
+	public function insert_stock_cash_history($data){
+		$this->db->insert('stock_cash_history',$data);
+	}
 
 	////////////////////////////////////////////////////////////
 	/////////////////////  SELECT    //////////////////////////
@@ -1313,9 +1316,9 @@ class User_model extends CI_Model {
 		$this->db->order_by('account_id DESC');
 		$query = $this->db->get('account');
 		$data = [];
+		$limit_money = 0.0;
+		$total_money = 0.0;
 		if($query->num_rows() > 0){
-			$limit_money = 0.0;
-			$total_money = 0.0;
 			foreach($query->result() as $row){
 				foreach($this->select_open_account_open_money($row->account_id)->result() as $row2){
 					$data[] = $row2;
