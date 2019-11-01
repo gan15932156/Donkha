@@ -1419,7 +1419,16 @@ class User_model extends CI_Model {
 		else{
 			return false;
 		}
-		
+	}
+	public function select_stock_cash_no_admin(){
+		$this->db->select("stock_cash");
+		$query=$this->db->get("stock_cash");
+		if($query->num_rows() > 0){
+			return $query;
+		}
+		else{
+			return false;
+		}
 	}
 
 

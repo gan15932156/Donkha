@@ -654,6 +654,12 @@ class Project_controller extends CI_Controller {
 			'trans_money'=>$this->input->post("money"),
 			'account_detail_confirm'=>'1',
 		);
+
+		/*$stock_cash = 0.0;
+		foreach($this->User_model->select_stock_cash_no_admin()->result() as $row){
+			$stock_cash = $row->stock_cash;
+		}*/
+
 		$this->User_model->insert_account_details($data_account_detail);
 		$response = array();
 		$response["message"] = "บันทึกข้อมูลสำเร็จ";
