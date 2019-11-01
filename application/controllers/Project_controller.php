@@ -913,12 +913,29 @@ class Project_controller extends CI_Controller {
 		else{
 			$response['error'] = true;
 			$response['message'] = "ไม่สามารถทำรายการได้";
-		}
-		
+		}		
 		echo json_encode($response);
 	}
 	public function increase_money_insert(){
-		echo "tst";
+		$response = array();
+		if($this->input->post("admin_id") == "4"){
+			/*$cash = $this->input->post("cash");
+			$money_increse = $this->input->post("money_increse");*/
+			$total_cash = $this->input->post("total_cash");
+
+			$data=array(
+				'stock_cash'=>$total_cash,
+			);
+			$this->User_model->update_stock_cash("stock99",$data);
+
+			$response['error'] = false;
+			$response['message'] = 'สำเร็จ';
+		}
+		else{
+			$response['error'] = true;
+			$response['message'] = 'ไม่มีสิทธื์ใช้งานส่วนนี้';
+		}
+		echo json_encode($response);
 	}
 
 	////////////////////////////////////////////////////////////
@@ -3857,9 +3874,7 @@ class Project_controller extends CI_Controller {
 						'edu_id'=>$cal_year
 					);
 					$this->User_model->update_edu_level("member",$row->member_id,$data);
-
 				}
-
 			}
 			//echo"<br><br><br><br><br><br><br>พนักงาน<br><br><br>";
 			foreach ($this->User_model->get_all_staff_with_no_edu_6()->result() as $row) {	
@@ -3888,9 +3903,17 @@ class Project_controller extends CI_Controller {
 		}	
 	}
 	public function select_remain_system_money(){
+		//เพิ่ม table stock_cash มี attr 2 คือ stock_id stock_cash
 		$response = array();
-		$response["remain_money"] = "123,222.00";
-
+		if($data["cash"] = $this->User_model->select_stock_cash($this->input->post('admin_id'))){
+			$response["error"] = false;
+			foreach($data['cash']->result() as $row){
+				$response["cash"] = $row->stock_cash;
+			}
+		}
+		else{
+			$response["error"] = true;
+		}
 		echo json_encode($response);
 	}
 	public function balance_print(){

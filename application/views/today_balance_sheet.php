@@ -69,13 +69,12 @@
               text-align: right;
             }
           </style>
-      
       <table class="table table-striped table-hover table-sm" id="data_table" style="width:100%;">
          <thead class="thead-light table-bordered text-center">
-               <tr>
-                  <th colspan="2" width="20%" scope="col">สินทรัพย์</th>            
-               </tr>
-            </thead>
+            <tr>
+              <th colspan="2" width="20%" scope="col">สินทรัพย์</th>            
+            </tr>
+          </thead>
           <tbody class="table-bordered" style="font-size:16px;">
             <tr>
                <td align="left">เงินสด</td>

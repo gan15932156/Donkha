@@ -1405,6 +1405,22 @@ class User_model extends CI_Model {
 		$this->db->order_by('record_date DESC, record_time DESC');
 		return $this->db->get("account_detail");
 	}
+	public function select_stock_cash($admin_id){
+		if($admin_id == "4"){
+			$this->db->select("stock_cash");
+			$query=$this->db->get("stock_cash");
+			if($query->num_rows() > 0){
+				return $query;
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return false;
+		}
+		
+	}
 
 
 	////////////////////////////////////////////////////////////
@@ -1531,5 +1547,9 @@ class User_model extends CI_Model {
 	public function update_edu_level($tb,$id,$data){
 		$this->db->where($tb."_id",$id);
 		$this->db->update($tb,$data);
+	}
+	public function update_stock_cash($id,$data){
+		$this->db->where("stock_id",$id);
+		$this->db->update("stock_cash",$data);
 	}
 }
