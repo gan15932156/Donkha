@@ -1,7 +1,8 @@
 $(document).ready(function(){
     var cal_status = true; //not cal - new cal
+    var cal_capital_status = true;
     $("#sum_asset").hide();
-
+    $("#sum_capital").hide();
     $("#cal_asset").click(function(){
         if(cal_status){        
            if($("#cash").val() != '' || $("#bank_cash").val() != ''){
@@ -14,24 +15,28 @@ $(document).ready(function(){
      });
      $("#sum_asset").click(function(){
         if(!cal_status){
-            $("#cash").val(null);
-            $("#bank_cash").val(null);
             $("#sum_asset").val(null);
             $("#cal_asset").show("Asd");
             $(this).hide();
             cal_status = true;
         }
      });
-
-
-
-
-    /*$("#cash").change(function(){
-        var total = parseFloat($(this).val())+parseFloat($("#bank_cash").val());
-        $("#sum_asset").val(total);
-    });
-    $("#bank_cash").change(function(){
-        var total = parseFloat($(this).val())+parseFloat($("#cash").val());
-        $("#sum_asset").val(total);
-    });*/
+     $("#cal_capital").click(function(){
+        if(cal_capital_status){        
+           if($("#cash_2").val() != '' || $("#bank_cash_2").val() != ''){
+                $("#sum_capital").val(parseFloat($("#cash_2").val())+parseFloat($("#bank_cash_2").val()));
+           }
+           $("#sum_capital").show("dadasdasd");
+           $(this).hide();
+           cal_capital_status = false;  
+        }     
+     });
+     $("#sum_capital").click(function(){
+        if(!cal_capital_status){
+            $("#sum_capital").val(null);
+            $("#cal_capital").show("Asd");
+            $(this).hide();
+            cal_capital_status = true;
+        }
+     });
 });

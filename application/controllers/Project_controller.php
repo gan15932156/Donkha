@@ -4054,7 +4054,104 @@ class Project_controller extends CI_Controller {
 		ob_end_clean();
 	}
 	public function trails_print(){
-		echo $this->input->post('sum_asset');
+		$pdf = new Pdf('P','mm','A4');
+		$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.'', PDF_HEADER_STRING);
+		$pdf->setFooterData(array(0,64,0), array(0,64,128));
+		$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+		$pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+		$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+		$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+		$pdf->setFontSubsetting(true);
+		$pdf->SetFont('thsarabun', '', 16, '', true);
+		$pdf->setPrintHeader(false);
+		$pdf->setCellPadding(1,1,1,1);
+		$pdf->setCellmargins(1,1,1,1);
+		$pdf->SetTitle("รายงานงบทดลอง");
+		$pdf->AddPage();
+		function DateThaitttttt($strDate)
+		{ 
+		  $strYear = date("Y",strtotime($strDate))+543;
+		  $strMonth= date("n",strtotime($strDate));
+		  $strDay= date("j",strtotime($strDate));
+		  $strMonthCut = Array("","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค.");
+		  $strMonthThai=$strMonthCut[$strMonth];
+		  return "$strDay $strMonthThai $strYear";
+		} 
+		date_default_timezone_set('Asia/Bangkok');
+		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
+		$pdf->Ln(8);
+		$heading = "<span>โรงเรียนดอนคาวิทยา ตำบลดอนคา อำเภออู่ทอง จังหวัดสุพรรณบุรี 72160</span><h3>รายงานงบทดลอง</h3>";
+  
+		$pdf->writeHTMLCell(0,0,'','',$heading,0,1,0,true,'C',true);
+		$todate = '<p><b>สิ้นสุด ณ '.DateThaitttttt(date('Y-m-d'));
+		
+		$pdf->writeHTMLCell(0,0,'','',$todate,0,1,0,true,'C',true);
+		$table='<table style="width:100%;">'; 
+		$table.='<tr>
+					<th  width="12%" scope="col">เลขที่บัญชี</th>            
+					<th  width="31%" scope="col">ลำดับรายการ</th> 
+					<th  width="7%" scope="col"> </th> 
+					<th  width="21%" scope="col">ยอดคงเหลือบัญชีหมวดสินทรัพย์/ค่าใช้จ่าย</th>  
+					<th  width="7%" scope="col"> </th> 
+					<th  width="22%" scope="col">ยอดคงเหลือบัญชีหมวดหนี้สิน/ทุน/รายได้</th>           
+			  </tr>';
+		$table.='<tr>		
+					<td align="center">101</td>
+					<td align="left">เงินสด</td>	
+					<td> </td>		
+					<td align="right">'.number_format($this->input->post("cash_asset"),2).'</td>
+					<td> </td>
+					<td align="right">'.number_format($this->input->post("cash_capital"),2).'</td>
+				  </tr>';
+		$table.='<tr>		
+				  <td align="center">102</td>
+				  <td align="left">เงินฝากธนาคาร</td>	
+				  <td> </td>		
+				  <td align="right">'.number_format($this->input->post("bank_cash_asset"),2).'</td>
+				  <td> </td>
+				  <td align="right">'.number_format($this->input->post("bank_cash_capital"),2).'</td>
+				</tr>';
+				$table.='<tr>		
+				<td align="center">201</td>
+				<td align="left">เงินรับฝากสมาชิก</td>	
+				<td> </td>		
+				<td align="right">'.number_format($this->input->post("deposit_member_asset"),2).'</td>
+				<td> </td>
+				<td align="right">'.number_format($this->input->post("deposit_member_capital"),2).'</td>
+			  </tr>';
+			  $table.='<tr>		
+				  <td align="center">402</td>
+				  <td align="left">รายได้ดอกเบี้ยเงินฝากธนาคาร</td>	
+				  <td> </td>		
+				  <td align="right">'.number_format($this->input->post("bank_interest_asset"),2).'</td>
+				  <td> </td>
+				  <td align="right">'.number_format($this->input->post("bank_interest_capital"),2).'</td>
+				</tr>';
+				$table.='<tr>		
+				  <td align="center">512</td>
+				  <td align="left">ค่าดอกเบี้ยเงินฝากสมาชิก</td>	
+				  <td> </td>		
+				  <td align="right">'.number_format($this->input->post("interest_member_asset"),2).'</td>
+				  <td> </td>
+				  <td align="right">'.number_format($this->input->post("interest_member_capital"),2).'</td>
+				</tr>';
+				$table.='<tr>		
+				  <td colspan="2" align="center"> </td>
+				  <td align="left"><b>รวม</b></td>	
+				  <td align="right"><b>'.number_format($this->input->post("sum_asset"),2).'</b></td>		
+				  <td align="left"><b>รวม</b></td>
+				  <td align="right"><b>'.number_format($this->input->post("sum_capital"),2).'</b></td>
+				</tr>';
+		
+		$table.='</table>';
+		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
+		ob_clean();
+		$pdf->Output('example_001.pdf', 'I');
+		ob_end_clean();
 	}
 	public function remain_print(){
 		$pdf = new Pdf('P','mm','A4');

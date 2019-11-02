@@ -70,7 +70,7 @@
                     </div>
                     <div class="form-row">
                       <div class="form-group col-md-12 text-center">
-                        <button type="submit" class="btn btn-outline-primary" id="submit">ตกลง</button>
+                        <button type="submit" class="btn btn-primary" id="submit">ตกลง</button>
                       </div>
                     </div>
                     <?php  

@@ -120,7 +120,10 @@
           <tfoot >
                <tr class="table-info">
                   <th scope="col" class="text-center" colspan="1">รวม</th>
-                  <th scope="col" class="text-right"  colspan="1"><input id="sum_capital" name="sum_capital" style="text-decoration: underline" step=any type="number"  id="b20" name="b20" required=""></th>
+                  <th scope="col" class="text-right"  colspan="1">
+                  <input style="text-align:center;" type="button" value="คำนวณ" id="cal_capital" name="cal_capital">
+                  <input id="sum_capital" name="sum_capital" style="text-decoration: underline" step=any type="number"  id="b20" name="b20" required="">
+                  </th>
                </tr>
           </tfoot>
         </table>
