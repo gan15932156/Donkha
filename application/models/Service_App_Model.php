@@ -337,4 +337,20 @@ class Service_App_Model extends CI_Model {
 		$this->db->where("account_id",$account_id);
 		$this->db->update("account",$data_account);
 	}
+
+	public function check_receive_tranfer_money($account_id){
+		date_default_timezone_set('Asia/Bangkok');
+		$this->db->from('account_detail');
+		$this->db->join('tranfer_money', 'tranfer_money.tranfer_money_id = account_detail.trans_id','inner');
+		$this->db->where('account_detail.account_id',$account_id);
+		$this->db->where('action','recive_money');
+		$this->db->where('record_date',date('Y-m-d'));	
+		$query=$this->db->get('');
+		if($query->num_rows() > 0){
+            return $query;
+        }
+        else{
+            return false;
+        }
+	}
 }

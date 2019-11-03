@@ -748,4 +748,23 @@ class Service_app extends CI_Controller {
 		}
 		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
 	}
+	public function check_received_tranfer_money(){
+		date_default_timezone_set('Asia/Bangkok');
+		$this->response = null; 
+		$account_id = $this->input->post("account_id");
+		$account_id = "2019005";
+		if($data['check']=$this->Service_App_Model->check_receive_tranfer_money($account_id)){
+			foreach($data['check']->result() as $row){
+				$this->response['check'] = $row;
+			}
+			$this->response['error'] = false; 
+			$this->response['message'] = 'พบข้อมูล'; 
+			    
+		}
+		else{
+			$this->response['error'] = true; 
+			$this->response['message'] = 'ไม่พบข้อมูล';
+		}
+		echo json_encode($this->response,JSON_UNESCAPED_UNICODE);
+	}
 }
