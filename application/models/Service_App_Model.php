@@ -338,13 +338,17 @@ class Service_App_Model extends CI_Model {
 		$this->db->update("account",$data_account);
 	}
 
-	public function check_receive_tranfer_money($account_id){
+	public function check_receive_tranfer_money($account_id,$tran_id){
 		date_default_timezone_set('Asia/Bangkok');
 		$this->db->from('account_detail');
 		$this->db->join('tranfer_money', 'tranfer_money.tranfer_money_id = account_detail.trans_id','inner');
 		$this->db->where('account_detail.account_id',$account_id);
+		$this->db->where_not_in('trans_id', $tran_id);
+
 		$this->db->where('action','recive_money');
 		$this->db->where('record_date',date('Y-m-d'));	
+		$this->db->order_by('record_date','DESC');
+		$this->db->order_by('record_time','DESC');
 		$query=$this->db->get('');
 		if($query->num_rows() > 0){
             return $query;

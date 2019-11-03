@@ -752,11 +752,19 @@ class Service_app extends CI_Controller {
 		date_default_timezone_set('Asia/Bangkok');
 		$this->response = null; 
 		$account_id = $this->input->post("account_id");
-		$account_id = "2019005";
-		if($data['check']=$this->Service_App_Model->check_receive_tranfer_money($account_id)){
-			foreach($data['check']->result() as $row){
-				$this->response['check'] = $row;
+		$tran_id = $this->input->post("tran_id");
+		//$account_id = "2019007";
+		
+		$tranid = array();
+		foreach ($_POST['tran_id'] as $key => $value) {
+			$tranid[] = $value;	
+		}
+
+		if($data['check']=$this->Service_App_Model->check_receive_tranfer_money($account_id,$tranid)){
+			foreach ($data['check']->result() as $row) {
+				$check = $row;
 			}
+			$this->response['check'] = $check;
 			$this->response['error'] = false; 
 			$this->response['message'] = 'พบข้อมูล'; 
 			    
