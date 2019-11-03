@@ -38,7 +38,7 @@
           "lengthChange": false,
           "searching": false,
           "orderable": false,
-          pageLength: 3, // 8
+          pageLength: 8, // 8
           destroy: true,
           serverSide: true,
           processing: true,

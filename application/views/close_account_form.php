@@ -14,7 +14,7 @@
           var rel = JSON.parse(response);
           if(!rel.error){
             alert("บันทึกข้อมูลสำเร็จ\nผลตอบแทน "+new Intl.NumberFormat().format(parseFloat(rel.interest))+" บาท\nจำนวนเงินคงเหลือ "+new Intl.NumberFormat().format(parseFloat(rel.new_balance))+" บาท");
-            window.open("<?=base_url("Project_controller/account_detail/");?>"+$("#member_id").val(), "_self");   
+            window.open("<?=base_url("Project_controller/account_detail/");?>"+$("#acc_code").val(), "_self");   
           }	
           else{
             alert(rel.message);

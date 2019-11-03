@@ -984,7 +984,7 @@ class Project_controller extends CI_Controller {
 
 	public function staff_update(){
 		$staff_id=$this->input->post("staff_id");
-		$pic = $this->input->post("show_image");
+		$pic = $this->input->post("show_staff_pic");
 		$temp;
 		$newfilename;
 		if(file_exists($_FILES['pic']['tmp_name']) || is_uploaded_file($_FILES['pic']['tmp_name'])) {

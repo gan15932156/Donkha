@@ -35,6 +35,7 @@
             <form enctype="multipart/form-data" name="staff_form" id="staff_form">
               <div class="row">
                 <div class="form-group col-4">  
+                <input type="hidden" id="show_staff_pic" name="show_staff_pic" class="form-control" readonly="" value="<?php echo $row->staff_pic; ?>">
                   <img id="show_image" width="30%" height= "65%" src="<?php echo $row->staff_pic;?>" alt="your image" style="border: solid 1px #c0c0c0;" /><figcaption>รูปประจำตัว</figcaption>
                   <input onchange="readURL(this);" type="file" class="form-control " name="pic" id="pic">                
                 </div>  
