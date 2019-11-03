@@ -1,8 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Project_controller extends CI_Controller {
-	public $ip = "127.0.0.1"/*"18.140.49.199"*/;
-	public $picture_path = "picture/"/*"/opt/lampp/htdocs/Donkha/picture/"*/;
+	public $ip = /*"127.0.0.1"*/"18.140.49.199";
+	public $picture_path = /*"picture/"*/"/opt/lampp/htdocs/Donkha/picture/";
 	public function __construct(){
 		parent::__construct();
 		$this->load->helper('url');
@@ -655,7 +655,7 @@ class Project_controller extends CI_Controller {
 			'account_detail_confirm'=>'1',
 		);
 		//update stock cash
-		$this->stock_cash_update($this->input->post("ac_code"),$this->input->post("money"),"open_account",$this->input->post("staff_id"),"dep");
+		//$this->stock_cash_update($this->input->post("ac_code"),$this->input->post("money"),"open_account",$this->input->post("staff_id"),"dep");
 		
 		$this->User_model->insert_account_details($data_account_detail);
 		$response = array();
@@ -723,7 +723,7 @@ class Project_controller extends CI_Controller {
 			'account_detail_confirm'=>'1',
 		);
 
-		$this->stock_cash_update($this->input->post("ac_code"),$this->input->post("money"),"open_account",$this->input->post("staff_id"),"dep");
+		//$this->stock_cash_update($this->input->post("ac_code"),$this->input->post("money"),"open_account",$this->input->post("staff_id"),"dep");
 
 		$this->User_model->insert_account_details($data_account_detail);
 		$response = array();
@@ -759,7 +759,7 @@ class Project_controller extends CI_Controller {
 		}
 		$this->User_model->update_confirm_account_deposit($this->input->post("acc_code"),$account_detail_balance);
 
-		$this->stock_cash_update($this->input->post("acc_code"),$this->input->post("deposit_money"),"deposit",$this->input->post("staff_id"),"dep");
+		//$this->stock_cash_update($this->input->post("acc_code"),$this->input->post("deposit_money"),"deposit",$this->input->post("staff_id"),"dep");
 
 		$response = array();
 		$response["message"] = "บันทึกข้อมูลสำเร็จ";
@@ -794,7 +794,7 @@ class Project_controller extends CI_Controller {
 		}
 		$this->User_model->update_confirm_account_withdraw($this->input->post("acc_code"),$account_detail_balance);
 		
-		$this->stock_cash_update($this->input->post("acc_code"),$this->input->post("withdraw_money"),"withdraw",$this->input->post("staff_id"),"wd");
+		//$this->stock_cash_update($this->input->post("acc_code"),$this->input->post("withdraw_money"),"withdraw",$this->input->post("staff_id"),"wd");
 		
 		
 		$response = array();
@@ -2222,7 +2222,7 @@ class Project_controller extends CI_Controller {
 		$this->User_model->update_confirm_deposit($account_detail_id,$trans_id,$staff_id);
 		$this->User_model->update_confirm_account_deposit($account_id,$account_detail_balance);
 
-		$this->stock_cash_update($account_id,$trans_money,"deposit",$staff_id,"dep");
+		//$this->stock_cash_update($account_id,$trans_money,"deposit",$staff_id,"dep");
 
 		$url1 = base_url('Project_controller/check_next_passbook_page_accountdetail_id/').$account_detail_id;
 		$url2 = base_url('Project_controller/noti_dep/');
@@ -2253,7 +2253,7 @@ class Project_controller extends CI_Controller {
 		$this->User_model->update_confirm_withdraw($account_detail_id,$trans_id,$staff_id);
 		$this->User_model->update_confirm_account_withdraw($account_id,$account_detail_balance);
 
-		$this->stock_cash_update($account_id,$trans_money,"withdraw",$staff_id,"wd");
+		//$this->stock_cash_update($account_id,$trans_money,"withdraw",$staff_id,"wd");
 
 		$url1 = base_url('Project_controller/check_next_passbook_page_accountdetail_id/').$account_detail_id;
 		$url2 = base_url('Project_controller/noti_wd/');

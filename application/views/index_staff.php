@@ -49,8 +49,8 @@
           
         </div>
         <div class="col-md-12">
-        <br><a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/today_balance_sheet/"; ?>">รายงานงบดุล</a>
-        <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/total_trial_balance/"; ?>">รายงานงบทดลอง</a>
+        <br><!--<a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/today_balance_sheet/"; ?>">รายงานงบดุล</a>-->
+        <!--<a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/total_trial_balance/"; ?>">รายงานงบทดลอง</a>-->
           <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/today_statement_report/"; ?>">รายงานทะเบียนเงินสด ประจำวัน</a>
           <a class="btn btn-primary" style="font-size:20px;" href="<?php  echo base_url()."Project_controller/remain_cash_report/"; ?>">รายงานตรวจนับเงินสดคงเหลือ</a>
         </div>

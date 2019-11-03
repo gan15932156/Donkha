@@ -69,16 +69,30 @@
 </script>
 <div class="col-md-12 text-center" >
   <div class="row text-center">
-    <div class="col-md-12"><br>
+    <div class="col-md-12"><br><br><br>
       <div class="dropdown">
-        <button style="font-size:40px;" class="btn btn-primary">พนักงาน</button>
+        <button style="font-size:40px;" class="btn btn-primary btn_admin">
+          <span style="font-size: 3em; color: #FFFFFF;">
+              <i class="fa fa-address-card-o" aria-hidden="true"><h5 style="margin-top:3px;">พนักงาน</h5></i>
+          </span>  
+        </button>
         <div>
           <a  href="<?php  echo base_url()."Project_controller/manage_staff/"; ?>" >ข้อมูลพนักงาน</a>
           <a  href="<?php  echo base_url()."Project_controller/staff_insert_form/"; ?>" >เพิ่มพนักงาน</a>
         </div>
       </div>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;
+      &nbsp;
+      &nbsp;
+      &nbsp;
+      
       <div class="dropdown">
-        <button style="font-size:40px;" class="btn btn-primary">สมาชิก</button>
+        <button style="font-size:40px;" class="btn btn-primary btn_admin">
+          <span style="font-size: 3em; color: #FFFFFF;">
+              <i class="fa fa-user-o" aria-hidden="true"><h5 style="margin-top:3px;">สมาชิก</h5></i>
+          </span>  
+        </button>
         <div>
           <a  href="<?php  echo base_url()."Project_controller/manage_member/"; ?>" >ข้อมูลสมาชิก</a>
           <a  href="<?php  echo base_url()."Project_controller/member_insert_form/"; ?>" >เพิ่มสมาชิก</a>
@@ -87,7 +101,7 @@
     </div>
     <div class="col-md-12">
      <br> 
-     <button onclick="show_modal()" style="font-size:20px;" class="btn btn-primary">เพิ่มเงินสำรอง</button>
+     <!--<button onclick="show_modal()" style="font-size:20px;" class="btn btn-primary">เพิ่มเงินสำรอง</button>-->
     </div>                   
   </div>   
 </div>      

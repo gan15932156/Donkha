@@ -1,4 +1,4 @@
-var base_url = "http://127.0.0.1/Donkha/Project_controller/";
+var base_url = "http://18.140.49.199/Donkha/Project_controller/";
 function readURL(input) {
   	if (input.files && input.files[0]) {
     	var reader = new FileReader();

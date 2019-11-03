@@ -55,9 +55,20 @@
   	background-color:#D6EAF8;
 }
 
-
-
 .btn_index{
 	width:20vw;
 	height:16vh;
+}
+
+.btn_admin{
+	border: 4px solid #CBCBCB;
+	width:20vw;
+	height:20vh;
+}
+
+.btn_manager{
+	border: 4px solid #CBCBCB;
+	width:20vw;
+	height:15vh;
+	font-size: 25px;
 }
