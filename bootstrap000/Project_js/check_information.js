@@ -1,4 +1,4 @@
-var base_url = "http://18.140.49.199/Donkha/Project_controller/";
+var base_url = "http://127.0.0.1/Donkha/Project_controller/";
 function check_std_code(query){
    	$.ajax({
      	url:base_url+"check_std_code",
@@ -9,16 +9,6 @@ function check_std_code(query){
      	}
    	})
 }
-function check_username(username){
- 	$.ajax({
-     	url:base_url+"check_username",
-     	method:"POST",
-     	data:{username:username},
-     	success:function(data){
-       		$('#result_username').html(data);
-     	}
-   	})
-} 
 function check_name(name,state){
 	if(state == "1"){
 		$.ajax({

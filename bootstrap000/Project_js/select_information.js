@@ -1,4 +1,4 @@
-var base_url = "http://18.140.49.199/Donkha/Project_controller/";
+var base_url = "http://127.0.0.1/Donkha/Project_controller/";
 function readURL(input) {
   	if (input.files && input.files[0]) {
     	var reader = new FileReader();
@@ -33,8 +33,32 @@ $(document).ready(function(){
     });
     $("#username").change(function(){
       var username = $(this).val();
-      check_username(username);  
-    });
+		
+		if(username.length < 6){
+			alert("ชื่อผู้ใช้ต้องไม่น้อยกว่า 6 ตัวอักษร");
+		}
+		else{
+			$.ajax({
+				url:base_url+"check_username",
+				method:"POST",
+				data:{username:username},
+				success:function(data){
+					  $('#result_username').html(data);
+				}
+			})
+		}
+	 });
+	 $("#password").change(function(){
+		$.ajax({
+			url:base_url+"check_password",
+			method:"POST",
+			data:{password:$(this).val()},
+			dataType:'json',
+			success:function(data){
+				alert(data.error);
+			}
+		})
+	 });
     $('#PROVINCE_ID').change(function(){
     	var prov_id=$(this).val();
       	$.ajax({

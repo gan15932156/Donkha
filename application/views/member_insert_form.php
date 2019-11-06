@@ -241,6 +241,7 @@
                   </div> 
                   <div class="form-group">
                     <input style="width:130px;" type="password" class="form-control " name="password" id="password" required="" placeholder="รหัสผ่าน">
+                    <div id="result_password"></div>
                   </div>                                      
                 </div>
               </div>

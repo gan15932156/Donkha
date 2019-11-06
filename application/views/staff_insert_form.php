@@ -167,6 +167,7 @@
               </div> 
               <div class="form-group col-md-3">
                 <input type="password" class="form-control " name="password" id="password" required="" placeholder="รหัสผ่าน">
+                <div id="result_password"></div>
               </div>
             </div>
             <div class="row">

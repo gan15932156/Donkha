@@ -2192,6 +2192,31 @@ class Project_controller extends CI_Controller {
 		$result = $this->User_model->check_username($query);
 		echo $result;
 	}
+	public function check_password(){
+		$response = array();
+		$password = $this->input->post("password");
+
+		if (strlen($password) <= '8') {
+			$passwordErr = "รหัสผ่านจะต้องมีอย่างน้อย 8 ตัวอักษร";
+		}
+		elseif(!preg_match("@[0-9]@",$password)) {
+				$passwordErr = "รหัสผ่านจะต้องมีตัวเลขอย่างน้อย 1 ตัว";
+		}
+		elseif(!preg_match("@[A-Z]@",$password)) {
+				$passwordErr = "รหัสผ่านจะต้องมีอย่างน้อย 1 ตัวอักษรพิมพ์ใหญ่";
+		}
+		elseif(!preg_match("@[a-z]@",$password)) {
+				$passwordErr = "รหัสผ่านจะต้องมีตัวอักษรตัวพิมพ์เล็กอย่างน้อย 1 ตัว";
+		}
+		elseif(!preg_match("@[^\w]@",$password)) {
+			$passwordErr = "รหัสผ่านต้องมีอักขระพิเศษอย่างน้อย 1 ตัว";
+		}
+		else{
+			$passwordErr = "ใช้รหัสผ่านนี้ได้";
+		}
+		$response["error"] = $passwordErr;
+		echo json_encode($response);
+	}
 	public function check_staff_name(){
 		$query='';
 		if($this->input->post('name')){
