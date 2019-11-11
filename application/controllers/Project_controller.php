@@ -3043,7 +3043,7 @@ class Project_controller extends CI_Controller {
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
-		$pdf->SetTitle("รายงานทะเบียนเงินสด ประจำวัน");
+		$pdf->SetTitle("รายงานทะเบียนเงินสด");
 		$pdf->AddPage();
 		function DateThai($strDate)
 		{
@@ -3065,21 +3065,18 @@ class Project_controller extends CI_Controller {
 		date_default_timezone_set('Asia/Bangkok');
 		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
 		$pdf->Ln(8);
-		$heading = "<span>โรงเรียนดอนคาวิทยา ตำบลดอนคา อำเภออู่ทอง จังหวัดสุพรรณบุรี 72160</span><br><h3>รายงานทะเบียนเงินสด ประจำวัน</h3>";
+		$heading = "<span>โรงเรียนดอนคาวิทยา ตำบลดอนคา อำเภออู่ทอง จังหวัดสุพรรณบุรี 72160</span><br><h3>รายงานทะเบียนเงินสด ณ วันที่ ".DateThaitttttt(date('Y-m-d'))."</h3>";
 		$pdf->Ln(1);
 		$pdf->writeHTMLCell(0,0,'','',$heading,0,1,0,true,'C',true);
-		$todate = '<p><b>ประจำวันที่ '.DateThaitttttt(date('Y-m-d'));
-		
-		$pdf->writeHTMLCell(0,0,'','',$todate,0,1,0,true,'C',true);
+		//พนักงานการเงิน  ผู้ตรวจ
 		$table='<table style="border:1px solid black">';
 		$table.='<tr>
-	                <th style="border:1px solid black" width="5%" scope="col">ที่</th>
-	                <th style="border:1px solid black" width="13%" scope="col">เลขที่บัญชี</th>
-	                <th style="border:1px solid black" width="11%" scope="col">ฝากเงิน</th>
-	                <th style="border:1px solid black" width="11%" scope="col">ถอนเงิน</th>
-	                <th style="border:1px solid black" width="24%" scope="col">พนักงานการเงิน</th>
-					<th style="border:1px solid black" width="24%" scope="col">ผู้ตรวจ</th>
-					<th style="border:1px solid black" width="12%" scope="col">หมายเหตุ</th>
+	            <th style="border:1px solid black" width="15%" scope="col">ที่</th>
+					<th style="border:1px solid black" width="15%" scope="col">เลขที่บัญชี</th>
+					<th style="border:1px solid black" width="10%" scope="col">เวลา</th>
+	            <th style="border:1px solid black" width="20%" scope="col">ฝากเงิน</th>
+	            <th style="border:1px solid black" width="20%" scope="col">ถอนเงิน</th>	               
+					<th style="border:1px solid black" width="20%" scope="col">หมายเหตุ</th>
     			</tr>';
 		$i=1;
 		$sum_dep = 0.0;
@@ -3098,9 +3095,9 @@ class Project_controller extends CI_Controller {
 			$table.='<tr>					
 						<td align="center" style="border:1px solid black">'.$i.'</td>
 						<td align="center" style="border:1px solid black">'.$row->account_id.'</td>
+						<td align="center" style="border:1px solid black">'.$row->record_time.'</td>
 						<td align="right" style="border:1px solid black">'.$dep_money.'</td>
 						<td align="right" style="border:1px solid black">'.$wd_money.'</td>
-						<td align="left" colspan="2"  style="border:1px solid black"> </td>
 						<td align="center" style="border:1px solid black;"> </td>
 					</tr>';
 			$i++;
@@ -3108,15 +3105,38 @@ class Project_controller extends CI_Controller {
 		$table.='
 		<tfoot>
 			<tr>
-				<td align="center" colspan="2" style="border:1px solid black">รวม</td>
+				<td align="center" colspan="3" style="border:1px solid black">รวม</td>
 				<td align="right" colspan="1" style="border:1px solid black">'.number_format($sum_dep,2).'</td>
 				<td align="right" colspan="1" style="border:1px solid black">'.number_format($sum_wd,2).'</td>
-				<td align="right" colspan="1" style="border:1px solid black"> </td>
 				<td align="right" colspan="1" style="border:1px solid black"> </td>
 			</tr>
 		</tfoot>';			
 		$table.='</table>';
 		$pdf->writeHTMLCell(0,0,'','',$table,0,1,0,true,'C',true);
+		$pdf->Ln(3);
+	
+		$singature = '<span>ลงชื่อ__________________________พนักงานการเงิน</span>';
+		$pdf->writeHTMLCell(0,0,'','',$singature,0,1,0,true,'R',true);
+		$singature = '<span>(__________________________)</span>';
+		$pdf->SetLeftMargin(92.0);
+		$pdf->writeHTMLCell(0,0,'','',$singature,0,1,0,true,'C',true);
+
+		$singature = '<span>วันที่___________________</span>';
+		$pdf->SetLeftMargin(92.0);
+		$pdf->writeHTMLCell(0,0,'','',$singature,0,1,0,true,'C',true);
+
+		$pdf->Ln(5);
+		$singature = '<span>ลงชื่อ__________________________ผู้ตรวจ</span>';
+		$pdf->SetRightMargin(28.0);
+		$pdf->writeHTMLCell(0,0,'','',$singature,0,1,0,true,'R',true);
+		$singature = '<span>(__________________________)</span>';
+		$pdf->SetRightMargin(15.0);
+		$pdf->SetLeftMargin(92.0);
+		$pdf->writeHTMLCell(0,0,'','',$singature,0,1,0,true,'C',true);
+
+		$singature = '<span>วันที่___________________</span>';
+		$pdf->SetLeftMargin(92.0);
+		$pdf->writeHTMLCell(0,0,'','',$singature,0,1,0,true,'C',true);
 		ob_clean();
 		$pdf->Output('example_001.pdf', 'I');
 		ob_end_clean();
@@ -4195,7 +4215,7 @@ class Project_controller extends CI_Controller {
 		$pdf->setPrintHeader(false);
 		$pdf->setCellPadding(1,1,1,1);
 		$pdf->setCellmargins(1,1,1,1);
-		$pdf->SetTitle("รายงานทะเบียนเงินสด ประจำวัน");
+		$pdf->SetTitle("รายงานทะเบียนเงินสด");
 		$pdf->AddPage();
 		function DateThaitttttt($strDate)
 		{ 
@@ -4209,12 +4229,9 @@ class Project_controller extends CI_Controller {
 		date_default_timezone_set('Asia/Bangkok');
 		$pdf->Image(base_url()."picture/donkha.png", 91,5, 25, 30, 'PNG', 'http://www.mindphp.com');
 		$pdf->Ln(8);
-		$heading = "<span>โรงเรียนดอนคาวิทยา ตำบลดอนคา อำเภออู่ทอง จังหวัดสุพรรณบุรี 72160</span><h3>รายงานทะเบียนเงินสด ประจำวัน</h3>";
+		$heading = "<span>โรงเรียนดอนคาวิทยา ตำบลดอนคา อำเภออู่ทอง จังหวัดสุพรรณบุรี 72160</span><h3>รายงานทะเบียนเงินสด ณ วันที่ ".DateThaitttttt(date('Y-m-d'))."</h3>";
 
 		$pdf->writeHTMLCell(0,0,'','',$heading,0,1,0,true,'C',true);
-		$todate = '<p><b>ประจำวันที่ '.DateThaitttttt(date('Y-m-d'));
-		
-		$pdf->writeHTMLCell(0,0,'','',$todate,0,1,0,true,'C',true);
 		$table='<table style="border:1px solid black">';
 		$table.='<tr>
 	                <th style="border:1px solid black" width="25%" scope="col">รายงานการตรวจนับ</th>

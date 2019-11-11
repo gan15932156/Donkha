@@ -44,7 +44,7 @@
             } 
             date_default_timezone_set('Asia/Bangkok');
           ?>
-          <h5 class="text-center"><B>รายงานตรวจนับเงินสดคงเหลือ <b>ประจำวันที่ <?php echo DateThai(date('Y-m-d'));?></b></B></h5>
+          <h5 class="text-center"><B>รายงานตรวจนับเงินสดคงเหลือ <b>ณ วันที่<?php echo " ".DateThai(date('Y-m-d'));?></b></B></h5>
          
         </div>
         <br><br>
